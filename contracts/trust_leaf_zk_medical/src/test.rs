@@ -33,7 +33,7 @@ fn setup<'a>() -> TestEnv<'a> {
     rbac.grant_role(&admin, &doctor, &Symbol::new(&env, "DOCTOR")).unwrap();
     rbac.grant_role(&admin, &dispensary, &Symbol::new(&env, "DISPENSARY")).unwrap();
 
-    let vk_hash = BytesN::from_array(&env, &[0xVK; 32]);
+    let vk_hash = BytesN::from_array(&env, &[0xAA; 32]);
 
     let zk_id = env.register(TrustLeafZkMedical, ());
     let zk = TrustLeafZkMedicalClient::new(&env, &zk_id);
