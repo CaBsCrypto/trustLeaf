@@ -1,0 +1,41 @@
+# Rust / Soroban
+target/
+contracts/target/
+**/*.wasm
+!contracts/**/testdata/*.wasm
+
+# Node
+node_modules/
+.pnpm-store/
+dist/
+.next/
+.turbo/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# ZK artifacts (generated — do not commit proofs/witnesses)
+circuits/**/target/
+circuits/**/*.gz
+circuits/**/proof.bin
+circuits/**/witness.gz
+# Keep VK committed (needed for contract deploy)
+!circuits/**/vk.bin
+
+# Indexer
+indexer/.data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Firebase service account
+firebase-service-account.json
+*-service-account.json

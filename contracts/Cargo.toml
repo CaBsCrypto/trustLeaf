@@ -1,0 +1,27 @@
+[workspace]
+resolver = "2"
+members = [
+    "trust_leaf_rbac",
+    "trust_leaf_traceability",
+    "trust_leaf_zk_medical",
+    "shared",
+]
+
+[workspace.dependencies]
+soroban-sdk = { version = "22.0.0", features = ["testutils"] }
+
+# Release profile optimized for minimal WASM size
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = false
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+# Contract build profile — identical to release but named for stellar contract build
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

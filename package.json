@@ -1,0 +1,20 @@
+{
+  "name": "trustleaf",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "indexer",
+    "bindings/*"
+  ],
+  "scripts": {
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "build:contracts": "bash scripts/build-contracts.sh",
+    "deploy:contracts": "bash scripts/deploy-contracts.sh",
+    "generate:bindings": "bash scripts/generate-bindings.sh",
+    "test:contracts": "cargo test --manifest-path contracts/Cargo.toml"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
