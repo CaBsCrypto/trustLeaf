@@ -12,14 +12,18 @@ use prescription::PrescriptionCommitment;
 use storage::{StorageKey, TTL_BUMP_TARGET, TTL_BUMP_THRESHOLD};
 use verifier::verify_ultrahonk_proof;
 
-// ─── RBAC cross-contract interface ───────────────────────────────────────────
+// ─── RBAC cross-contract interface (backed by OZ stellar-access) ─────────────
+// trust_leaf_rbac uses OpenZeppelin's AccessControl storage. We call its
+// public `has_role(bool)` API which wraps OZ's `Option<u32>` return.
 soroban_sdk::contractclient!(RbacClient, "trust-leaf-rbac");
 
+/// Cross-contract role check using OZ-backed RBAC contract.
 fn rbac_has_role(env: &Env, rbac_id: &Address, account: &Address, role: &Symbol) -> bool {
-    let client = RbacClient::new(env, rbac_id);
-    client.has_role(account, role)
+    RbacClient::new(env, rbac_id).has_role(account, role)
 }
 
+/// Require `caller` to hold `role` in the shared RBAC contract.
+/// Calls `require_auth()` before the role check.
 fn require_role(
     env: &Env,
     rbac_id: &Address,

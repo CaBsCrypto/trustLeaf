@@ -10,6 +10,12 @@ members = [
 [workspace.dependencies]
 soroban-sdk = { version = "22.0.0", features = ["testutils"] }
 
+# ── OpenZeppelin Stellar Contracts (audited) ──────────────────────────────────
+# https://github.com/OpenZeppelin/stellar-contracts
+stellar-access          = { version = "0.7.1" }
+stellar-contract-utils  = { version = "0.7.1" }
+stellar-macros          = { version = "0.7.1" }
+
 # Release profile optimized for minimal WASM size
 [profile.release]
 opt-level = "z"

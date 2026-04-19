@@ -12,21 +12,19 @@ use errors::ContractError;
 use events::PlantEvent;
 use storage::{StorageKey, TTL_BUMP_TARGET, TTL_BUMP_THRESHOLD};
 
-// ─── RBAC cross-contract interface ───────────────────────────────────────────
-// We call `has_role` on the RBAC contract to authorise privileged operations.
+// ─── RBAC cross-contract interface (via OZ stellar-access) ───────────────────
+// Cross-contract calls to `trust_leaf_rbac` which internally uses
+// OpenZeppelin's AccessControl storage. We call `has_role` (returns bool)
+// which wraps OZ's `Option<u32>` return.
 soroban_sdk::contractclient!(RbacClient, "trust-leaf-rbac");
 
-/// Minimal interface for cross-contract RBAC calls.
-pub trait RbacInterface {
-    fn has_role(env: &Env, rbac_id: &Address, account: &Address, role: &Symbol) -> bool;
-}
-
+/// Returns true if `account` holds `role` in the shared RBAC contract.
 fn rbac_has_role(env: &Env, rbac_id: &Address, account: &Address, role: &Symbol) -> bool {
-    let client = RbacClient::new(env, rbac_id);
-    client.has_role(account, role)
+    RbacClient::new(env, rbac_id).has_role(account, role)
 }
 
-/// Assert that `caller` has `role` in the RBAC contract, calling require_auth first.
+/// Require that `caller` holds `role`, calling `require_auth()` first.
+/// Uses OZ's audited role storage via the RBAC cross-contract call.
 fn require_role(
     env: &Env,
     rbac_id: &Address,
@@ -38,6 +36,12 @@ fn require_role(
         return Err(ContractError::Unauthorized);
     }
     Ok(())
+}
+
+/// Returns true if `caller` holds ANY of the listed roles.
+/// Used for multi-role gates (e.g., GROWER or LAB or DISPENSARY).
+fn rbac_has_any_role(env: &Env, rbac_id: &Address, caller: &Address, roles: &[&str]) -> bool {
+    roles.iter().any(|r| rbac_has_role(env, rbac_id, caller, &Symbol::new(env, r)))
 }
 
 // ─── Contract ─────────────────────────────────────────────────────────────────
@@ -153,13 +157,8 @@ impl TrustLeafTraceability {
         let rbac = Self::get_rbac(&env)?;
         caller.require_auth();
 
-        // At least one valid role must be held
-        let has_any_role = rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "GROWER"))
-            || rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "LAB"))
-            || rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "DISPENSARY"))
-            || rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "ADMIN"));
-
-        if !has_any_role {
+        // At least one valid role must be held (uses OZ role storage via cross-contract)
+        if !rbac_has_any_role(&env, &rbac, &caller, &["GROWER", "LAB", "DISPENSARY", "ADMIN"]) {
             return Err(ContractError::Unauthorized);
         }
 
@@ -213,12 +212,7 @@ impl TrustLeafTraceability {
         let rbac = Self::get_rbac(&env)?;
         caller.require_auth();
 
-        let has_any_role = rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "GROWER"))
-            || rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "LAB"))
-            || rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "DISPENSARY"))
-            || rbac_has_role(&env, &rbac, &caller, &Symbol::new(&env, "ADMIN"));
-
-        if !has_any_role {
+        if !rbac_has_any_role(&env, &rbac, &caller, &["GROWER", "LAB", "DISPENSARY", "ADMIN"]) {
             return Err(ContractError::Unauthorized);
         }
 
