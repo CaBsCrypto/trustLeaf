@@ -1,46 +1,567 @@
+// Copyright © 2026 Browns Studio
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { usePasskey } from "../../hooks/usePasskey";
+import {
+  HomeIcon,
+  UserIcon,
+  ClipboardCheckIcon,
+  StethoscopeIcon,
+  ChevronRightIcon,
+  FilterIcon,
+  PillIcon,
+  CalendarIcon,
+  ClockIcon,
+  AlertTriangleIcon,
+} from "../../components/icons/TrustLeafIcons";
 
-export default function DoctorDashboard() {
-  const { walletAddress } = usePasskey();
+// ─── Types ────────────────────────────────────────────────────────────────────
 
+type PrescriptionStatus = "active" | "partial" | "used" | "revoked";
+
+interface PatientRow {
+  id: string;
+  maskedName: string;
+  prescriptionCount: number;
+  lastVisit: string;
+  status: "active" | "inactive";
+}
+
+interface PrescriptionRow {
+  rxId: string;
+  patient: string;
+  medication: string;
+  date: string;
+  status: PrescriptionStatus;
+}
+
+// ─── Mock Data ────────────────────────────────────────────────────────────────
+
+const MOCK_STATS = {
+  prescriptionsToday: 4,
+  activePrescriptions: 12,
+  patientsAttended: 28,
+};
+
+const MOCK_PATIENTS: PatientRow[] = [
+  {
+    id: "P1",
+    maskedName: "J*** D**",
+    prescriptionCount: 3,
+    lastVisit: "2026-07-08",
+    status: "active",
+  },
+  {
+    id: "P2",
+    maskedName: "M*** G****",
+    prescriptionCount: 1,
+    lastVisit: "2026-07-07",
+    status: "active",
+  },
+  {
+    id: "P3",
+    maskedName: "P*** R****",
+    prescriptionCount: 5,
+    lastVisit: "2026-07-05",
+    status: "inactive",
+  },
+  {
+    id: "P4",
+    maskedName: "C*** L***",
+    prescriptionCount: 2,
+    lastVisit: "2026-07-03",
+    status: "active",
+  },
+  {
+    id: "P5",
+    maskedName: "S*** V****",
+    prescriptionCount: 1,
+    lastVisit: "2026-06-28",
+    status: "inactive",
+  },
+];
+
+const MOCK_HISTORY: PrescriptionRow[] = [
+  {
+    rxId: "RX-A1B2C3D4",
+    patient: "J*** D**",
+    medication: "Amoxicilina 500mg",
+    date: "2026-07-08",
+    status: "active",
+  },
+  {
+    rxId: "RX-E5F6G7H8",
+    patient: "M*** G****",
+    medication: "Losartán 50mg",
+    date: "2026-07-07",
+    status: "partial",
+  },
+  {
+    rxId: "RX-Q9R0S1T2",
+    patient: "P*** R****",
+    medication: "Omeprazol 20mg",
+    date: "2026-07-05",
+    status: "used",
+  },
+  {
+    rxId: "RX-U3V4W5X6",
+    patient: "C*** L***",
+    medication: "Atorvastatina 20mg",
+    date: "2026-07-03",
+    status: "revoked",
+  },
+  {
+    rxId: "RX-Y7Z8A9B0",
+    patient: "J*** D**",
+    medication: "Metformina 850mg",
+    date: "2026-07-01",
+    status: "used",
+  },
+  {
+    rxId: "RX-C1D2E3F4",
+    patient: "S*** V****",
+    medication: "Ibuprofeno 400mg",
+    date: "2026-06-28",
+    status: "used",
+  },
+];
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const STATUS_CONFIG: Record<
+  PrescriptionStatus,
+  { label: string; className: string }
+> = {
+  active: {
+    label: "Activa",
+    className: "bg-green-900/50 text-green-400 border border-green-700",
+  },
+  partial: {
+    label: "Parcial",
+    className: "bg-yellow-900/50 text-yellow-400 border border-yellow-700",
+  },
+  used: {
+    label: "Usada",
+    className: "bg-gray-800 text-gray-400 border border-gray-700",
+  },
+  revoked: {
+    label: "Revocada",
+    className: "bg-red-900/50 text-red-400 border border-red-700",
+  },
+};
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString("es-CL", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+// ─── Tab Content ──────────────────────────────────────────────────────────────
+
+function TabInicio() {
   return (
-    <main className="min-h-screen p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-green-400 mb-1">🩺 Dashboard Médico</h1>
-      <p className="text-gray-400 text-sm mb-8">
-        {walletAddress ? `${walletAddress.slice(0, 8)}...` : "No conectado"}
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <StatCard label="Recetas emitidas" value="—" />
-        <StatCard label="Recetas activas" value="—" />
+    <div className="space-y-6">
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+          <div className="flex items-center gap-2 mb-2">
+            <PillIcon className="w-4 h-4 text-green-400" />
+            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">
+              Recetas hoy
+            </p>
+          </div>
+          <p className="text-4xl font-bold text-green-400">
+            {MOCK_STATS.prescriptionsToday}
+          </p>
+        </div>
+        <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+          <div className="flex items-center gap-2 mb-2">
+            <ClipboardCheckIcon className="w-4 h-4 text-blue-400" />
+            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">
+              Recetas activas
+            </p>
+          </div>
+          <p className="text-4xl font-bold text-blue-400">
+            {MOCK_STATS.activePrescriptions}
+          </p>
+        </div>
+        <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+          <div className="flex items-center gap-2 mb-2">
+            <UserIcon className="w-4 h-4 text-purple-400" />
+            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">
+              Pacientes
+            </p>
+          </div>
+          <p className="text-4xl font-bold text-purple-400">
+            {MOCK_STATS.patientsAttended}
+          </p>
+        </div>
       </div>
 
-      <Link
-        href="/doctor/prescribe"
-        className="px-5 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-semibold transition-colors inline-block"
-      >
-        + Nueva receta ZK
-      </Link>
-
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold text-gray-200 mb-4">Recetas emitidas</h2>
-        <p className="text-gray-500 text-sm">
-          Las recetas aparecen una vez que Mercury indexe el evento CommitmentSubmitted.
-          Ningún dato personal del paciente es visible en blockchain.
-        </p>
+      {/* Quick action */}
+      <div className="bg-gradient-to-br from-green-900/40 to-green-900/10 border border-green-800 rounded-2xl p-6">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-xl bg-green-600 flex items-center justify-center shrink-0">
+            <StethoscopeIcon className="w-6 h-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-white font-semibold text-lg mb-1">
+              Nueva Receta ZK
+            </h3>
+            <p className="text-gray-400 text-sm mb-4">
+              Emite una receta médica con compromiso criptográfico. El RUT del
+              paciente nunca es registrado en blockchain.
+            </p>
+            <Link
+              href="/doctor/prescribe"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-colors text-sm"
+            >
+              + Nueva Receta ZK
+              <ChevronRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
       </div>
-    </main>
+
+      {/* Info card */}
+      <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+        <div className="flex items-center gap-2 mb-3">
+          <AlertTriangleIcon className="w-4 h-4 text-yellow-400" />
+          <h3 className="text-white font-semibold text-sm">
+            Sobre las Recetas ZK
+          </h3>
+        </div>
+        <ul className="space-y-2 text-gray-400 text-sm">
+          <li className="flex items-start gap-2">
+            <span className="text-green-500 mt-0.5">•</span>
+            Solo el hash del compromiso es registrado en Stellar/Soroban
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-green-500 mt-0.5">•</span>
+            Cero PHI (información de salud protegida) en cadena
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-green-500 mt-0.5">•</span>
+            El paciente controla la divulgación con su RUT + nonce
+          </li>
+        </ul>
+      </div>
+    </div>
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function TabPacientes() {
   return (
-    <div className="p-4 bg-gray-900 border border-gray-800 rounded-xl">
-      <p className="text-gray-400 text-sm">{label}</p>
-      <p className="text-2xl font-bold text-green-300 mt-1">{value}</p>
+    <div className="space-y-4">
+      <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-700 flex items-center justify-between">
+          <div>
+            <h3 className="text-white font-semibold">Pacientes Recientes</h3>
+            <p className="text-gray-400 text-xs mt-0.5">
+              Nombres enmascarados para privacidad
+            </p>
+          </div>
+          <span className="text-gray-500 text-xs">
+            {MOCK_PATIENTS.length} pacientes
+          </span>
+        </div>
+        {MOCK_PATIENTS.length === 0 ? (
+          <div className="p-12 text-center">
+            <UserIcon className="w-10 h-10 text-gray-700 mx-auto mb-3" />
+            <p className="text-gray-500 text-sm">No hay pacientes registrados</p>
+            <Link
+              href="/doctor/prescribe"
+              className="inline-block mt-4 text-green-400 text-sm hover:text-green-300 transition-colors"
+            >
+              Emitir primera receta →
+            </Link>
+          </div>
+        ) : (
+          <ul className="divide-y divide-gray-700">
+            {MOCK_PATIENTS.map((patient) => (
+              <li
+                key={patient.id}
+                className="flex items-center gap-3 px-5 py-4 hover:bg-gray-700/30 transition-colors"
+              >
+                <div className="w-9 h-9 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center shrink-0">
+                  <UserIcon className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-white text-sm font-medium font-mono">
+                      {patient.maskedName}
+                    </p>
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                        patient.status === "active"
+                          ? "bg-green-900/40 text-green-400"
+                          : "bg-gray-700 text-gray-500"
+                      }`}
+                    >
+                      {patient.status === "active" ? "Activo" : "Inactivo"}
+                    </span>
+                  </div>
+                  <p className="text-gray-500 text-xs">
+                    {patient.prescriptionCount} receta
+                    {patient.prescriptionCount !== 1 ? "s" : ""} · Últ. visita{" "}
+                    {formatDate(patient.lastVisit)}
+                  </p>
+                </div>
+                <button
+                  onClick={() =>
+                    toast.info(
+                      "Historial completo disponible próximamente"
+                    )
+                  }
+                  className="text-gray-500 hover:text-green-400 transition-colors"
+                >
+                  <ChevronRightIcon className="w-4 h-4" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type FilterStatus = "all" | PrescriptionStatus;
+
+function TabHistorial() {
+  const [filter, setFilter] = useState<FilterStatus>("all");
+
+  const filtered =
+    filter === "all"
+      ? MOCK_HISTORY
+      : MOCK_HISTORY.filter((rx) => rx.status === filter);
+
+  const filterOptions: { value: FilterStatus; label: string }[] = [
+    { value: "all", label: "Todas" },
+    { value: "active", label: "Activas" },
+    { value: "partial", label: "Parciales" },
+    { value: "used", label: "Usadas" },
+    { value: "revoked", label: "Revocadas" },
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* Filter bar */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <FilterIcon className="w-4 h-4 text-gray-500 shrink-0" />
+        {filterOptions.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => setFilter(opt.value)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+              filter === opt.value
+                ? "bg-green-600 text-white"
+                : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-600"
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
+      {/* List */}
+      {filtered.length === 0 ? (
+        <div className="bg-gray-800 rounded-2xl p-10 border border-gray-700 text-center">
+          <ClipboardCheckIcon className="w-10 h-10 text-gray-700 mx-auto mb-3" />
+          <p className="text-gray-500 text-sm">
+            No hay recetas con este estado.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+          <ul className="divide-y divide-gray-700">
+            {filtered.map((rx) => {
+              const cfg = STATUS_CONFIG[rx.status];
+              return (
+                <li
+                  key={rx.rxId}
+                  className="flex items-center gap-4 px-5 py-4 hover:bg-gray-700/30 transition-colors"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <span className="text-white text-sm font-semibold">
+                        {rx.medication}
+                      </span>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-xs font-semibold ${cfg.className}`}
+                      >
+                        {cfg.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-500 text-xs flex-wrap">
+                      <span className="font-mono">{rx.rxId}</span>
+                      <span>·</span>
+                      <span className="font-mono">{rx.patient}</span>
+                      <span>·</span>
+                      <span className="flex items-center gap-1">
+                        <CalendarIcon className="w-3 h-3" />
+                        {formatDate(rx.date)}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() =>
+                      toast.info("Detalle de receta disponible próximamente")
+                    }
+                    className="text-gray-600 hover:text-green-400 transition-colors shrink-0"
+                  >
+                    <ChevronRightIcon className="w-4 h-4" />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
+type TabId = "inicio" | "pacientes" | "historial";
+
+const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
+  { id: "inicio", label: "Inicio", icon: <HomeIcon /> },
+  { id: "pacientes", label: "Mis Pacientes", icon: <UserIcon /> },
+  { id: "historial", label: "Historial", icon: <ClipboardCheckIcon /> },
+];
+
+export default function DoctorDashboard() {
+  const { walletAddress } = usePasskey();
+  const [activeTab, setActiveTab] = useState<TabId>("inicio");
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
+      {/* ── Desktop sidebar ─────────────────────────────────────────── */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 flex-col bg-gray-900 border-r border-gray-800 z-40">
+        {/* Logo */}
+        <div className="px-6 py-6 border-b border-gray-800">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center text-black font-bold text-sm">
+              TL
+            </div>
+            <div>
+              <p className="text-white font-bold text-sm">TrustLeaf</p>
+              <p className="text-gray-500 text-xs">Portal Médico</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Doctor info */}
+        <div className="px-6 py-4 border-b border-gray-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-900/50 border border-green-700 flex items-center justify-center">
+              <StethoscopeIcon className="w-5 h-5 text-green-400" />
+            </div>
+            <div>
+              <p className="text-white text-sm font-semibold">Dr. Médico</p>
+              <p className="text-gray-500 text-xs font-mono">
+                {walletAddress
+                  ? `${walletAddress.slice(0, 8)}…`
+                  : "No conectado"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-4 space-y-1">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? "bg-green-600 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-gray-800"
+              }`}
+            >
+              <span className="w-4 h-4">{tab.icon}</span>
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Quick action */}
+        <div className="px-3 py-4 border-t border-gray-800">
+          <Link
+            href="/doctor/prescribe"
+            className="flex items-center justify-center gap-2 w-full py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors"
+          >
+            + Nueva Receta ZK
+          </Link>
+        </div>
+      </aside>
+
+      {/* ── Main content ─────────────────────────────────────────────── */}
+      <main className="md:ml-64 pb-24 md:pb-8">
+        {/* Mobile header */}
+        <header className="md:hidden sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-gray-800 px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-green-500 flex items-center justify-center text-black font-bold text-xs">
+                TL
+              </div>
+              <span className="text-white font-bold text-sm">TrustLeaf</span>
+              <span className="text-gray-600 text-xs">· Médico</span>
+            </div>
+            <Link
+              href="/doctor/prescribe"
+              className="px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white text-xs font-semibold rounded-lg transition-colors"
+            >
+              + Receta
+            </Link>
+          </div>
+        </header>
+
+        {/* Desktop page header */}
+        <div className="hidden md:block px-8 pt-8 pb-6 border-b border-gray-800">
+          <h1 className="text-2xl font-bold text-white">
+            {TABS.find((t) => t.id === activeTab)?.label}
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">
+            Panel de gestión médica — recetas ZK en Stellar
+          </p>
+        </div>
+
+        {/* Tab content */}
+        <div className="px-4 md:px-8 py-6">
+          {activeTab === "inicio" && <TabInicio />}
+          {activeTab === "pacientes" && <TabPacientes />}
+          {activeTab === "historial" && <TabHistorial />}
+        </div>
+      </main>
+
+      {/* ── Mobile bottom nav ─────────────────────────────────────────── */}
+      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-gray-900/95 backdrop-blur-sm border-t border-gray-800 z-40">
+        <div className="flex">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors ${
+                activeTab === tab.id
+                  ? "text-green-400"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+            >
+              <span className="w-5 h-5">{tab.icon}</span>
+              <span className="leading-none text-[10px]">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }
