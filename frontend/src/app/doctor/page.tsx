@@ -145,7 +145,7 @@ const STATUS_CONFIG: Record<
   },
   used: {
     label: "Usada",
-    className: "bg-gray-800 text-gray-400 border border-gray-700",
+    className: "bg-gray-800 text-gray-400 border border-[#334155]",
   },
   revoked: {
     label: "Revocada",
@@ -168,7 +168,7 @@ function TabInicio() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+        <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
           <div className="flex items-center gap-2 mb-2">
             <PillIcon className="w-4 h-4 text-green-400" />
             <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">
@@ -179,7 +179,7 @@ function TabInicio() {
             {MOCK_STATS.prescriptionsToday}
           </p>
         </div>
-        <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+        <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
           <div className="flex items-center gap-2 mb-2">
             <ClipboardCheckIcon className="w-4 h-4 text-blue-400" />
             <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">
@@ -190,7 +190,7 @@ function TabInicio() {
             {MOCK_STATS.activePrescriptions}
           </p>
         </div>
-        <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+        <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
           <div className="flex items-center gap-2 mb-2">
             <UserIcon className="w-4 h-4 text-purple-400" />
             <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">
@@ -229,7 +229,7 @@ function TabInicio() {
       </div>
 
       {/* Info card */}
-      <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangleIcon className="w-4 h-4 text-yellow-400" />
           <h3 className="text-white font-semibold text-sm">
@@ -258,8 +258,8 @@ function TabInicio() {
 function TabPacientes() {
   return (
     <div className="space-y-4">
-      <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-700 flex items-center justify-between">
+      <div className="bg-[#1E293B] rounded-2xl border border-[#334155] overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#334155] flex items-center justify-between">
           <div>
             <h3 className="text-white font-semibold">Pacientes Recientes</h3>
             <p className="text-gray-400 text-xs mt-0.5">
@@ -282,11 +282,11 @@ function TabPacientes() {
             </Link>
           </div>
         ) : (
-          <ul className="divide-y divide-gray-700">
+          <ul className="divide-y divide-[#334155]">
             {MOCK_PATIENTS.map((patient) => (
               <li
                 key={patient.id}
-                className="flex items-center gap-3 px-5 py-4 hover:bg-gray-700/30 transition-colors"
+                className="flex items-center gap-3 px-5 py-4 hover:bg-[#253046]/60 transition-colors"
               >
                 <div className="w-9 h-9 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center shrink-0">
                   <UserIcon className="w-4 h-4 text-gray-400" />
@@ -360,8 +360,8 @@ function TabHistorial() {
             onClick={() => setFilter(opt.value)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
               filter === opt.value
-                ? "bg-green-600 text-white"
-                : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-600"
+                ? "bg-[#10B981] text-[#0F172A] font-semibold"
+                : "bg-gray-800 text-gray-400 hover:text-white border border-[#334155] hover:border-gray-600"
             }`}
           >
             {opt.label}
@@ -371,21 +371,21 @@ function TabHistorial() {
 
       {/* List */}
       {filtered.length === 0 ? (
-        <div className="bg-gray-800 rounded-2xl p-10 border border-gray-700 text-center">
+        <div className="bg-[#1E293B] rounded-2xl p-10 border border-[#334155] text-center">
           <ClipboardCheckIcon className="w-10 h-10 text-gray-700 mx-auto mb-3" />
           <p className="text-gray-500 text-sm">
             No hay recetas con este estado.
           </p>
         </div>
       ) : (
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
-          <ul className="divide-y divide-gray-700">
+        <div className="bg-[#1E293B] rounded-2xl border border-[#334155] overflow-hidden">
+          <ul className="divide-y divide-[#334155]">
             {filtered.map((rx) => {
               const cfg = STATUS_CONFIG[rx.status];
               return (
                 <li
                   key={rx.rxId}
-                  className="flex items-center gap-4 px-5 py-4 hover:bg-gray-700/30 transition-colors"
+                  className="flex items-center gap-4 px-5 py-4 hover:bg-[#253046]/60 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
@@ -442,13 +442,13 @@ export default function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState<TabId>("inicio");
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-[#0F172A] text-white">
       {/* ── Desktop sidebar ─────────────────────────────────────────── */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 flex-col bg-gray-900 border-r border-gray-800 z-40">
+      <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 flex-col bg-[#1E293B] border-r border-[#334155] z-40">
         {/* Logo */}
-        <div className="px-6 py-6 border-b border-gray-800">
+        <div className="px-6 py-6 border-b border-[#334155]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center text-black font-bold text-sm">
+            <div className="w-8 h-8 rounded-lg bg-[#10B981] flex items-center justify-center text-[#0F172A] font-bold text-sm">
               TL
             </div>
             <div>
@@ -459,7 +459,7 @@ export default function DoctorDashboard() {
         </div>
 
         {/* Doctor info */}
-        <div className="px-6 py-4 border-b border-gray-800">
+        <div className="px-6 py-4 border-b border-[#334155]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-green-900/50 border border-green-700 flex items-center justify-center">
               <StethoscopeIcon className="w-5 h-5 text-green-400" />
@@ -483,8 +483,8 @@ export default function DoctorDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? "bg-green-600 text-white"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  ? "bg-[#10B981] text-[#0F172A] font-semibold"
+                  : "text-gray-400 hover:text-white hover:bg-[#253046]"
               }`}
             >
               <span className="w-4 h-4">{tab.icon}</span>
@@ -507,10 +507,10 @@ export default function DoctorDashboard() {
       {/* ── Main content ─────────────────────────────────────────────── */}
       <main className="md:ml-64 pb-24 md:pb-8">
         {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-gray-800 px-4 py-4">
+        <header className="md:hidden sticky top-0 z-30 bg-[#0F172A]/95 backdrop-blur-sm border-b border-[#334155] px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-green-500 flex items-center justify-center text-black font-bold text-xs">
+              <div className="w-7 h-7 rounded-lg bg-[#10B981] flex items-center justify-center text-[#0F172A] font-bold text-xs">
                 TL
               </div>
               <span className="text-white font-bold text-sm">TrustLeaf</span>
@@ -526,7 +526,7 @@ export default function DoctorDashboard() {
         </header>
 
         {/* Desktop page header */}
-        <div className="hidden md:block px-8 pt-8 pb-6 border-b border-gray-800">
+        <div className="hidden md:block px-8 pt-8 pb-6 border-b border-[#334155]">
           <h1 className="text-2xl font-bold text-white">
             {TABS.find((t) => t.id === activeTab)?.label}
           </h1>
@@ -544,7 +544,7 @@ export default function DoctorDashboard() {
       </main>
 
       {/* ── Mobile bottom nav ─────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-gray-900/95 backdrop-blur-sm border-t border-gray-800 z-40">
+      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-[#1E293B]/95 backdrop-blur-sm border-t border-[#334155] z-40">
         <div className="flex">
           {TABS.map((tab) => (
             <button

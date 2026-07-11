@@ -2,6 +2,8 @@
 // Public page — NO authentication required. Anyone can access.
 "use client";
 
+import Navbar from "../../../components/Navbar";
+
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -128,7 +130,7 @@ function getStatusConfig(status: PrescriptionStatus): StatusDisplayConfig {
           </div>
         ),
         bgClass: "bg-gray-800",
-        borderClass: "border-gray-700",
+        borderClass: "border-[#334155]",
         textClass: "text-gray-400",
         isValid: false,
       };
@@ -199,7 +201,7 @@ const QR_PATTERN = [
 
 function QRDisplay({ rxId }: { rxId: string }) {
   return (
-    <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+    <div className="bg-[#1E293B] rounded-2xl p-6 border border-[#334155]">
       <h3 className="text-white font-semibold text-center mb-4">
         Código QR de Verificación
       </h3>
@@ -245,9 +247,10 @@ export default function VerifyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-[#0F172A] text-white">
+      <Navbar variant="portal" />
       {/* Header */}
-      <header className="border-b border-gray-800">
+      <header className="border-b border-[#334155]">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center text-black font-bold text-sm">
@@ -287,8 +290,8 @@ export default function VerifyPage() {
             })()}
 
             {/* Prescription details */}
-            <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-700">
+            <div className="bg-[#1E293B] rounded-2xl border border-[#334155] overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#334155]">
                 <h2 className="text-white font-semibold">
                   Detalles de la Receta
                 </h2>
@@ -296,7 +299,7 @@ export default function VerifyPage() {
                   Sin información personal del paciente (Zero PHI)
                 </p>
               </div>
-              <div className="divide-y divide-gray-700">
+              <div className="divide-y divide-[#334155]">
                 <div className="flex items-center gap-3 px-5 py-4">
                   <PillIcon className="w-5 h-5 text-gray-500 shrink-0" />
                   <div>
@@ -317,7 +320,7 @@ export default function VerifyPage() {
                           /{prescription.totalDoses}
                         </span>
                       </p>
-                      <div className="flex-1 bg-gray-700 rounded-full h-1.5">
+                      <div className="flex-1 bg-[#253046] rounded-full h-1.5">
                         <div
                           className={`h-1.5 rounded-full ${
                             prescription.status === "active" ||
@@ -371,7 +374,7 @@ export default function VerifyPage() {
         ) : (
           /* Not found */
           <div className="text-center py-12">
-            <div className="w-20 h-20 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 rounded-full bg-gray-800 border-2 border-[#334155] flex items-center justify-center mx-auto mb-4">
               <AlertTriangleIcon className="w-10 h-10 text-gray-500" />
             </div>
             <h1 className="text-xl font-bold text-white mb-2">
@@ -391,7 +394,7 @@ export default function VerifyPage() {
         )}
 
         {/* Verify another */}
-        <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+        <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
           <h3 className="text-white font-semibold mb-3">
             Verificar otra receta
           </h3>
@@ -403,7 +406,7 @@ export default function VerifyPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="RX-XXXXXXXX"
-                className="w-full bg-gray-900 border border-gray-700 focus:border-green-500 text-white text-sm rounded-xl pl-9 pr-4 py-2.5 outline-none placeholder-gray-600 transition-colors font-mono"
+                className="w-full bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl pl-9 pr-4 py-2.5 outline-none placeholder-gray-600 transition-colors font-mono"
               />
             </div>
             <button
@@ -417,7 +420,7 @@ export default function VerifyPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-800 mt-8">
+      <footer className="border-t border-[#334155] mt-8">
         <div className="max-w-2xl mx-auto px-4 py-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <ShieldCheckIcon className="w-4 h-4 text-green-500" />

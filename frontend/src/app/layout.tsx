@@ -1,8 +1,10 @@
+// Copyright © 2026 Browns Studio
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "../providers/WalletProvider";
 import { QueryProvider } from "../providers/QueryProvider";
+import { PrivyClientProvider } from "../providers/PrivyClientProvider";
 import { Toaster } from "sonner";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -21,12 +23,14 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={geist.className}>
-        <QueryProvider>
-          <WalletProvider>
-            {children}
-            <Toaster richColors position="top-right" />
-          </WalletProvider>
-        </QueryProvider>
+        <PrivyClientProvider>
+          <QueryProvider>
+            <WalletProvider>
+              {children}
+              <Toaster richColors position="top-right" />
+            </WalletProvider>
+          </QueryProvider>
+        </PrivyClientProvider>
       </body>
     </html>
   );

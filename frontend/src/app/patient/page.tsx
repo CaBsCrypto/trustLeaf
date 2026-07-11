@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { usePasskey } from "../../hooks/usePasskey";
 import {
@@ -20,6 +21,7 @@ import {
   DownloadIcon,
   ShieldCheckIcon,
   ChevronRightIcon,
+  SettingsIcon,
 } from "../../components/icons/TrustLeafIcons";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -179,7 +181,7 @@ const STATUS_CONFIG: Record<
   },
   used: {
     label: "Usada",
-    className: "bg-gray-800 text-gray-400 border border-gray-700",
+    className: "bg-gray-800 text-gray-400 border border-[#334155]",
   },
   revoked: {
     label: "Revocada",
@@ -197,7 +199,7 @@ const LICENSE_STATUS_CONFIG: Record<
   },
   completed: {
     label: "Completada",
-    className: "bg-gray-800 text-gray-400 border border-gray-700",
+    className: "bg-gray-800 text-gray-400 border border-[#334155]",
   },
   pending: {
     label: "Pendiente",
@@ -241,14 +243,14 @@ function PrescriptionCard({
   }
 
   return (
-    <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700 hover:border-gray-600 transition-colors">
+    <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155] hover:border-gray-600 transition-colors">
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1">
           <h3 className="text-white font-semibold text-base leading-tight">
             {rx.medication}
           </h3>
-          <p className="text-gray-400 text-xs mt-0.5">
+          <p className="text-[#94A3B8] text-xs mt-0.5">
             {rx.doctorName} · Lic. {rx.license}
           </p>
         </div>
@@ -262,7 +264,7 @@ function PrescriptionCard({
       {/* Progress */}
       <div className="mb-3">
         <div className="flex justify-between items-center mb-1">
-          <span className="text-gray-400 text-xs">Dispensaciones</span>
+          <span className="text-[#94A3B8] text-xs">Dispensaciones</span>
           <span className="text-gray-300 text-xs font-mono">
             {rx.dispensed}/{rx.totalDoses}
           </span>
@@ -299,7 +301,7 @@ function PrescriptionCard({
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-3 border-t border-gray-700">
+      <div className="flex items-center justify-between pt-3 border-t border-[#334155]">
         <button
           onClick={copyHash}
           className="font-mono text-xs text-gray-500 hover:text-green-400 transition-colors truncate max-w-[160px]"
@@ -333,7 +335,7 @@ function QRModal({
       onClick={onClose}
     >
       <div
-        className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-xs w-full"
+        className="bg-gray-900 border border-[#334155] rounded-2xl p-6 max-w-xs w-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -362,10 +364,10 @@ function QRModal({
           ))}
         </div>
 
-        <p className="text-center mt-4 text-gray-400 text-xs font-mono break-all">
+        <p className="text-center mt-4 text-[#94A3B8] text-xs font-mono break-all">
           {rxId}
         </p>
-        <p className="text-center mt-2 text-gray-500 text-xs">
+        <p className="text-center mt-2 text-[#64748B] text-xs">
           Muestra este código en la farmacia para dispensar tu medicamento
         </p>
         <button
@@ -410,7 +412,7 @@ function TabFicha() {
       </div>
 
       {/* Blood type */}
-      <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
         <div className="flex items-center gap-2 mb-4">
           <HeartPulseIcon className="w-5 h-5 text-red-400" />
           <h3 className="text-white font-semibold">Tipo de Sangre</h3>
@@ -421,7 +423,7 @@ function TabFicha() {
       </div>
 
       {/* Allergies */}
-      <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
         <div className="flex items-center gap-2 mb-4">
           <AlertTriangleIcon className="w-5 h-5 text-yellow-400" />
           <h3 className="text-white font-semibold">Alergias Conocidas</h3>
@@ -445,7 +447,7 @@ function TabFicha() {
       </div>
 
       {/* Vaccine timeline */}
-      <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
         <div className="flex items-center gap-2 mb-4">
           <SyringeIcon className="w-5 h-5 text-blue-400" />
           <h3 className="text-white font-semibold">Historial de Vacunas</h3>
@@ -513,10 +515,10 @@ function TabAccesos() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-700">
+      <div className="bg-[#1E293B] rounded-2xl border border-[#334155] overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#334155]">
           <h3 className="text-white font-semibold">Médicos con acceso</h3>
-          <p className="text-gray-400 text-xs mt-0.5">
+          <p className="text-[#94A3B8] text-xs mt-0.5">
             {accesses.length} médico{accesses.length !== 1 ? "s" : ""} pueden
             ver tu ficha clínica
           </p>
@@ -526,18 +528,18 @@ function TabAccesos() {
             Ningún médico tiene acceso actualmente.
           </div>
         ) : (
-          <ul className="divide-y divide-gray-700">
+          <ul className="divide-y divide-[#334155]">
             {accesses.map((doctor) => (
               <li
                 key={doctor.id}
-                className="flex items-center gap-3 px-5 py-4 hover:bg-gray-700/30 transition-colors"
+                className="flex items-center gap-3 px-5 py-4 hover:bg-[#253046]/60 transition-colors"
               >
                 <div className="w-9 h-9 rounded-full bg-green-900/40 border border-green-700 flex items-center justify-center shrink-0">
                   <UserIcon className="w-4.5 h-4.5 text-green-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-sm font-medium">{doctor.name}</p>
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-[#94A3B8] text-xs">
                     {doctor.specialty} · Acceso desde{" "}
                     {formatDate(doctor.accessDate)}
                   </p>
@@ -558,7 +560,7 @@ function TabAccesos() {
       </div>
 
       {/* Add new access */}
-      <div className="bg-gray-800 rounded-2xl p-5 border border-gray-700">
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
         <h3 className="text-white font-semibold mb-3">Conceder nuevo acceso</h3>
         <div className="flex gap-2">
           <input
@@ -566,7 +568,7 @@ function TabAccesos() {
             value={newAddress}
             onChange={(e) => setNewAddress(e.target.value)}
             placeholder="Wallet address del médico (G...)"
-            className="flex-1 bg-gray-900 border border-gray-700 focus:border-green-500 text-white text-sm rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
+            className="flex-1 bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
           />
           <button
             onClick={addAccess}
@@ -584,7 +586,7 @@ function TabLicencias() {
   return (
     <div className="space-y-4">
       {MOCK_LEAVES.length === 0 ? (
-        <div className="bg-gray-800 rounded-2xl p-10 border border-gray-700 text-center text-gray-500">
+        <div className="bg-[#1E293B] rounded-2xl p-10 border border-[#334155] text-center text-gray-500">
           No tienes licencias médicas registradas.
         </div>
       ) : (
@@ -593,7 +595,7 @@ function TabLicencias() {
           return (
             <div
               key={leave.id}
-              className="bg-gray-800 rounded-2xl p-5 border border-gray-700"
+              className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div>
@@ -601,11 +603,11 @@ function TabLicencias() {
                     <span className="text-white font-semibold">
                       Licencia Médica
                     </span>
-                    <span className="text-gray-500 text-xs font-mono">
+                    <span className="text-[#64748B] text-xs font-mono">
                       {leave.id}
                     </span>
                   </div>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-[#94A3B8] text-sm">
                     {leave.doctorName}
                   </p>
                 </div>
@@ -618,19 +620,19 @@ function TabLicencias() {
 
               <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="bg-gray-900 rounded-xl p-3 text-center">
-                  <p className="text-gray-500 text-xs mb-0.5">Tipo</p>
+                  <p className="text-[#64748B] text-xs mb-0.5">Tipo</p>
                   <p className="text-white text-sm font-semibold">
                     {leave.diagnosisType}
                   </p>
                 </div>
                 <div className="bg-gray-900 rounded-xl p-3 text-center">
-                  <p className="text-gray-500 text-xs mb-0.5">Duración</p>
+                  <p className="text-[#64748B] text-xs mb-0.5">Duración</p>
                   <p className="text-white text-sm font-semibold">
                     {leave.duration}
                   </p>
                 </div>
                 <div className="bg-gray-900 rounded-xl p-3 text-center">
-                  <p className="text-gray-500 text-xs mb-0.5">Inicio</p>
+                  <p className="text-[#64748B] text-xs mb-0.5">Inicio</p>
                   <p className="text-white text-sm font-semibold">
                     {formatDate(leave.startDate)}
                   </p>
@@ -652,41 +654,95 @@ function TabLicencias() {
   );
 }
 
+function TabDolor() {
+  return (
+    <div className="space-y-4">
+      <a
+        href="/patient/pain-diary"
+        className="block bg-[#1E293B] rounded-2xl p-6 border border-[#334155] hover:border-green-600 transition-colors group"
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-green-900/30 border border-green-800 flex items-center justify-center shrink-0 group-hover:bg-green-900/50 transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="1.5" className="w-7 h-7">
+              <ellipse cx="12" cy="5" rx="3" ry="3" />
+              <path d="M8 22v-5a4 4 0 0 1 8 0v5" />
+              <path d="M6 10l1.5 4h9L18 10" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-white font-semibold text-base">Diario de Dolor</h3>
+            <p className="text-[#94A3B8] text-sm mt-0.5">
+              Registra y monitorea tu dolor diariamente
+            </p>
+          </div>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="w-5 h-5 text-gray-500 group-hover:text-green-400 transition-colors shrink-0"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </div>
+      </a>
+      <div className="bg-[#1E293B]/50 rounded-xl p-4 border border-[#334155]">
+        <p className="text-[#94A3B8] text-sm text-center">
+          Tu médico puede ver el historial de dolor en tiempo real. Registra diariamente para un mejor seguimiento.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-type TabId = "recetas" | "ficha" | "accesos" | "licencias";
+type TabId = "recetas" | "ficha" | "accesos" | "licencias" | "dolor";
 
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: "recetas", label: "Mis Recetas", icon: <PillIcon /> },
   { id: "ficha", label: "Mi Ficha", icon: <FichaIcon /> },
   { id: "accesos", label: "Mis Accesos", icon: <LockIcon /> },
   { id: "licencias", label: "Mis Licencias", icon: <CalendarIcon /> },
+  {
+    id: "dolor",
+    label: "Diario de Dolor",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <ellipse cx="12" cy="5" rx="3" ry="3" />
+        <path d="M8 22v-5a4 4 0 0 1 8 0v5" />
+        <path d="M6 10l1.5 4h9L18 10" />
+        <path d="M2 13h2m16 0h2" />
+      </svg>
+    ),
+  },
 ];
 
 export default function PatientDashboard() {
   const { walletAddress } = usePasskey();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("recetas");
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-[#0F172A] text-white">
       {/* ── Desktop sidebar ─────────────────────────────────────────── */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 flex-col bg-gray-900 border-r border-gray-800 z-40">
+      <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 flex-col bg-[#1E293B] border-r border-[#334155] z-40">
         {/* Logo */}
-        <div className="px-6 py-6 border-b border-gray-800">
+        <div className="px-6 py-6 border-b border-[#334155]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center text-black font-bold text-sm">
+            <div className="w-8 h-8 rounded-lg bg-[#10B981] flex items-center justify-center text-[#0F172A] font-bold text-sm">
               TL
             </div>
             <div>
               <p className="text-white font-bold text-sm">TrustLeaf</p>
-              <p className="text-gray-500 text-xs">Portal Paciente</p>
+              <p className="text-[#64748B] text-xs">Portal Paciente</p>
             </div>
           </div>
         </div>
 
         {/* Wallet address */}
-        <div className="px-6 py-4 border-b border-gray-800">
-          <p className="text-gray-500 text-xs mb-1">Wallet conectada</p>
+        <div className="px-6 py-4 border-b border-[#334155]">
+          <p className="text-[#64748B] text-xs mb-1">Wallet conectada</p>
           <p className="text-green-400 text-xs font-mono">
             {walletAddress
               ? `${walletAddress.slice(0, 8)}…${walletAddress.slice(-6)}`
@@ -702,8 +758,8 @@ export default function PatientDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? "bg-green-600 text-white"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  ? "bg-[#10B981] text-[#0F172A] font-semibold"
+                  : "text-gray-400 hover:text-white hover:bg-[#253046]"
               }`}
             >
               <span
@@ -719,38 +775,54 @@ export default function PatientDashboard() {
         </nav>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-800">
+        <div className="px-6 py-4 border-t border-gray-800 flex items-center justify-between">
           <p className="text-gray-600 text-xs">
             Powered by Stellar Network
           </p>
+          <button
+            onClick={() => router.push("/patient/settings")}
+            className="text-gray-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-[#253046]"
+            title="Configuración"
+          >
+            <SettingsIcon className="w-4 h-4" />
+          </button>
         </div>
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────── */}
       <main className="md:ml-64 pb-24 md:pb-8">
         {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-gray-800 px-4 py-4">
+        <header className="md:hidden sticky top-0 z-30 bg-[#0F172A]/95 backdrop-blur-sm border-b border-[#334155] px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-green-500 flex items-center justify-center text-black font-bold text-xs">
+              <div className="w-7 h-7 rounded-lg bg-[#10B981] flex items-center justify-center text-[#0F172A] font-bold text-xs">
                 TL
               </div>
               <span className="text-white font-bold text-sm">TrustLeaf</span>
             </div>
-            <p className="text-gray-500 text-xs font-mono">
-              {walletAddress
-                ? `${walletAddress.slice(0, 6)}…`
-                : "No conectado"}
-            </p>
+            <div className="flex items-center gap-3">
+              <p className="text-[#64748B] text-xs font-mono">
+                {walletAddress
+                  ? `${walletAddress.slice(0, 6)}…`
+                  : "No conectado"}
+              </p>
+              <button
+                onClick={() => router.push("/patient/settings")}
+                className="text-gray-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-[#1E293B]"
+                aria-label="Configuración"
+              >
+                <SettingsIcon className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </header>
 
         {/* Desktop page header */}
-        <div className="hidden md:block px-8 pt-8 pb-6 border-b border-gray-800">
+        <div className="hidden md:block px-8 pt-8 pb-6 border-b border-[#334155]">
           <h1 className="text-2xl font-bold text-white">
             {TABS.find((t) => t.id === activeTab)?.label}
           </h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-[#94A3B8] text-sm mt-1">
             Gestiona tu información médica de forma privada y segura
           </p>
         </div>
@@ -761,11 +833,12 @@ export default function PatientDashboard() {
           {activeTab === "ficha" && <TabFicha />}
           {activeTab === "accesos" && <TabAccesos />}
           {activeTab === "licencias" && <TabLicencias />}
+          {activeTab === "dolor" && <TabDolor />}
         </div>
       </main>
 
       {/* ── Mobile bottom nav ─────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-gray-900/95 backdrop-blur-sm border-t border-gray-800 z-40">
+      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-[#1E293B]/95 backdrop-blur-sm border-t border-[#334155] z-40">
         <div className="flex">
           {TABS.map((tab) => (
             <button

@@ -11,7 +11,9 @@
 
 // Dynamic import in server components to avoid bundling in client
 export async function getPasskeyServer() {
-  const { PasskeyServer } = await import("@passkey-kit/sdk");
+  // TODO: passkey-kit no disponible en npm, pendiente integración
+  // const { PasskeyServer } = await import("@passkey-kit/sdk");
+  throw new Error("PasskeyServer no disponible: @passkey-kit/sdk pendiente de integración");
 
   return new PasskeyServer({
     rpcUrl: process.env.NEXT_PUBLIC_STELLAR_RPC_URL ?? "https://soroban-testnet.stellar.org",

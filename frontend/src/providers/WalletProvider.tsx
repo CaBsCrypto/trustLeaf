@@ -26,13 +26,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   // Initialise PasskeyKit on mount (client-side only)
   useEffect(() => {
     async function init() {
-      const { PasskeyKit } = await import("@passkey-kit/sdk");
-      const kit = new PasskeyKit({
-        rpcUrl: process.env.NEXT_PUBLIC_STELLAR_RPC_URL ?? "https://soroban-testnet.stellar.org",
-        networkPassphrase: "Test SDF Network ; September 2015",
-        walletWasmHash: process.env.NEXT_PUBLIC_WALLET_WASM_HASH ?? "",
-      });
-      setPasskeyKit(kit);
+      // TODO: passkey-kit no disponible en npm, pendiente integración
+      // const { PasskeyKit } = await import("@passkey-kit/sdk");
+      // const kit = new PasskeyKit({
+      //   rpcUrl: process.env.NEXT_PUBLIC_STELLAR_RPC_URL ?? "https://soroban-testnet.stellar.org",
+      //   networkPassphrase: "Test SDF Network ; September 2015",
+      //   walletWasmHash: process.env.NEXT_PUBLIC_WALLET_WASM_HASH ?? "",
+      // });
+      // setPasskeyKit(kit);
 
       // Restore session from localStorage
       const storedWallet = localStorage.getItem("tl_wallet");
