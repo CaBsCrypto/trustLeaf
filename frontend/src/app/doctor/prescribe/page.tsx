@@ -369,7 +369,7 @@ export default function PrescribePage() {
   }
 
   const isCustom = form.medication === "Otro (especificar)";
-  const isSubmitting = pending || step === "committing";
+  const isSubmitting = pending;
 
   return (
     <div className="min-h-screen bg-[#0F172A] text-white">
