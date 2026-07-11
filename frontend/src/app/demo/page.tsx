@@ -138,7 +138,7 @@ function DoctorScreens() {
           className="flex items-center gap-2 mt-2 p-2 rounded-lg"
           style={{ background: `${GREEN}10`, border: `1px solid ${GREEN}25` }}
         >
-          <UserIcon className="w-4 h-4 shrink-0" style={{ color: GREEN } as React.CSSProperties} />
+          <UserIcon className="w-4 h-4 shrink-0" />
           <div>
             <p className="text-xs font-semibold" style={{ color: "#fff" }}>
               María Fernández L.
@@ -160,7 +160,7 @@ function DoctorScreens() {
 
       <MockScreen title="Receta emitida" color={GREEN}>
         <div className="flex items-center gap-2">
-          <CheckIcon className="w-4 h-4" style={{ color: GREEN } as React.CSSProperties} />
+          <CheckIcon className="w-4 h-4" />
           <span className="text-xs font-semibold" style={{ color: GREEN }}>
             Receta emitida exitosamente
           </span>
@@ -192,7 +192,7 @@ function PatientScreens() {
               style={{ background: "#1E293B", border: `1px solid ${BLUE}20` }}
             >
               <div className="flex items-center gap-2">
-                <PillIcon className="w-3.5 h-3.5 shrink-0" style={{ color: BLUE } as React.CSSProperties} />
+                <PillIcon className="w-3.5 h-3.5 shrink-0" />
                 <div>
                   <p className="text-xs font-medium" style={{ color: "#fff" }}>
                     {r.med}
@@ -218,7 +218,7 @@ function PatientScreens() {
             className="w-20 h-20 rounded-xl flex items-center justify-center mb-2"
             style={{ background: "#fff" }}
           >
-            <QrIcon className="w-14 h-14" style={{ color: "#0F172A" } as React.CSSProperties} />
+            <QrIcon className="w-14 h-14" />
           </div>
           <p className="text-xs text-center" style={{ color: "#64748B" }}>
             Muestra este código en la farmacia
@@ -235,7 +235,7 @@ function PatientScreens() {
             className="w-6 h-6 rounded-full flex items-center justify-center"
             style={{ background: GREEN }}
           >
-            <CheckIcon className="w-3.5 h-3.5" style={{ color: "#0F172A" } as React.CSSProperties} />
+            <CheckIcon className="w-3.5 h-3.5" />
           </div>
           <span className="text-xs font-semibold" style={{ color: GREEN }}>
             Medicamento retirado
@@ -261,7 +261,7 @@ function DispensaryScreens() {
           className="flex flex-col items-center justify-center py-3 rounded-lg"
           style={{ background: "#1E293B", border: `2px dashed ${PURPLE}40` }}
         >
-          <QrIcon className="w-8 h-8 mb-2" style={{ color: PURPLE } as React.CSSProperties} />
+          <QrIcon className="w-8 h-8 mb-2" />
           <p className="text-xs" style={{ color: "#64748B" }}>
             Apunta la cámara al QR del paciente
           </p>
@@ -277,7 +277,7 @@ function DispensaryScreens() {
       <MockScreen title="Verificando receta" color={PURPLE}>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <ShieldCheckIcon className="w-4 h-4" style={{ color: PURPLE } as React.CSSProperties} />
+            <ShieldCheckIcon className="w-4 h-4" />
             <span className="text-xs font-semibold" style={{ color: "#fff" }}>
               Receta verificada
             </span>
@@ -300,7 +300,7 @@ function DispensaryScreens() {
             className="w-6 h-6 rounded-full flex items-center justify-center"
             style={{ background: GREEN }}
           >
-            <CheckIcon className="w-3.5 h-3.5" style={{ color: "#0F172A" } as React.CSSProperties} />
+            <CheckIcon className="w-3.5 h-3.5" />
           </div>
           <span className="text-xs font-semibold" style={{ color: GREEN }}>
             Dispensación registrada
@@ -417,7 +417,7 @@ export default function DemoPage() {
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{ background: `${GREEN}18`, border: `1px solid ${GREEN}30` }}
               >
-                <StethoscopeIcon className="w-5 h-5" style={{ color: GREEN } as React.CSSProperties} />
+                <StethoscopeIcon className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="font-bold text-base" style={{ color: "#fff" }}>
@@ -442,7 +442,7 @@ export default function DemoPage() {
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{ background: `${BLUE}18`, border: `1px solid ${BLUE}30` }}
               >
-                <UserIcon className="w-5 h-5" style={{ color: BLUE } as React.CSSProperties} />
+                <UserIcon className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="font-bold text-base" style={{ color: "#fff" }}>
@@ -467,7 +467,7 @@ export default function DemoPage() {
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{ background: `${PURPLE}18`, border: `1px solid ${PURPLE}30` }}
               >
-                <ClipboardCheckIcon className="w-5 h-5" style={{ color: PURPLE } as React.CSSProperties} />
+                <ClipboardCheckIcon className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="font-bold text-base" style={{ color: "#fff" }}>
@@ -506,7 +506,7 @@ export default function DemoPage() {
           className="flex items-center gap-3 p-4 rounded-2xl mt-6"
           style={{ background: "#1E293B", border: "1px solid #334155" }}
         >
-          <LockIcon className="w-5 h-5 shrink-0" style={{ color: "#10B981" } as React.CSSProperties} />
+          <LockIcon className="w-5 h-5 shrink-0" />
           <p className="text-sm" style={{ color: "#94A3B8" }}>
             Cada transacción queda registrada de forma inmutable en{" "}
             <span style={{ color: "#10B981", fontWeight: 600 }}>Stellar Testnet</span>.
