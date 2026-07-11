@@ -57,6 +57,16 @@ const COMMON_MEDICATIONS: MedicationOption[] = [
   { name: "Otro (especificar)", defaultDosage: "", defaultFrequency: "", isControlled: false },
 ];
 
+// ─── Pharmacies ───────────────────────────────────────────────────────────────
+
+const PHARMACIES = [
+  { name: "Cruz Verde — Santiago Centro", address: "GCRUZV1ERDE2SANTIAGO3CENTRO4FAKE5ADDRESS6FOR7DEMO" },
+  { name: "Salcobrand — Providencia", address: "GSALCO1BRAND2PROVID3ENCIA4FAKE5ADDRESS6FOR7DEMO8" },
+  { name: "Farmacias Ahumada — Las Condes", address: "GAHUMA1DA2LASC3ONDES4FAKE5ADDRESS6FOR7DEMO789AB" },
+  { name: "Dr. Simi — Maipú", address: "GDRSIM1I2MAIPU3FAKE4ADDRESS5FOR6DEMO7890ABCDEFG" },
+  { name: "Farmacia Popular — Recoleta", address: "GPOPUL1AR2RECOL3ETA4FAKE5ADDRESS6FOR7DEMO890ABC" },
+];
+
 // ─── Validation ───────────────────────────────────────────────────────────────
 
 function validateRut(rut: string): boolean {
@@ -105,9 +115,7 @@ function validateForm(form: PrescribeForm): FormErrors {
   }
 
   if (!form.dispensaryAddress.trim()) {
-    errors.dispensaryAddress = "La dirección del dispensario es requerida.";
-  } else if (!form.dispensaryAddress.trim().startsWith("G") || form.dispensaryAddress.trim().length < 10) {
-    errors.dispensaryAddress = "Ingresa una dirección Stellar válida (empieza con G...).";
+    errors.dispensaryAddress = "Selecciona un dispensario autorizado.";
   }
 
   return errors;
@@ -551,20 +559,23 @@ export default function PrescribePage() {
 
             <Field
               label="Dispensario autorizado *"
-              hint="Dirección Stellar (G...) de la farmacia que podrá dispensar esta receta."
+              hint="Selecciona la farmacia que podrá dispensar esta receta."
               error={touched.has("dispensaryAddress") && errors.dispensaryAddress ? errors.dispensaryAddress : undefined}
             >
-              <input
-                type="text"
+              <select
                 value={form.dispensaryAddress}
                 onChange={(e) => setForm((f) => ({ ...f, dispensaryAddress: e.target.value }))}
                 onBlur={() => {
                   markTouched("dispensaryAddress");
                   setErrors((prev) => ({ ...prev, ...validateForm(form) }));
                 }}
-                placeholder="GXXXXXXXXXXXXXXXX…"
-                className={`${touched.has("dispensaryAddress") && errors.dispensaryAddress ? inputErrorClass : inputClass} font-mono`}
-              />
+                className={`${touched.has("dispensaryAddress") && errors.dispensaryAddress ? inputErrorClass : inputClass} cursor-pointer`}
+              >
+                <option value="">Seleccionar farmacia…</option>
+                {PHARMACIES.map((p) => (
+                  <option key={p.address} value={p.address}>{p.name}</option>
+                ))}
+              </select>
             </Field>
 
             <Field label="Validez de la receta">
