@@ -1,6 +1,6 @@
-export const dynamic = "force-dynamic";
-// Copyright © 2026 Browns Studio
 "use client";
+// Copyright © 2026 Browns Studio
+export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
