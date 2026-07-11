@@ -233,8 +233,25 @@ export default function LoginPage() {
         })}
       </div>
 
+      {/* Face ID / passkey note */}
+      <div
+        className="mt-8 flex items-center gap-2.5 max-w-lg w-full px-4 py-3 rounded-xl text-sm"
+        style={{ background: "#1E293B", border: "1px solid #334155" }}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 shrink-0">
+          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" />
+          <path d="M9 10c0-1.657 1.343-3 3-3s3 1.343 3 3v1" />
+          <path d="M9 14s0 4 3 4 3-4 3-4" />
+          <path d="M12 11v2" />
+        </svg>
+        <p style={{ color: "#94A3B8" }}>
+          <span style={{ color: "#fff", fontWeight: 600 }}>Usamos Face ID</span> para firmarte de forma segura.{" "}
+          No necesitas contraseña ni billetera crypto.
+        </p>
+      </div>
+
       {/* Footer */}
-      <p className="mt-10 text-sm" style={{ color: "#334155" }}>
+      <p className="mt-6 text-sm" style={{ color: "#334155" }}>
         © 2026 Browns Studio · TrustLeaf
       </p>
     </div>
