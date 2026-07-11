@@ -301,10 +301,10 @@ function PrescriptionCard({
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-3 border-t border-[#334155]">
+      <div className="flex flex-col gap-2 pt-3 border-t border-[#334155]">
         <button
           onClick={copyHash}
-          className="font-mono text-xs text-gray-500 hover:text-green-400 transition-colors truncate max-w-[160px]"
+          className="font-mono text-xs text-gray-500 hover:text-green-400 transition-colors truncate text-left"
           title={rx.hash}
         >
           {rx.hash.slice(0, 10)}…{rx.hash.slice(-6)}
@@ -312,10 +312,10 @@ function PrescriptionCard({
         <button
           onClick={() => onShowQR(rx.id)}
           disabled={rx.status === "revoked" || rx.status === "used"}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors"
+          className="flex items-center justify-center gap-2 w-full min-h-[44px] px-4 py-3 bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors"
         >
-          <QrIcon className="w-3.5 h-3.5" />
-          QR
+          <QrIcon className="w-5 h-5" />
+          Ver QR para dispensar
         </button>
       </div>
     </div>
@@ -331,11 +331,11 @@ function QRModal({
 }) {
   return (
     <div
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4"
       onClick={onClose}
     >
       <div
-        className="bg-gray-900 border border-[#334155] rounded-2xl p-6 max-w-xs w-full"
+        className="bg-gray-900 border border-[#334155] rounded-t-3xl sm:rounded-2xl p-6 w-full sm:max-w-xs flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">

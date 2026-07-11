@@ -10,9 +10,9 @@ import { Toaster } from "sonner";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TrustLeaf — Medicinal Cannabis Trust Standard",
+  title: "TrustLeaf — Tu historial clínico, tuyo para siempre",
   description:
-    "Public traceability, private identity. Cannabis medicinal con blockchain.",
+    "Tu historial clínico digital, privado y verificable. Recetas, vacunas y licencias médicas en blockchain.",
 };
 
 export default function RootLayout({
