@@ -388,30 +388,11 @@ function TabRecetas() {
 
   return (
     <>
-      {/* Section heading — visible above the fold on both mobile and desktop */}
-      <div className="mb-5">
-        <h2 className="text-xl font-bold text-white">Mi Historial</h2>
-        <p className="text-[#94A3B8] text-sm mt-0.5">
-          Tus recetas emitidas a través de TrustLeaf
-        </p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        {MOCK_PRESCRIPTIONS.map((rx) => (
+          <PrescriptionCard key={rx.id} rx={rx} onShowQR={setQrRxId} />
+        ))}
       </div>
-
-      {MOCK_PRESCRIPTIONS.length === 0 ? (
-        <div className="bg-[#1E293B] rounded-2xl p-10 border border-[#334155] text-center">
-          <PillIcon />
-          <p className="text-white font-semibold mt-4 mb-1">Sin recetas aún</p>
-          <p className="text-[#94A3B8] text-sm">
-            Aún no tienes recetas. Tu médico puede emitirte una desde TrustLeaf.
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {MOCK_PRESCRIPTIONS.map((rx) => (
-            <PrescriptionCard key={rx.id} rx={rx} onShowQR={setQrRxId} />
-          ))}
-        </div>
-      )}
-
       {qrRxId && (
         <QRModal rxId={qrRxId} onClose={() => setQrRxId(null)} />
       )}
@@ -516,8 +497,7 @@ function TabFicha() {
 
 function TabAccesos() {
   const [accesses, setAccesses] = useState<DoctorAccess[]>(MOCK_ACCESSES);
-  const [newCode, setNewCode] = useState("");
-  const [grantSuccess, setGrantSuccess] = useState(false);
+  const [newAddress, setNewAddress] = useState("");
 
   function revokeAccess(id: string) {
     setAccesses((prev) => prev.filter((a) => a.id !== id));
@@ -525,14 +505,12 @@ function TabAccesos() {
   }
 
   function addAccess() {
-    if (!newCode.trim()) {
-      toast.error("Ingresa el nombre, RUT o código TrustLeaf de tu médico");
+    if (!newAddress.trim()) {
+      toast.error("Ingresa una dirección de wallet");
       return;
     }
-    setGrantSuccess(true);
-    toast.success("Solicitud enviada. Tu médico recibirá una notificación.");
-    setNewCode("");
-    setTimeout(() => setGrantSuccess(false), 4000);
+    toast.success("Solicitud de acceso enviada");
+    setNewAddress("");
   }
 
   return (
@@ -565,6 +543,9 @@ function TabAccesos() {
                     {doctor.specialty} · Acceso desde{" "}
                     {formatDate(doctor.accessDate)}
                   </p>
+                  <p className="text-gray-600 text-xs font-mono truncate">
+                    {doctor.walletAddress.slice(0, 16)}…
+                  </p>
                 </div>
                 <button
                   onClick={() => revokeAccess(doctor.id)}
@@ -580,50 +561,22 @@ function TabAccesos() {
 
       {/* Add new access */}
       <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
-        <h3 className="text-white font-semibold mb-1">Conceder acceso a un médico</h3>
-        <p className="text-[#94A3B8] text-xs mb-4">
-          Ingresa el nombre, RUT o código TrustLeaf que tu médico te proporcionó.
-        </p>
-
-        {grantSuccess ? (
-          <div className="flex items-center gap-3 p-4 bg-green-900/30 border border-green-700 rounded-xl">
-            <CheckIcon className="w-5 h-5 text-green-400 shrink-0" />
-            <p className="text-green-300 text-sm">
-              Solicitud enviada. Tu médico recibirá una notificación para confirmar el acceso.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="flex gap-2 mb-3">
-              <input
-                type="text"
-                value={newCode}
-                onChange={(e) => setNewCode(e.target.value)}
-                placeholder="Nombre del médico, RUT o código TrustLeaf"
-                className="flex-1 bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
-              />
-              <button
-                onClick={addAccess}
-                className="px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
-              >
-                Agregar
-              </button>
-            </div>
-            <p className="text-[#64748B] text-xs flex items-start gap-1.5">
-              <ShieldCheckIcon className="w-3.5 h-3.5 text-green-600 shrink-0 mt-0.5" />
-              Tu médico debe darte su código TrustLeaf. Sin él, nadie puede acceder a tu ficha.
-            </p>
-          </>
-        )}
-      </div>
-
-      {/* Face ID / security note */}
-      <div className="flex items-start gap-3 p-4 bg-[#1E293B]/60 border border-[#334155] rounded-xl">
-        <ShieldCheckIcon className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-        <p className="text-[#94A3B8] text-xs leading-relaxed">
-          <span className="text-white font-medium">Firma segura con Face ID.</span>{" "}
-          Usamos Face ID para autorizar cambios de acceso de forma segura. No necesitas contraseña ni billetera crypto.
-        </p>
+        <h3 className="text-white font-semibold mb-3">Conceder nuevo acceso</h3>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newAddress}
+            onChange={(e) => setNewAddress(e.target.value)}
+            placeholder="Wallet address del médico (G...)"
+            className="flex-1 bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
+          />
+          <button
+            onClick={addAccess}
+            className="px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
+          >
+            Agregar
+          </button>
+        </div>
       </div>
     </div>
   );

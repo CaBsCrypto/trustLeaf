@@ -306,26 +306,36 @@ function StepVerification() {
       <div
         className="rounded-2xl p-5"
         style={{
-          background: "rgba(59,130,246,0.08)",
-          border: "1px solid rgba(59,130,246,0.25)",
+          background: "rgba(16,185,129,0.08)",
+          border: "1px solid rgba(16,185,129,0.3)",
         }}
       >
         <div className="flex items-start gap-3">
-          <ShieldCheckIcon className="w-6 h-6 shrink-0 mt-0.5" />
+          <ShieldCheckIcon className="w-6 h-6 shrink-0 mt-0.5" style={{ color: "#10B981" }} />
           <div>
             <h3 className="font-semibold mb-1" style={{ color: "#fff" }}>
               Verificación de identidad
             </h3>
             <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>
               Tu cuenta será verificada en{" "}
-              <span style={{ color: "#3B82F6", fontWeight: 600 }}>
-                24 horas hábiles
-              </span>{" "}
-              por nuestro equipo de compliance. Recibirás un correo con el resultado.
+              <span style={{ color: "#10B981", fontWeight: 600 }}>
+                minutos
+              </span>
+              . Mientras tanto, puedes explorar el demo.
             </p>
           </div>
         </div>
       </div>
+
+      {/* Demo CTA */}
+      <Link
+        href="/doctor/prescribe"
+        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-colors"
+        style={{ background: "#1E3A2F", border: "1px solid rgba(16,185,129,0.4)", color: "#10B981" }}
+      >
+        🧪 Probar demo
+        <ChevronRightIcon className="w-4 h-4" />
+      </Link>
 
       <div>
         <h4

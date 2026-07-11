@@ -166,6 +166,17 @@ function formatDate(dateStr: string): string {
 function TabInicio() {
   return (
     <div className="space-y-6">
+      {/* Trust badge */}
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-green-900/20 border border-green-800/60 rounded-xl w-fit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 shrink-0">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        <span className="text-green-400 text-xs font-semibold tracking-wide">
+          Verificado en Stellar Blockchain
+        </span>
+        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">

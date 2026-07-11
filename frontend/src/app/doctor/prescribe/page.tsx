@@ -181,6 +181,58 @@ const inputClass =
 const inputErrorClass =
   "w-full px-4 py-3 bg-[#0F172A] border border-red-500 focus:border-red-400 text-white text-sm rounded-xl outline-none transition-colors placeholder-[#475569]";
 
+// ─── Step Indicator ───────────────────────────────────────────────────────────
+
+function StepIndicator({ current }: { current: 1 | 2 }) {
+  const steps = [
+    { n: 1, label: "Datos del paciente" },
+    { n: 2, label: "Medicamento y dispensario" },
+  ];
+  return (
+    <div className="flex items-center gap-0 mb-7">
+      {steps.map((s, i) => {
+        const done = s.n < current;
+        const active = s.n === current;
+        return (
+          <div key={s.n} className="flex items-center flex-1">
+            <div className="flex flex-col items-center shrink-0">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all"
+                style={{
+                  background: done ? "#10B981" : active ? "#3B82F6" : "#1E293B",
+                  color: done || active ? (done ? "#0F172A" : "#fff") : "#475569",
+                  border: active ? "none" : done ? "none" : "1px solid #334155",
+                  boxShadow: active ? "0 0 0 3px rgba(59,130,246,0.2)" : "none",
+                }}
+              >
+                {done ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : s.n}
+              </div>
+              <span
+                className="mt-1 text-[11px] font-medium text-center leading-tight hidden sm:block"
+                style={{ color: active ? "#3B82F6" : done ? "#10B981" : "#475569", maxWidth: 90 }}
+              >
+                {s.label}
+              </span>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex-1 h-0.5 mx-2" style={{ background: "#1E293B" }}>
+                <div
+                  className="h-full transition-all duration-500"
+                  style={{ width: done ? "100%" : "0%", background: "#10B981" }}
+                />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function PrescribePage() {
@@ -202,6 +254,8 @@ export default function PrescribePage() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [step, setStep] = useState<"form" | "committing" | "done">("form");
+  const [formStep, setFormStep] = useState<1 | 2>(1);
+  const [rxHash, setRxHash] = useState<string>("");
   const [touched, setTouched] = useState<Set<string>>(new Set());
 
   function handleRutChange(value: string) {
@@ -258,6 +312,7 @@ export default function PrescribePage() {
         commitmentHex: string;
         nonce: string;
       };
+      setRxHash(commitmentHex);
 
       const medication =
         form.medication === "Otro (especificar)"
@@ -311,28 +366,42 @@ export default function PrescribePage() {
 
   // ── Success screen ──────────────────────────────────────────────────────────
   if (step === "done") {
+    const displayHash = rxHash
+      ? `RX-${rxHash.slice(0, 8).toUpperCase()}`
+      : "RX-" + Math.random().toString(36).slice(2, 10).toUpperCase();
     return (
       <main className="min-h-screen bg-[#0F172A] flex items-center justify-center p-8">
-        <div className="text-center max-w-sm">
+        <div className="text-center max-w-sm w-full">
           <div className="w-20 h-20 rounded-full bg-[#10B981]/10 border-2 border-[#10B981] flex items-center justify-center mx-auto mb-5">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-[#10B981]">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Receta emitida</h2>
-          <p className="text-[#64748B] text-sm mb-2">
-            La receta quedó registrada en Stellar Network.
+          <h2 className="text-2xl font-bold text-white mb-1">Receta emitida exitosamente</h2>
+          <p className="text-[#64748B] text-sm mb-5">
+            Registrada en Stellar Network con prueba zero-knowledge.
           </p>
-          <p className="text-[#64748B] text-sm mb-8">
-            El paciente puede canjearla en el dispensario autorizado.
-            <span className="text-[#10B981] block mt-1">
-              Cero datos personales en blockchain. ✓
-            </span>
-          </p>
-          <div className="flex gap-3">
+
+          {/* Prescription ID card */}
+          <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-5 mb-6 text-left">
+            <p className="text-[#64748B] text-xs uppercase tracking-wider font-semibold mb-2">ID de la receta</p>
+            <p className="text-[#10B981] font-mono text-lg font-bold tracking-wide">{displayHash}</p>
+            <p className="text-[#475569] text-xs mt-2">
+              El paciente puede canjearla presentando este código en el dispensario autorizado.
+            </p>
+            <p className="text-[#10B981] text-xs mt-2 font-medium">
+              ✓ Cero datos personales en blockchain
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
             <button
               onClick={() => {
                 setStep("form");
+                setFormStep(1);
+                setRxHash("");
+                setTouched(new Set());
+                setErrors({});
                 setForm({
                   patientRut: "",
                   medication: "",
@@ -345,15 +414,21 @@ export default function PrescribePage() {
                   isControlled: false,
                 });
               }}
-              className="flex-1 py-3 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors"
+              className="w-full py-3 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-bold rounded-xl transition-colors"
             >
-              Nueva receta
+              + Emitir otra receta
             </button>
+            <Link
+              href="/doctor?tab=pacientes"
+              className="w-full py-3 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors block text-center"
+            >
+              Ver recetas del paciente →
+            </Link>
             <button
               onClick={() => router.push("/doctor")}
-              className="flex-1 py-3 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-semibold rounded-xl transition-colors"
+              className="text-[#475569] hover:text-[#94A3B8] text-sm transition-colors"
             >
-              Ir al panel
+              Volver al panel
             </button>
           </div>
         </div>
@@ -409,207 +484,244 @@ export default function PrescribePage() {
           </div>
         </div>
 
+        {/* Step indicator */}
+        <StepIndicator current={formStep} />
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Section: Paciente */}
-          <section className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155] space-y-5">
-            <h2 className="text-white font-semibold text-base border-b border-[#334155] pb-3">
-              Datos del Paciente
-            </h2>
+          {/* ── Step 1: Paciente ── */}
+          {formStep === 1 && (
+            <>
+              <section className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155] space-y-5">
+                <h2 className="text-white font-semibold text-base border-b border-[#334155] pb-3">
+                  Paso 1 de 2: Datos del Paciente
+                </h2>
 
-            <Field
-              label="RUT del paciente *"
-              hint="Solo visible para ti. Se convierte en hash antes de enviarse."
-              error={touched.has("patientRut") ? errors.patientRut : undefined}
-            >
-              <input
-                type="text"
-                value={form.patientRut}
-                onChange={(e) => handleRutChange(e.target.value)}
-                onBlur={() => {
-                  markTouched("patientRut");
-                  setErrors((prev) => ({
-                    ...prev,
-                    ...validateForm(form),
-                  }));
+                <Field
+                  label="RUT del paciente *"
+                  hint="Solo visible para ti. Se convierte en hash antes de enviarse."
+                  error={touched.has("patientRut") ? errors.patientRut : undefined}
+                >
+                  <input
+                    type="text"
+                    value={form.patientRut}
+                    onChange={(e) => handleRutChange(e.target.value)}
+                    onBlur={() => {
+                      markTouched("patientRut");
+                      setErrors((prev) => ({
+                        ...prev,
+                        ...validateForm(form),
+                      }));
+                    }}
+                    placeholder="12.345.678-9"
+                    className={touched.has("patientRut") && errors.patientRut ? inputErrorClass : inputClass}
+                    maxLength={12}
+                  />
+                </Field>
+              </section>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const errs = validateForm(form);
+                  if (errs.patientRut) {
+                    setErrors((prev) => ({ ...prev, patientRut: errs.patientRut }));
+                    setTouched((prev) => new Set([...prev, "patientRut"]));
+                    return;
+                  }
+                  setFormStep(2);
                 }}
-                placeholder="12.345.678-9"
-                className={touched.has("patientRut") && errors.patientRut ? inputErrorClass : inputClass}
-                maxLength={12}
-              />
-            </Field>
-          </section>
-
-          {/* Section: Medicamento */}
-          <section className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155] space-y-5">
-            <h2 className="text-white font-semibold text-base border-b border-[#334155] pb-3">
-              Medicamento
-            </h2>
-
-            <Field
-              label="Medicamento *"
-              error={touched.has("medication") && errors.medication ? errors.medication : undefined}
-            >
-              <select
-                value={form.medication}
-                onChange={(e) => handleMedicationChange(e.target.value)}
-                onBlur={() => markTouched("medication")}
-                className={`${touched.has("medication") && errors.medication ? inputErrorClass : inputClass} cursor-pointer`}
+                className="w-full py-4 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-bold rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] text-sm"
               >
-                <option value="">Seleccionar medicamento…</option>
-                <optgroup label="Antibióticos">
-                  {COMMON_MEDICATIONS.filter((m) => m.name.includes("cilina") || m.name.includes("micina")).map((m) => (
-                    <option key={m.name} value={m.name}>{m.name}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="Cardiovascular">
-                  {COMMON_MEDICATIONS.filter((m) => ["Atorvastatina", "Losartán", "Enalapril"].some((k) => m.name.includes(k))).map((m) => (
-                    <option key={m.name} value={m.name}>{m.name}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="Metabólico / GI">
-                  {COMMON_MEDICATIONS.filter((m) => ["Metformina", "Omeprazol"].some((k) => m.name.includes(k))).map((m) => (
-                    <option key={m.name} value={m.name}>{m.name}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="Analgésicos">
-                  {COMMON_MEDICATIONS.filter((m) => ["Ibuprofeno", "Paracetamol"].some((k) => m.name.includes(k))).map((m) => (
-                    <option key={m.name} value={m.name}>{m.name}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="Controlados">
-                  {COMMON_MEDICATIONS.filter((m) => m.isControlled).map((m) => (
-                    <option key={m.name} value={m.name}>⚠ {m.name}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="Otro">
-                  <option value="Otro (especificar)">Otro (especificar)</option>
-                </optgroup>
-              </select>
-            </Field>
+                Continuar — Medicamento y dispensario →
+              </button>
+            </>
+          )}
 
-            {/* Controlled warning */}
-            {form.isControlled && (
-              <div className="flex items-start gap-3 p-4 bg-orange-900/20 border border-orange-700 rounded-xl">
-                <AlertIcon />
-                <div className="text-sm">
-                  <p className="text-orange-300 font-semibold">Medicamento Controlado</p>
-                  <p className="text-orange-400/80 mt-0.5 text-xs">
-                    Este medicamento requiere receta médica especial. El dispensario quedará obligado a registrar la dispensación en el libro de control.
-                  </p>
-                </div>
-              </div>
-            )}
+          {/* ── Step 2: Medicamento + Dispensario ── */}
+          {formStep === 2 && (
+            <>
+              {/* Section: Medicamento */}
+              <section className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155] space-y-5">
+                <h2 className="text-white font-semibold text-base border-b border-[#334155] pb-3">
+                  Paso 2 de 2: Medicamento y Dispensario
+                </h2>
 
-            {isCustom && (
-              <Field
-                label="Nombre del medicamento *"
-                error={touched.has("medication") && errors.medication ? errors.medication : undefined}
-              >
-                <input
-                  type="text"
-                  value={form.customMedication}
-                  onChange={(e) => setForm((f) => ({ ...f, customMedication: e.target.value }))}
-                  placeholder="Ej: Metoprolol 100mg"
-                  className={inputClass}
-                />
-              </Field>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field
-                label="Dosis *"
-                error={touched.has("dosage") && errors.dosage ? errors.dosage : undefined}
-              >
-                <input
-                  type="text"
-                  value={form.dosage}
-                  onChange={(e) => setForm((f) => ({ ...f, dosage: e.target.value }))}
-                  onBlur={() => markTouched("dosage")}
-                  placeholder="Ej: 500mg"
-                  className={touched.has("dosage") && errors.dosage ? inputErrorClass : inputClass}
-                />
-              </Field>
-              <Field label="Frecuencia">
-                <input
-                  type="text"
-                  value={form.frequency}
-                  onChange={(e) => setForm((f) => ({ ...f, frequency: e.target.value }))}
-                  placeholder="Ej: Cada 8 horas"
-                  className={inputClass}
-                />
-              </Field>
-            </div>
-
-            <Field label="Instrucciones adicionales">
-              <textarea
-                value={form.instructions}
-                onChange={(e) => setForm((f) => ({ ...f, instructions: e.target.value }))}
-                placeholder="Tomar con alimentos, evitar alcohol, etc."
-                rows={3}
-                className={`${inputClass} resize-none`}
-              />
-            </Field>
-          </section>
-
-          {/* Section: Dispensario */}
-          <section className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155] space-y-5">
-            <h2 className="text-white font-semibold text-base border-b border-[#334155] pb-3">
-              Dispensario y Vigencia
-            </h2>
-
-            <Field
-              label="Dispensario autorizado *"
-              hint="Selecciona la farmacia que podrá dispensar esta receta."
-              error={touched.has("dispensaryAddress") && errors.dispensaryAddress ? errors.dispensaryAddress : undefined}
-            >
-              <select
-                value={form.dispensaryAddress}
-                onChange={(e) => setForm((f) => ({ ...f, dispensaryAddress: e.target.value }))}
-                onBlur={() => {
-                  markTouched("dispensaryAddress");
-                  setErrors((prev) => ({ ...prev, ...validateForm(form) }));
-                }}
-                className={`${touched.has("dispensaryAddress") && errors.dispensaryAddress ? inputErrorClass : inputClass} cursor-pointer`}
-              >
-                <option value="">Seleccionar farmacia…</option>
-                {PHARMACIES.map((p) => (
-                  <option key={p.address} value={p.address}>{p.name}</option>
-                ))}
-              </select>
-            </Field>
-
-            <Field label="Validez de la receta">
-              <div className="grid grid-cols-4 gap-2">
-                {["15", "30", "60", "90"].map((days) => (
-                  <button
-                    key={days}
-                    type="button"
-                    onClick={() => setForm((f) => ({ ...f, validDays: days }))}
-                    className={`py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                      form.validDays === days
-                        ? "bg-[#10B981] text-[#0F172A]"
-                        : "bg-[#0F172A] border border-[#334155] text-[#64748B] hover:border-[#475569] hover:text-white"
-                    }`}
+                <Field
+                  label="Medicamento *"
+                  error={touched.has("medication") && errors.medication ? errors.medication : undefined}
+                >
+                  <select
+                    value={form.medication}
+                    onChange={(e) => handleMedicationChange(e.target.value)}
+                    onBlur={() => markTouched("medication")}
+                    className={`${touched.has("medication") && errors.medication ? inputErrorClass : inputClass} cursor-pointer`}
                   >
-                    {days}d
-                  </button>
-                ))}
+                    <option value="">Seleccionar medicamento…</option>
+                    <optgroup label="Antibióticos">
+                      {COMMON_MEDICATIONS.filter((m) => m.name.includes("cilina") || m.name.includes("micina")).map((m) => (
+                        <option key={m.name} value={m.name}>{m.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Cardiovascular">
+                      {COMMON_MEDICATIONS.filter((m) => ["Atorvastatina", "Losartán", "Enalapril"].some((k) => m.name.includes(k))).map((m) => (
+                        <option key={m.name} value={m.name}>{m.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Metabólico / GI">
+                      {COMMON_MEDICATIONS.filter((m) => ["Metformina", "Omeprazol"].some((k) => m.name.includes(k))).map((m) => (
+                        <option key={m.name} value={m.name}>{m.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Analgésicos">
+                      {COMMON_MEDICATIONS.filter((m) => ["Ibuprofeno", "Paracetamol"].some((k) => m.name.includes(k))).map((m) => (
+                        <option key={m.name} value={m.name}>{m.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Controlados">
+                      {COMMON_MEDICATIONS.filter((m) => m.isControlled).map((m) => (
+                        <option key={m.name} value={m.name}>⚠ {m.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Otro">
+                      <option value="Otro (especificar)">Otro (especificar)</option>
+                    </optgroup>
+                  </select>
+                </Field>
+
+                {/* Controlled warning */}
+                {form.isControlled && (
+                  <div className="flex items-start gap-3 p-4 bg-orange-900/20 border border-orange-700 rounded-xl">
+                    <AlertIcon />
+                    <div className="text-sm">
+                      <p className="text-orange-300 font-semibold">Medicamento Controlado</p>
+                      <p className="text-orange-400/80 mt-0.5 text-xs">
+                        Este medicamento requiere receta médica especial. El dispensario quedará obligado a registrar la dispensación en el libro de control.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {isCustom && (
+                  <Field
+                    label="Nombre del medicamento *"
+                    error={touched.has("medication") && errors.medication ? errors.medication : undefined}
+                  >
+                    <input
+                      type="text"
+                      value={form.customMedication}
+                      onChange={(e) => setForm((f) => ({ ...f, customMedication: e.target.value }))}
+                      placeholder="Ej: Metoprolol 100mg"
+                      className={inputClass}
+                    />
+                  </Field>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field
+                    label="Dosis *"
+                    error={touched.has("dosage") && errors.dosage ? errors.dosage : undefined}
+                  >
+                    <input
+                      type="text"
+                      value={form.dosage}
+                      onChange={(e) => setForm((f) => ({ ...f, dosage: e.target.value }))}
+                      onBlur={() => markTouched("dosage")}
+                      placeholder="Ej: 500mg"
+                      className={touched.has("dosage") && errors.dosage ? inputErrorClass : inputClass}
+                    />
+                  </Field>
+                  <Field label="Frecuencia">
+                    <input
+                      type="text"
+                      value={form.frequency}
+                      onChange={(e) => setForm((f) => ({ ...f, frequency: e.target.value }))}
+                      placeholder="Ej: Cada 8 horas"
+                      className={inputClass}
+                    />
+                  </Field>
+                </div>
+
+                <Field label="Instrucciones adicionales">
+                  <textarea
+                    value={form.instructions}
+                    onChange={(e) => setForm((f) => ({ ...f, instructions: e.target.value }))}
+                    placeholder="Tomar con alimentos, evitar alcohol, etc."
+                    rows={3}
+                    className={`${inputClass} resize-none`}
+                  />
+                </Field>
+              </section>
+
+              {/* Section: Dispensario */}
+              <section className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155] space-y-5">
+                <h2 className="text-white font-semibold text-base border-b border-[#334155] pb-3">
+                  Dispensario y Vigencia
+                </h2>
+
+                <Field
+                  label="Dispensario autorizado *"
+                  hint="Selecciona la farmacia que podrá dispensar esta receta."
+                  error={touched.has("dispensaryAddress") && errors.dispensaryAddress ? errors.dispensaryAddress : undefined}
+                >
+                  <select
+                    value={form.dispensaryAddress}
+                    onChange={(e) => setForm((f) => ({ ...f, dispensaryAddress: e.target.value }))}
+                    onBlur={() => {
+                      markTouched("dispensaryAddress");
+                      setErrors((prev) => ({ ...prev, ...validateForm(form) }));
+                    }}
+                    className={`${touched.has("dispensaryAddress") && errors.dispensaryAddress ? inputErrorClass : inputClass} cursor-pointer`}
+                  >
+                    <option value="">Seleccionar farmacia…</option>
+                    {PHARMACIES.map((p) => (
+                      <option key={p.address} value={p.address}>{p.name}</option>
+                    ))}
+                  </select>
+                </Field>
+
+                <Field label="Validez de la receta">
+                  <div className="grid grid-cols-4 gap-2">
+                    {["15", "30", "60", "90"].map((days) => (
+                      <button
+                        key={days}
+                        type="button"
+                        onClick={() => setForm((f) => ({ ...f, validDays: days }))}
+                        className={`py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                          form.validDays === days
+                            ? "bg-[#10B981] text-[#0F172A]"
+                            : "bg-[#0F172A] border border-[#334155] text-[#64748B] hover:border-[#475569] hover:text-white"
+                        }`}
+                      >
+                        {days}d
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              </section>
+
+              {/* Nav buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFormStep(1)}
+                  className="py-4 px-6 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors"
+                >
+                  ← Volver
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 py-4 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#1E293B] disabled:text-[#475569] disabled:cursor-not-allowed text-[#0F172A] font-bold rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] text-sm"
+                >
+                  {isSubmitting ? "Generando prueba ZK…" : "Emitir Receta en Blockchain"}
+                </button>
               </div>
-            </Field>
-          </section>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-4 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#1E293B] disabled:text-[#475569] disabled:cursor-not-allowed text-[#0F172A] font-bold rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] text-sm"
-          >
-            {isSubmitting ? "Generando prueba ZK…" : "Emitir Receta en Blockchain"}
-          </button>
-
-          <p className="text-center text-[#475569] text-xs pb-2">
-            Al emitir, confirmas que eres el médico prescriptor y que esta receta es válida.
-          </p>
+              <p className="text-center text-[#475569] text-xs pb-2">
+                Al emitir, confirmas que eres el médico prescriptor y que esta receta es válida.
+              </p>
+            </>
+          )}
         </form>
       </main>
     </div>
