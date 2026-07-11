@@ -306,7 +306,7 @@ function StepMedical({
                     border: selected ? "none" : "1.5px solid #475569",
                   }}
                 >
-                  {selected && <CheckIcon className="w-3 h-3" style={{ color: "#0F172A" } as React.CSSProperties} />}
+                  {selected && <CheckIcon className="w-3 h-3" />}
                 </div>
                 {option}
               </button>

@@ -543,7 +543,7 @@ function TabHistorial({ dispenses }: { dispenses: DispenseRecord[] }) {
                       <div className="flex items-center gap-2">
                         {record.medication}
                         {record.isControlled && (
-                          <AlertTriangleIcon className="w-3.5 h-3.5 text-orange-400 shrink-0" title="Controlado" />
+                          <AlertTriangleIcon className="w-3.5 h-3.5 text-orange-400 shrink-0" />
                         )}
                       </div>
                     </td>

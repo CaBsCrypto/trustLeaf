@@ -311,7 +311,7 @@ function StepVerification() {
         }}
       >
         <div className="flex items-start gap-3">
-          <ShieldCheckIcon className="w-6 h-6 shrink-0 mt-0.5" style={{ color: "#3B82F6" } as React.CSSProperties} />
+          <ShieldCheckIcon className="w-6 h-6 shrink-0 mt-0.5" />
           <div>
             <h3 className="font-semibold mb-1" style={{ color: "#fff" }}>
               Verificación de identidad
@@ -454,7 +454,7 @@ function StepDone() {
         style={{ background: "#0F172A", border: "1px solid #334155" }}
       >
         <div className="flex items-center gap-2 mb-4">
-          <ClipboardCheckIcon className="w-5 h-5" style={{ color: "#10B981" } as React.CSSProperties} />
+          <ClipboardCheckIcon className="w-5 h-5" />
           <h3 className="text-sm font-semibold" style={{ color: "#fff" }}>
             Guía rápida: cómo emitir una receta
           </h3>
@@ -478,7 +478,7 @@ function StepDone() {
               {i < workflowSteps.length - 1 && (
                 <ChevronRightIcon
                   className="w-4 h-4 ml-auto"
-                  style={{ color: "#334155" } as React.CSSProperties}
+                 
                 />
               )}
             </div>

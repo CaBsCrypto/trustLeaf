@@ -401,7 +401,7 @@ function StepDone() {
         style={{ background: "#0F172A", border: "1px solid #334155" }}
       >
         <div className="flex items-center gap-2 mb-4">
-          <QrIcon className="w-5 h-5" style={{ color: "#10B981" } as React.CSSProperties} />
+          <QrIcon className="w-5 h-5" />
           <h3 className="text-sm font-semibold" style={{ color: "#fff" }}>
             Flujo de verificación QR
           </h3>
