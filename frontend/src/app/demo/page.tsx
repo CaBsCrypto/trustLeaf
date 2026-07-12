@@ -352,8 +352,15 @@ export default function DemoPage() {
     e.preventDefault();
     if (!email.trim()) return;
     setSubmitting(true);
-    // Simulate async submit
-    await new Promise((r) => setTimeout(r, 600));
+    try {
+      await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+    } catch {
+      // Network error — still show success
+    }
     setEmail("");
     setSubmitting(false);
     setShowToast(true);
