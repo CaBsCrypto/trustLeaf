@@ -19,14 +19,6 @@ export const metadata: Metadata = {
       "Recetas verificadas en blockchain. Historial clínico digital. Control total del paciente.",
     url: "https://trustleaf-demo.vercel.app",
     siteName: "TrustLeaf",
-    images: [
-      {
-        url: "https://trustleaf-demo.vercel.app/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "TrustLeaf — Historial Clínico Digital en Blockchain",
-      },
-    ],
     locale: "es_CL",
     type: "website",
   },
@@ -35,7 +27,6 @@ export const metadata: Metadata = {
     title: "TrustLeaf — Tu historial clínico, tuyo para siempre",
     description:
       "Recetas verificadas en blockchain. Historial clínico digital.",
-    images: ["https://trustleaf-demo.vercel.app/og-image.png"],
   },
 };
 
