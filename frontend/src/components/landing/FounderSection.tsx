@@ -41,18 +41,19 @@ export default function FounderSection() {
 
           {/* Bio */}
           <p className="text-[#94A3B8] text-base leading-relaxed text-center max-w-xl">
-            {/* TODO: Add 2–3 sentences about your background and what drove you to build TrustLeaf */}
-            Passionate about fixing broken systems at the intersection of healthcare and technology.
-            Experienced the fragmented medical record problem firsthand — and decided to solve it.
+            Tengo dolor crónico. Construí TrustLeaf porque yo soy el paciente que lo necesita —
+            para registrar mis síntomas diariamente, correlacionarlos con mis medicamentos, y llegar
+            a cada consulta con datos reales en lugar de recuerdos vagos. El Diario de Dolor fue la
+            primera feature que construí. Para mí.
           </p>
 
           {/* Divider */}
           <div className="w-full border-t border-[#334155]" />
 
-          {/* Credential tags — fill in before YC interview */}
+          {/* Credential tags */}
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              "Healthcare tech",
+              "Dolor crónico → usuario #1",
               "Blockchain / Stellar",
               "Chile 🇨🇱",
               "YC Fall 2026 applicant",
