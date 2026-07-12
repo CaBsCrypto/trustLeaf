@@ -5,6 +5,40 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
+import FichaOnchain3D from "../components/FichaOnchain3D";
+import HowItWorks from "../components/landing/HowItWorks";
+import UseCases from "../components/landing/UseCases";
+import { getTranslations } from "../lib/i18n";
+import DemoTour, { TourTrigger, type TourStep } from "../components/DemoTour";
+
+// ─── Landing tour steps ────────────────────────────────────────────────────────
+
+const LANDING_TOUR_STEPS: TourStep[] = [
+  {
+    title: "Problema 1: Historial perdido",
+    description:
+      "Cada vez que cambias de médico, tu historial se pierde. TrustLeaf lo soluciona.",
+    highlight: "hero",
+  },
+  {
+    title: "Tu ficha clínica en blockchain",
+    description:
+      "Esta es la ficha onchain — verifica recetas, licencias y diagnósticos en segundos.",
+    highlight: "ficha-3d",
+  },
+  {
+    title: "Cómo funciona en 3 pasos",
+    description:
+      "Médico firma → Blockchain ancla → Paciente comparte QR. Sin contraseñas, sin wallet.",
+    highlight: "how-it-works",
+  },
+  {
+    title: "¡Listo para el demo!",
+    description:
+      "Haz clic en 'Ver demo médico' para ver cómo un médico emite una receta con Face ID.",
+    highlight: "cta",
+  },
+];
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -124,9 +158,42 @@ function ChainIcon({ className = "w-6 h-6" }: { className?: string }) {
 
 // ─── Section: Hero ─────────────────────────────────────────────────────────────
 
+function SocialProofCounter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const target = 120;
+    const duration = 2000; // ms
+    const steps = 60;
+    const interval = duration / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += target / steps;
+      if (current >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="flex items-center justify-center gap-2 mt-6">
+      <span className="text-base">📋</span>
+      <span className="text-[#94A3B8] text-sm">
+        <span className="text-white font-bold">+{count}</span> profesionales de la salud en lista de espera
+      </span>
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden pt-20 pb-24 md:pt-28 md:pb-32">
+    <section id="hero" className="relative overflow-hidden pt-20 pb-24 md:pt-28 md:pb-32">
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-[#10B981] opacity-[0.04] rounded-full blur-3xl" />
@@ -134,43 +201,70 @@ function HeroSection() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Badge */}
-        <div className="flex justify-center mb-6">
+        {/* Badge — centered above the two-col layout */}
+        <div className="flex justify-center mb-8">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981] text-xs font-semibold tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
             Construido sobre Stellar · Soroban Smart Contracts
           </span>
         </div>
 
-        {/* Headline */}
-        <h1 className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
-          Las recetas médicas<br />
-          <span className="text-[#10B981]">en blockchain.</span>
-        </h1>
-        <p className="text-center text-xl sm:text-2xl md:text-3xl font-light text-[#94A3B8] mb-4">
-          Seguras.{" "}
-          <span className="text-white font-medium">Verificables.</span>{" "}
-          Sin papel.
-        </p>
-        <p className="text-center text-base text-[#64748B] max-w-xl mx-auto mb-10">
-          TrustLeaf digitaliza la prescripción médica con pruebas de conocimiento cero.
-          El médico emite, el paciente controla, la farmacia verifica — sin exponer datos personales.
-        </p>
+        {/* Two-column hero: text left, 3D card right */}
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 mb-14">
 
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
-          <a
-            href="#cta"
-            className="w-full sm:w-auto px-7 py-3.5 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 text-center"
-          >
-            Solicitar acceso anticipado
-          </a>
-          <Link
-            href="/verify/RX-A1B2C3D4"
-            className="w-full sm:w-auto px-7 py-3.5 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors text-center"
-          >
-            Ver demo de verificación →
-          </Link>
+          {/* ── Left: text content ── */}
+          <div className="flex-1 text-center lg:text-left">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
+              Las recetas médicas<br />
+              <span className="text-[#10B981]">en blockchain.</span>
+            </h1>
+            <p className="text-xl sm:text-2xl font-light text-[#94A3B8] mb-4">
+              Seguras.{" "}
+              <span className="text-white font-medium">Verificables.</span>{" "}
+              Sin papel.
+            </p>
+            <p className="text-base text-[#64748B] max-w-xl mx-auto lg:mx-0 mb-10">
+              TrustLeaf digitaliza la prescripción médica con pruebas de conocimiento cero.
+              El médico emite, el paciente controla, la farmacia verifica — sin exponer datos personales.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3">
+              <a
+                href="#cta"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 text-center shadow-lg shadow-[#10B981]/20"
+              >
+                Únete a la lista de espera →
+              </a>
+              <Link
+                href="/demo/medico"
+                className="w-full sm:w-auto px-7 py-3.5 border border-[#10B981]/50 hover:border-[#10B981] text-[#10B981] hover:text-white hover:bg-[#10B981]/10 text-sm font-semibold rounded-xl transition-colors text-center"
+              >
+                Ver demo médico →
+              </Link>
+              <Link
+                href="/patient"
+                className="w-full sm:w-auto px-7 py-3.5 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors text-center"
+              >
+                Ver demo paciente →
+              </Link>
+            </div>
+
+            {/* Trust micro-copy */}
+            <p className="text-[#475569] text-xs mt-4 text-center lg:text-left">
+              ✓ Gratis durante beta &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Datos seguros en blockchain
+            </p>
+
+            {/* Social proof counter */}
+            <div className="lg:flex lg:justify-start">
+              <SocialProofCounter />
+            </div>
+          </div>
+
+          {/* ── Right: 3D Ficha Onchain card ── */}
+          <div id="ficha-3d" className="flex-shrink-0 flex items-center justify-center">
+            <FichaOnchain3D />
+          </div>
         </div>
 
         {/* Trust stats */}
@@ -316,88 +410,6 @@ function BenefitsSection() {
             ]}
             cta={{ label: "Portal Farmacia", href: "/dispensary" }}
           />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Section: Cómo funciona ────────────────────────────────────────────────────
-
-interface StepProps {
-  number: string;
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  isLast?: boolean;
-}
-
-function Step({ number, icon, title, description, isLast = false }: StepProps) {
-  return (
-    <div className="relative flex flex-col items-center text-center">
-      {/* Connector line */}
-      {!isLast && (
-        <div className="hidden md:block absolute top-10 left-[calc(50%+48px)] right-[calc(-50%+48px)] h-px bg-gradient-to-r from-[#334155] to-[#334155]" />
-      )}
-
-      <div className="relative mb-5">
-        <div className="w-20 h-20 rounded-2xl bg-[#1E293B] border border-[#334155] flex items-center justify-center text-[#10B981]">
-          {icon}
-        </div>
-        <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#10B981] text-[#0F172A] text-xs font-bold flex items-center justify-center">
-          {number}
-        </span>
-      </div>
-      <h3 className="text-white font-semibold text-base mb-2">{title}</h3>
-      <p className="text-[#64748B] text-sm max-w-[220px]">{description}</p>
-    </div>
-  );
-}
-
-function HowItWorksSection() {
-  return (
-    <section className="py-20 md:py-24 bg-[#1E293B]/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <span className="text-[#10B981] text-xs font-semibold uppercase tracking-widest">
-            Proceso
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mt-2 mb-3">
-            Cómo funciona
-          </h2>
-          <p className="text-[#64748B] text-base max-w-md mx-auto">
-            Desde la consulta médica hasta la farmacia, todo en 3 pasos.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
-          <Step
-            number="1"
-            icon={<StethoscopeIcon className="w-8 h-8" />}
-            title="El médico prescribe"
-            description="El médico emite la receta digital. Solo se guarda en Stellar un hash criptográfico — cero datos personales."
-          />
-          <Step
-            number="2"
-            icon={<QrCodeIcon className="w-8 h-8" />}
-            title="El paciente recibe su QR"
-            description="El paciente obtiene un código QR único vinculado a su receta. Lo presenta en cualquier farmacia autorizada."
-          />
-          <Step
-            number="3"
-            icon={<CheckCircleIcon className="w-8 h-8" />}
-            title="La farmacia verifica"
-            description="La farmacia escanea el QR. TrustLeaf verifica en blockchain y habilita la dispensación en segundos."
-            isLast
-          />
-        </div>
-
-        <div className="mt-14 text-center">
-          <p className="text-[#64748B] text-sm">
-            Todo el proceso toma menos de{" "}
-            <span className="text-white font-semibold">30 segundos</span>.
-            Sin llamadas telefónicas. Sin papeles. Sin fraude.
-          </p>
         </div>
       </div>
     </section>
@@ -570,12 +582,12 @@ function CTASection() {
         </p>
 
         {submitted ? (
-          <div className="inline-flex items-center gap-3 px-6 py-4 bg-[#10B981]/10 border border-[#10B981]/30 rounded-2xl">
-            <CheckCircleIcon className="w-6 h-6 text-[#10B981]" />
-            <div className="text-left">
-              <p className="text-white font-semibold text-sm">¡Estás en la lista!</p>
-              <p className="text-[#64748B] text-xs">Te contactaremos pronto con acceso anticipado.</p>
-            </div>
+          <div className="flex flex-col items-center gap-3 py-6">
+            <div className="text-4xl">🎉</div>
+            <p className="text-lg font-semibold text-white">¡Estás en la lista!</p>
+            <p className="text-sm text-slate-400 text-center">
+              Te avisaremos cuando TrustLeaf esté disponible en tu región.
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="max-w-md mx-auto">
@@ -717,17 +729,34 @@ function Footer() {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
+  const t = getTranslations("es");
+  const [tourActive, setTourActive] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#0F172A] text-white">
       <Navbar variant="landing" />
       <main>
         <HeroSection />
+        <div id="how-it-works">
+          <HowItWorks t={t} />
+        </div>
+        <UseCases />
         <BenefitsSection />
-        <HowItWorksSection />
         <SecuritySection />
         <CTASection />
       </main>
       <Footer />
+
+      {/* Demo tour */}
+      {!tourActive && (
+        <TourTrigger onClick={() => setTourActive(true)} />
+      )}
+      {tourActive && (
+        <DemoTour
+          steps={LANDING_TOUR_STEPS}
+          onClose={() => setTourActive(false)}
+        />
+      )}
     </div>
   );
 }

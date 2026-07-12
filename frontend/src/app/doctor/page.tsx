@@ -3,6 +3,36 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import DemoTour, { TourTrigger, type TourStep } from "../../components/DemoTour";
+
+// ─── Doctor tour steps ─────────────────────────────────────────────────────────
+
+const DOCTOR_TOUR_STEPS: TourStep[] = [
+  {
+    title: "Tu panel médico",
+    description:
+      "Bienvenido al portal médico de TrustLeaf. Aquí tienes una vista completa de tus recetas, pacientes y estadísticas del día.",
+    highlight: "doctor-dashboard",
+  },
+  {
+    title: "Emitir receta",
+    description:
+      "Con un solo clic emites una receta ZK — el RUT del paciente nunca queda en blockchain. Firma con Face ID o huella.",
+    highlight: "doctor-prescribe-btn",
+  },
+  {
+    title: "Tus pacientes",
+    description:
+      "Lista de pacientes con nombres enmascarados por privacidad. Cada fila muestra recetas activas y última visita.",
+    highlight: "doctor-patients",
+  },
+  {
+    title: "Verificado en blockchain",
+    description:
+      "Esta insignia confirma que tu cuenta está anclada en Stellar Network. Toda receta emitida queda registrada con prueba ZK inmutable.",
+    highlight: "doctor-trust-badge",
+  },
+];
 import { toast } from "sonner";
 import { usePasskey } from "../../hooks/usePasskey";
 import {
@@ -167,7 +197,7 @@ function TabInicio() {
   return (
     <div className="space-y-6">
       {/* Trust badge */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-green-900/20 border border-green-800/60 rounded-xl w-fit">
+      <div id="doctor-trust-badge" className="flex items-center gap-2 px-4 py-2.5 bg-green-900/20 border border-green-800/60 rounded-xl w-fit">
         <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 shrink-0">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
@@ -229,6 +259,7 @@ function TabInicio() {
               paciente nunca es registrado en blockchain.
             </p>
             <Link
+              id="doctor-prescribe-btn"
               href="/doctor/prescribe"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-colors text-sm"
             >
@@ -269,7 +300,7 @@ function TabInicio() {
 function TabPacientes() {
   return (
     <div className="space-y-4">
-      <div className="bg-[#1E293B] rounded-2xl border border-[#334155] overflow-hidden">
+      <div id="doctor-patients" className="bg-[#1E293B] rounded-2xl border border-[#334155] overflow-hidden">
         <div className="px-5 py-4 border-b border-[#334155] flex items-center justify-between">
           <div>
             <h3 className="text-white font-semibold">Pacientes Recientes</h3>
@@ -451,9 +482,10 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
 export default function DoctorDashboard() {
   const { walletAddress } = usePasskey();
   const [activeTab, setActiveTab] = useState<TabId>("inicio");
+  const [tourActive, setTourActive] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white">
+    <div id="doctor-dashboard" className="min-h-screen bg-[#0F172A] text-white">
       {/* ── Desktop sidebar ─────────────────────────────────────────── */}
       <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 flex-col bg-[#1E293B] border-r border-[#334155] z-40">
         {/* Logo */}
@@ -505,12 +537,18 @@ export default function DoctorDashboard() {
         </nav>
 
         {/* Quick action */}
-        <div className="px-3 py-4 border-t border-gray-800">
+        <div className="px-3 py-4 border-t border-gray-800 space-y-2">
           <Link
             href="/doctor/prescribe"
             className="flex items-center justify-center gap-2 w-full py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors"
           >
             + Nueva Receta ZK
+          </Link>
+          <Link
+            href="/doctor/profile"
+            className="flex items-center justify-center gap-2 w-full py-2 border border-[#334155] hover:border-[#475569] text-gray-400 hover:text-white text-xs font-medium rounded-xl transition-colors"
+          >
+            Ver mi perfil →
           </Link>
         </div>
       </aside>
@@ -573,6 +611,17 @@ export default function DoctorDashboard() {
           ))}
         </div>
       </nav>
+
+      {/* Demo tour */}
+      {!tourActive && (
+        <TourTrigger onClick={() => setTourActive(true)} />
+      )}
+      {tourActive && (
+        <DemoTour
+          steps={DOCTOR_TOUR_STEPS}
+          onClose={() => setTourActive(false)}
+        />
+      )}
     </div>
   );
 }
