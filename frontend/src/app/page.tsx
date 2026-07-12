@@ -551,7 +551,7 @@ function CTASection() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setEmailError("");
 
@@ -562,6 +562,17 @@ function CTASection() {
     if (!validateEmail(email)) {
       setEmailError("Ingresa un email válido.");
       return;
+    }
+
+    // Call the waitlist API (sends email via Resend; falls back gracefully if no key)
+    try {
+      await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    } catch {
+      // Network error — still mark as submitted (don't block UX)
     }
 
     localStorage.setItem("tl_waitlist_email", email);
