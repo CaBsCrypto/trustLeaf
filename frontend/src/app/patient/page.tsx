@@ -753,41 +753,320 @@ function TabLicencias() {
   );
 }
 
-function TabDolor() {
+const WEEKLY_PAIN_DATA = [
+  { day: "Lun", level: 7 },
+  { day: "Mar", level: 6 },
+  { day: "Mié", level: 8 },
+  { day: "Jue", level: 5 },
+  { day: "Vie", level: 6 },
+  { day: "Sáb", level: 4 },
+  { day: "Dom", level: 7 },
+];
+
+const PAIN_AREAS = [
+  "Espalda baja",
+  "Cabeza/migraña",
+  "Articulaciones",
+  "Abdomen",
+  "Cuello",
+  "Otro",
+];
+
+const ACTIVE_PRESCRIPTIONS = ["Tramadol 50mg", "Pregabalina 75mg"];
+
+const SYMPTOM_OPTIONS = [
+  "Inflamación",
+  "Rigidez",
+  "Hormigueo",
+  "Náuseas",
+  "Fatiga",
+  "Insomnio",
+  "Otro",
+];
+
+const PAIN_INSIGHTS = [
+  "📈 Tu dolor aumenta los miércoles — patrón de 3 semanas",
+  "💊 Los días que tomaste Tramadol, el dolor bajó en promedio 2 puntos",
+  "😴 Los días con insomnio registrado, el dolor del día siguiente fue 1.8 puntos mayor",
+];
+
+function getPainEmoji(level: number): string {
+  if (level <= 2) return "😊";
+  if (level <= 5) return "😐";
+  if (level <= 8) return "😣";
+  return "😭";
+}
+
+function getBarColor(level: number): string {
+  if (level <= 3) return "#22C55E";
+  if (level <= 6) return "#EAB308";
+  return "#EF4444";
+}
+
+function TabDiarioDolor() {
+  const [painLevel, setPainLevel] = useState(5);
+  const [area, setArea] = useState("");
+  const [meds, setMeds] = useState<string[]>([]);
+  const [otherMed, setOtherMed] = useState("");
+  const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [notes, setNotes] = useState("");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+
+  function toggleMed(med: string) {
+    setMeds((prev) =>
+      prev.includes(med) ? prev.filter((m) => m !== med) : [...prev, med]
+    );
+  }
+
+  function toggleSymptom(sym: string) {
+    setSymptoms((prev) =>
+      prev.includes(sym) ? prev.filter((s) => s !== sym) : [...prev, sym]
+    );
+  }
+
+  function handleSave() {
+    setSaveState("saving");
+    setTimeout(() => setSaveState("saved"), 1500);
+    setTimeout(() => setSaveState("idle"), 5000);
+  }
+
+  const painColor =
+    painLevel <= 3
+      ? "bg-green-600"
+      : painLevel <= 6
+      ? "bg-yellow-600"
+      : "bg-red-600";
+
   return (
-    <div className="space-y-4">
-      <a
-        href="/patient/pain-diary"
-        className="block bg-[#1E293B] rounded-2xl p-6 border border-[#334155] hover:border-green-600 transition-colors group"
-      >
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-green-900/30 border border-green-800 flex items-center justify-center shrink-0 group-hover:bg-green-900/50 transition-colors">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="1.5" className="w-7 h-7">
-              <ellipse cx="12" cy="5" rx="3" ry="3" />
-              <path d="M8 22v-5a4 4 0 0 1 8 0v5" />
-              <path d="M6 10l1.5 4h9L18 10" />
-            </svg>
+    <div className="space-y-6">
+      {/* ── Daily entry form ────────────────────────────────────────── */}
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
+        <h2 className="text-white font-bold text-lg mb-5">Registro de hoy</h2>
+
+        {/* Pain level slider */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-[#94A3B8] text-sm font-medium">
+              Nivel de dolor
+            </label>
+            <span className="text-2xl leading-none">
+              {getPainEmoji(painLevel)}
+            </span>
           </div>
-          <div className="flex-1">
-            <h3 className="text-white font-semibold text-base">Diario de Dolor</h3>
-            <p className="text-[#94A3B8] text-sm mt-0.5">
-              Registra y monitorea tu dolor diariamente
-            </p>
+          <div className="flex items-center gap-4">
+            <input
+              type="range"
+              min={0}
+              max={10}
+              value={painLevel}
+              onChange={(e) => setPainLevel(Number(e.target.value))}
+              className="flex-1 accent-green-500 cursor-pointer"
+            />
+            <div
+              className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shrink-0 transition-colors ${painColor}`}
+            >
+              {painLevel}
+            </div>
           </div>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="w-5 h-5 text-gray-500 group-hover:text-green-400 transition-colors shrink-0"
-          >
-            <path d="M9 18l6-6-6-6" />
-          </svg>
+          <div className="flex justify-between text-xs text-[#64748B] mt-1 px-1">
+            <span>😊 Sin dolor</span>
+            <span>😭 Insoportable</span>
+          </div>
         </div>
-      </a>
-      <div className="bg-[#1E293B]/50 rounded-xl p-4 border border-[#334155]">
-        <p className="text-[#94A3B8] text-sm text-center">
-          Tu médico puede ver el historial de dolor en tiempo real. Registra diariamente para un mejor seguimiento.
+
+        {/* Affected area dropdown */}
+        <div className="mb-5">
+          <label className="block text-[#94A3B8] text-sm font-medium mb-2">
+            Zona afectada
+          </label>
+          <select
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+            className="w-full bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-3 outline-none transition-colors"
+          >
+            <option value="">Selecciona una zona…</option>
+            {PAIN_AREAS.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Medications checkboxes */}
+        <div className="mb-5">
+          <label className="block text-[#94A3B8] text-sm font-medium mb-2">
+            Medicamentos tomados hoy
+          </label>
+          <div className="space-y-2.5">
+            {ACTIVE_PRESCRIPTIONS.map((med) => (
+              <button
+                key={med}
+                onClick={() => toggleMed(med)}
+                className="flex items-center gap-3 w-full text-left group"
+              >
+                <div
+                  className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                    meds.includes(med)
+                      ? "bg-green-600 border-green-500"
+                      : "border-[#334155] group-hover:border-green-700"
+                  }`}
+                >
+                  {meds.includes(med) && (
+                    <CheckIcon className="w-3 h-3 text-white" />
+                  )}
+                </div>
+                <span className="text-white text-sm">{med}</span>
+              </button>
+            ))}
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 rounded border-2 border-[#334155] shrink-0" />
+              <input
+                type="text"
+                value={otherMed}
+                onChange={(e) => setOtherMed(e.target.value)}
+                placeholder="Otro medicamento…"
+                className="flex-1 bg-transparent border-b border-[#334155] focus:border-green-500 text-white text-sm py-1 outline-none placeholder-gray-600 transition-colors"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Symptoms multi-select chips */}
+        <div className="mb-5">
+          <label className="block text-[#94A3B8] text-sm font-medium mb-2">
+            Síntomas
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {SYMPTOM_OPTIONS.map((sym) => (
+              <button
+                key={sym}
+                onClick={() => toggleSymptom(sym)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  symptoms.includes(sym)
+                    ? "bg-green-600/30 border-green-500 text-green-300"
+                    : "bg-gray-800 border-[#334155] text-gray-400 hover:border-gray-500 hover:text-gray-300"
+                }`}
+              >
+                {sym}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Notes textarea */}
+        <div className="mb-6">
+          <label className="block text-[#94A3B8] text-sm font-medium mb-2">
+            Notas <span className="text-[#64748B] font-normal">(opcional)</span>
+          </label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="¿Algo que quieras recordar de hoy?"
+            rows={3}
+            className="w-full bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-3 outline-none placeholder-gray-600 transition-colors resize-none"
+          />
+        </div>
+
+        {/* Save button */}
+        <button
+          onClick={handleSave}
+          disabled={saveState !== "idle"}
+          className={`w-full flex items-center justify-center gap-2 min-h-[52px] px-6 py-3 rounded-2xl font-bold text-base transition-all ${
+            saveState === "saved"
+              ? "bg-green-700 text-white cursor-default"
+              : saveState === "saving"
+              ? "bg-gray-700 text-gray-300 cursor-wait"
+              : "bg-green-600 hover:bg-green-500 active:bg-green-700 text-white"
+          }`}
+        >
+          {saveState === "saving" && (
+            <span className="inline-block animate-spin">⏳</span>
+          )}
+          {saveState === "idle" && "Registrar en historial"}
+          {saveState === "saving" && "Guardando en blockchain…"}
+          {saveState === "saved" && "✅ Entrada registrada"}
+        </button>
+      </div>
+
+      {/* ── Pain history bar chart ───────────────────────────────────── */}
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-white font-semibold">Últimos 7 días</h3>
+        </div>
+        <p className="text-[#94A3B8] text-sm mb-4">
+          Promedio últimos 7 días:{" "}
+          <span className="text-white font-bold">6.2/10</span>
+        </p>
+
+        {/* Bar chart */}
+        <div className="flex items-end gap-2" style={{ height: "120px" }}>
+          {WEEKLY_PAIN_DATA.map(({ day, level }) => (
+            <div
+              key={day}
+              className="flex-1 flex flex-col items-center gap-1"
+              style={{ height: "100%" }}
+            >
+              <span className="text-[#64748B] text-xs font-mono shrink-0">
+                {level}
+              </span>
+              <div
+                className="flex-1 w-full flex items-end"
+              >
+                <div
+                  className="w-full rounded-t-lg transition-all"
+                  style={{
+                    height: `${(level / 10) * 100}%`,
+                    backgroundColor: getBarColor(level),
+                    minHeight: "4px",
+                  }}
+                />
+              </div>
+              <span className="text-[#94A3B8] text-xs shrink-0">{day}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Color legend */}
+        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-[#334155]">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-green-500" />
+            <span className="text-[#64748B] text-xs">0–3</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-yellow-500" />
+            <span className="text-[#64748B] text-xs">4–6</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-red-500" />
+            <span className="text-[#64748B] text-xs">7–10</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Insights ────────────────────────────────────────────────── */}
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
+        <h3 className="text-white font-semibold mb-4">Insights</h3>
+        <div className="space-y-3">
+          {PAIN_INSIGHTS.map((insight, i) => (
+            <div
+              key={i}
+              className="p-3 bg-gray-900/60 rounded-xl border border-[#334155]"
+            >
+              <p className="text-[#94A3B8] text-sm leading-relaxed">
+                {insight}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Integration note ─────────────────────────────────────────── */}
+      <div className="flex items-start gap-3 p-4 bg-green-900/10 border border-green-800/50 rounded-xl">
+        <ShieldCheckIcon className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+        <p className="text-[#94A3B8] text-sm leading-relaxed">
+          Estas entradas se añaden automáticamente a tu ficha clínica
+          verificada. Tu médico puede verlas en su próxima consulta.
         </p>
       </div>
     </div>
@@ -1124,13 +1403,11 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: "licencias", label: "Mis Licencias", icon: <CalendarIcon /> },
   {
     id: "dolor",
-    label: "Diario de Dolor",
+    label: "📓 Diario",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <ellipse cx="12" cy="5" rx="3" ry="3" />
-        <path d="M8 22v-5a4 4 0 0 1 8 0v5" />
-        <path d="M6 10l1.5 4h9L18 10" />
-        <path d="M2 13h2m16 0h2" />
+        <rect x="4" y="2" width="14" height="20" rx="2" />
+        <path d="M8 6h8M8 10h8M8 14h5" />
       </svg>
     ),
   },
@@ -1295,7 +1572,7 @@ export default function PatientDashboard() {
               {activeTab === "ficha" && <TabFicha />}
               {activeTab === "accesos" && <TabAccesos />}
               {activeTab === "licencias" && <TabLicencias />}
-              {activeTab === "dolor" && <TabDolor />}
+              {activeTab === "dolor" && <TabDiarioDolor />}
               {activeTab === "timeline" && <TabTimeline />}
               {activeTab === "emergencia" && <TabEmergencia />}
             </>
