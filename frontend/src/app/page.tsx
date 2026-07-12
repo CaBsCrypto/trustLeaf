@@ -668,9 +668,10 @@ function Footer() {
             <h4 className="text-white text-xs font-semibold uppercase tracking-wider mb-3">Portales</h4>
             <ul className="space-y-2">
               {[
-                { label: "Para Médicos", href: "/doctor" },
+                { label: "Para Médicos", href: "/for-doctors" },
                 { label: "Para Pacientes", href: "/patient" },
                 { label: "Para Farmacias", href: "/dispensary" },
+                { label: "Demo Médico", href: "/doctor" },
                 { label: "Verificar Receta", href: "/verify/demo" },
               ].map((link) => (
                 <li key={link.href}>
@@ -715,7 +716,8 @@ function Footer() {
         {/* Bottom bar */}
         <div className="pt-6 border-t border-[#1E293B] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[#475569] text-xs">
-            © 2026 Browns Studio. Todos los derechos reservados.
+            © 2026 Browns Studio. Todos los derechos reservados. ·{" "}
+            <Link href="/admin" className="hover:text-[#334155] transition-colors">⚙</Link>
           </p>
           <div className="flex items-center gap-4 text-xs text-[#475569]">
             <span className="flex items-center gap-1.5">
