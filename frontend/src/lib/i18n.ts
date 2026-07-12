@@ -170,10 +170,11 @@ const translations = {
       ],
     },
   },
-} as const;
+};
 
 export type Translations = typeof translations.es;
 
 export function getTranslations(locale: Locale = "es"): Translations {
-  return translations[locale] ?? translations.es;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (translations[locale] ?? translations.es) as any;
 }
