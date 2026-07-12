@@ -3,6 +3,7 @@
 // URL: trustleaf-demo.vercel.app/for-doctors
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import Navbar from "../../components/Navbar";
 
@@ -180,6 +181,14 @@ function TestimonialCard({
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
 export default function ForDoctorsPage() {
+  useEffect(() => {
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: "for_doctors_view" }),
+    }).catch(() => {});
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0F172A] text-white">
       <Navbar variant="landing" />
