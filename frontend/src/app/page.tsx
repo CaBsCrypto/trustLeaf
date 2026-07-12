@@ -241,7 +241,7 @@ function HeroSection() {
                 Únete a la lista de espera →
               </a>
               <Link
-                href="/demo/medico"
+                href="/doctor"
                 className="w-full sm:w-auto px-7 py-3.5 border border-[#10B981]/50 hover:border-[#10B981] text-[#10B981] hover:text-white hover:bg-[#10B981]/10 text-sm font-semibold rounded-xl transition-colors text-center"
               >
                 Ver demo médico →
@@ -551,7 +551,7 @@ function CTASection() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setEmailError("");
 
@@ -562,6 +562,17 @@ function CTASection() {
     if (!validateEmail(email)) {
       setEmailError("Ingresa un email válido.");
       return;
+    }
+
+    // Call the waitlist API (sends email via Resend; falls back gracefully if no key)
+    try {
+      await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    } catch {
+      // Network error — still mark as submitted (don't block UX)
     }
 
     localStorage.setItem("tl_waitlist_email", email);

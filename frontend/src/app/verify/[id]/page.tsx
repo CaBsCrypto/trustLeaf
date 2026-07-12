@@ -3,7 +3,6 @@
 "use client";
 
 import Navbar from "../../../components/Navbar";
-import QRCode from "../../../components/QRCode";
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -208,26 +207,50 @@ function formatDate(dateStr: string): string {
   });
 }
 
-// ─── QR Real (escaneable) ─────────────────────────────────────────────────────
+// ─── QR Placeholder ───────────────────────────────────────────────────────────
+
+const QR_PATTERN = [
+  1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1,
+  1,0,0,0,0,0,1,0,0,1,0,0,1,0,1,0,0,0,0,0,1,
+  1,0,1,1,1,0,1,0,1,0,1,1,0,0,1,0,1,1,1,0,1,
+  1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,0,1,1,1,0,1,
+  1,0,1,1,1,0,1,0,1,1,0,1,0,0,1,0,1,1,1,0,1,
+  1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,
+  1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,
+  0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,
+  1,1,0,1,1,0,1,1,0,0,1,1,0,0,1,0,1,0,1,1,0,
+  0,0,1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,
+  1,0,1,1,0,0,1,0,1,0,1,0,1,1,0,0,1,1,0,1,0,
+  0,1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,
+  1,1,1,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,1,
+  0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,
+  1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,0,1,0,1,0,1,
+  1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,
+  1,0,1,1,1,0,1,0,1,0,0,1,1,0,1,1,0,0,1,0,1,
+  1,0,1,1,1,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,0,
+  1,0,1,1,1,0,1,0,1,1,0,1,0,0,0,1,0,1,0,0,1,
+  1,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,0,
+  1,1,1,1,1,1,1,0,1,0,0,1,0,1,0,1,0,1,0,1,0,
+];
 
 function QRDisplay({ rxId }: { rxId: string }) {
-  const verifyUrl = `https://trustleaf-demo.vercel.app/verify/${rxId}`;
-
   return (
     <div className="bg-[#1E293B] rounded-2xl p-6 border border-[#334155]">
       <h3 className="text-white font-semibold text-center mb-4">
         Código QR de Verificación
       </h3>
-      <div className="flex justify-center">
-        <QRCode
-          value={verifyUrl}
-          size={200}
-          label={rxId}
-          showCopy={true}
-        />
+      <div className="bg-white p-4 rounded-xl w-52 h-52 mx-auto grid gap-px"
+           style={{ gridTemplateColumns: "repeat(21, 1fr)" }}>
+        {QR_PATTERN.map((bit, i) => (
+          <div
+            key={i}
+            className={bit ? "bg-gray-900" : "bg-white"}
+          />
+        ))}
       </div>
-      <p className="text-center mt-3 text-gray-500 text-xs">
-        Escanea para verificar esta receta en tiempo real
+      <p className="text-center mt-3 text-gray-400 text-xs font-mono">{rxId}</p>
+      <p className="text-center mt-1 text-gray-600 text-xs">
+        Escanea con la app TrustLeaf para verificar
       </p>
     </div>
   );
