@@ -9,6 +9,10 @@ import { useContractCall } from "../../../hooks/useContractCall";
 import { BACKEND_URL } from "../../../lib/stellar";
 import { toast } from "sonner";
 
+// ─── Demo Mode ────────────────────────────────────────────────────────────────
+// Set to true to record YC demo video without live blockchain/Privy dependencies.
+const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || true; // always true for now
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface PrescribeForm {
@@ -176,10 +180,10 @@ function Field({
 }
 
 const inputClass =
-  "w-full px-4 py-3 bg-[#0F172A] border border-[#334155] focus:border-[#10B981] text-white text-sm rounded-xl outline-none transition-colors placeholder-[#475569]";
+  "w-full px-4 py-3 bg-[#0F172A] border border-[#334155] focus:border-[#10B981] text-white text-base rounded-xl outline-none transition-colors placeholder-[#475569]";
 
 const inputErrorClass =
-  "w-full px-4 py-3 bg-[#0F172A] border border-red-500 focus:border-red-400 text-white text-sm rounded-xl outline-none transition-colors placeholder-[#475569]";
+  "w-full px-4 py-3 bg-[#0F172A] border border-red-500 focus:border-red-400 text-white text-base rounded-xl outline-none transition-colors placeholder-[#475569]";
 
 // ─── Step Indicator ───────────────────────────────────────────────────────────
 
@@ -212,7 +216,7 @@ function StepIndicator({ current }: { current: 1 | 2 }) {
                 ) : s.n}
               </div>
               <span
-                className="mt-1 text-[11px] font-medium text-center leading-tight hidden sm:block"
+                className="mt-1 text-[10px] font-medium text-center leading-tight"
                 style={{ color: active ? "#3B82F6" : done ? "#10B981" : "#475569", maxWidth: 90 }}
               >
                 {s.label}
@@ -256,6 +260,8 @@ export default function PrescribePage() {
   const [step, setStep] = useState<"form" | "committing" | "done">("form");
   const [formStep, setFormStep] = useState<1 | 2>(1);
   const [rxHash, setRxHash] = useState<string>("");
+  const [stellarTxId, setStellarTxId] = useState<string>("");
+  const [demoSigningStep, setDemoSigningStep] = useState<"signing" | "anchoring" | null>(null);
   const [touched, setTouched] = useState<Set<string>>(new Set());
 
   function handleRutChange(value: string) {
@@ -287,6 +293,21 @@ export default function PrescribePage() {
       return;
     }
     setErrors({});
+
+    // ── Demo Mode: skip all blockchain/Privy calls ──────────────────────────
+    if (DEMO_MODE) {
+      setStep("committing");
+      setDemoSigningStep("signing");
+      await new Promise((res) => setTimeout(res, 2000));
+      setDemoSigningStep("anchoring");
+      await new Promise((res) => setTimeout(res, 1500));
+      setRxHash("7A3F2E1B");
+      setStellarTxId("STELLAR:4f8e2a1b3c9d7e6f5a2b8c1d4e3f7a9b");
+      setDemoSigningStep(null);
+      setStep("done");
+      return;
+    }
+    // ───────────────────────────────────────────────────────────────────────
 
     if (!walletAddress) {
       toast.error("Debes estar conectado");
@@ -370,7 +391,7 @@ export default function PrescribePage() {
       ? `RX-${rxHash.slice(0, 8).toUpperCase()}`
       : "RX-" + Math.random().toString(36).slice(2, 10).toUpperCase();
     return (
-      <main className="min-h-screen bg-[#0F172A] flex items-center justify-center p-8">
+      <main className="min-h-screen bg-[#0F172A] flex items-center justify-center px-4 py-8">
         <div className="text-center max-w-sm w-full">
           <div className="w-20 h-20 rounded-full bg-[#10B981]/10 border-2 border-[#10B981] flex items-center justify-center mx-auto mb-5">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-[#10B981]">
@@ -389,6 +410,12 @@ export default function PrescribePage() {
             <p className="text-[#475569] text-xs mt-2">
               El paciente puede canjearla presentando este código en el dispensario autorizado.
             </p>
+            {stellarTxId && (
+              <div className="mt-3 pt-3 border-t border-[#334155]">
+                <p className="text-[#64748B] text-xs uppercase tracking-wider font-semibold mb-1">TX Stellar</p>
+                <p className="text-[#3B82F6] font-mono text-xs break-all">{stellarTxId}</p>
+              </div>
+            )}
             <p className="text-[#10B981] text-xs mt-2 font-medium">
               ✓ Cero datos personales en blockchain
             </p>
@@ -400,6 +427,8 @@ export default function PrescribePage() {
                 setStep("form");
                 setFormStep(1);
                 setRxHash("");
+                setStellarTxId("");
+                setDemoSigningStep(null);
                 setTouched(new Set());
                 setErrors({});
                 setForm({
@@ -438,14 +467,18 @@ export default function PrescribePage() {
 
   // ── Committing screen ───────────────────────────────────────────────────────
   if (step === "committing") {
+    const signingLabel = demoSigningStep === "signing"
+      ? { title: "Firmando con Face ID…", sub: "Autenticando con tu identidad biométrica." }
+      : demoSigningStep === "anchoring"
+      ? { title: "Anclando a Stellar Blockchain…", sub: "Registrando la prueba ZK en la red Stellar." }
+      : { title: "Generando prueba ZK…", sub: "Creando el commitment criptográfico y registrando en Stellar." };
+
     return (
       <main className="min-h-screen bg-[#0F172A] flex items-center justify-center p-8">
         <div className="text-center max-w-xs">
           <div className="w-16 h-16 border-4 border-[#10B981] border-t-transparent rounded-full animate-spin mx-auto mb-5" />
-          <h3 className="text-white font-semibold text-lg mb-2">Generando prueba ZK…</h3>
-          <p className="text-[#64748B] text-sm">
-            Creando el commitment criptográfico y registrando en Stellar.
-          </p>
+          <h3 className="text-white font-semibold text-lg mb-2">{signingLabel.title}</h3>
+          <p className="text-[#64748B] text-sm">{signingLabel.sub}</p>
         </div>
       </main>
     );
@@ -700,18 +733,18 @@ export default function PrescribePage() {
               </section>
 
               {/* Nav buttons */}
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   type="button"
                   onClick={() => setFormStep(1)}
-                  className="py-4 px-6 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors"
+                  className="w-full sm:w-auto py-4 px-6 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors min-h-[56px]"
                 >
                   ← Volver
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-4 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#1E293B] disabled:text-[#475569] disabled:cursor-not-allowed text-[#0F172A] font-bold rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] text-sm"
+                  className="flex-1 py-4 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#1E293B] disabled:text-[#475569] disabled:cursor-not-allowed text-[#0F172A] font-bold rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] text-sm min-h-[56px]"
                 >
                   {isSubmitting ? "Generando prueba ZK…" : "Emitir Receta en Blockchain"}
                 </button>

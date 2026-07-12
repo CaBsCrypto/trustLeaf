@@ -31,6 +31,11 @@ interface PublicPrescription {
   expiryDate: string;
   doctorLicense: string;
   issuedDate: string;
+  // Demo-mode extended fields (optional)
+  patientName?: string;
+  doctorName?: string;
+  instructions?: string;
+  stellarTxId?: string;
 }
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -76,6 +81,35 @@ const MOCK_DB: Record<string, PublicPrescription> = {
     doctorLicense: "CL-99876",
     issuedDate: "2026-07-01",
   },
+  // ── Demo prescriptions for YC video ────────────────────────────────────────
+  "RX-C8D9E1F2": {
+    rxId: "RX-C8D9E1F2",
+    medication: "Pregabalina 75mg — neuropatía",
+    status: "expired",
+    dosesRemaining: 0,
+    totalDoses: 2,
+    expiryDate: "2026-07-08",
+    doctorLicense: "CS-29341",
+    issuedDate: "2026-06-15",
+    patientName: "Juan Pérez",
+    doctorName: "Dr. Carlos Soto, Neurólogo",
+    instructions: "Tomar 1 cápsula cada 12 horas con agua.",
+    stellarTxId: "STELLAR:c8d9e1f2a3b4c5d6e7f8a9b0c1d2e3f4",
+  },
+  "RX-7A3F2E1B": {
+    rxId: "RX-7A3F2E1B",
+    medication: "Tramadol 50mg — Tomar 1 comprimido cada 8 horas",
+    status: "active",
+    dosesRemaining: 3,
+    totalDoses: 3,
+    expiryDate: "2026-08-10",
+    doctorLicense: "CM-47823",
+    issuedDate: "2026-07-11",
+    patientName: "Juan Pérez (RUT: 12.345.678-9)",
+    doctorName: "Dr. María González, Médico Cirujano",
+    instructions: "Tomar con alimentos. No conducir ni operar maquinaria pesada.",
+    stellarTxId: "STELLAR:4f8e2a1b3c9d7e6f5a2b8c1d4e3f7a9b",
+  },
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -94,11 +128,11 @@ function getStatusConfig(status: PrescriptionStatus): StatusDisplayConfig {
   switch (status) {
     case "active":
       return {
-        label: "RECETA VÁLIDA",
+        label: "✅ Receta Válida",
         sublabel: "Esta receta es auténtica y puede ser dispensada",
         icon: (
-          <div className="w-20 h-20 rounded-full bg-green-900/40 border-4 border-green-500 flex items-center justify-center">
-            <CheckIcon className="w-10 h-10 text-green-400" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-green-900/40 border-4 border-green-500 flex items-center justify-center">
+            <CheckIcon className="w-8 h-8 sm:w-10 sm:h-10 text-green-400" />
           </div>
         ),
         bgClass: "bg-green-900/10",
@@ -108,11 +142,11 @@ function getStatusConfig(status: PrescriptionStatus): StatusDisplayConfig {
       };
     case "partial":
       return {
-        label: "RECETA VÁLIDA",
+        label: "✅ Receta Válida",
         sublabel: "Parcialmente dispensada — aún tiene dosis disponibles",
         icon: (
-          <div className="w-20 h-20 rounded-full bg-green-900/40 border-4 border-green-500 flex items-center justify-center">
-            <PillIcon className="w-10 h-10 text-green-400" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-green-900/40 border-4 border-green-500 flex items-center justify-center">
+            <PillIcon className="w-8 h-8 sm:w-10 sm:h-10 text-green-400" />
           </div>
         ),
         bgClass: "bg-green-900/10",
@@ -122,11 +156,11 @@ function getStatusConfig(status: PrescriptionStatus): StatusDisplayConfig {
       };
     case "used":
       return {
-        label: "RECETA USADA",
+        label: "❌ Receta Usada",
         sublabel: "Esta receta ya fue completamente dispensada",
         icon: (
-          <div className="w-20 h-20 rounded-full bg-gray-800 border-4 border-gray-600 flex items-center justify-center">
-            <CloseIcon className="w-10 h-10 text-gray-400" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-800 border-4 border-gray-600 flex items-center justify-center">
+            <CloseIcon className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
           </div>
         ),
         bgClass: "bg-gray-800",
@@ -136,11 +170,11 @@ function getStatusConfig(status: PrescriptionStatus): StatusDisplayConfig {
       };
     case "revoked":
       return {
-        label: "RECETA REVOCADA",
+        label: "❌ Receta Inválida",
         sublabel: "Esta receta fue invalidada por el médico emisor",
         icon: (
-          <div className="w-20 h-20 rounded-full bg-red-900/40 border-4 border-red-500 flex items-center justify-center">
-            <AlertTriangleIcon className="w-10 h-10 text-red-400" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-900/40 border-4 border-red-500 flex items-center justify-center">
+            <AlertTriangleIcon className="w-8 h-8 sm:w-10 sm:h-10 text-red-400" />
           </div>
         ),
         bgClass: "bg-red-900/10",
@@ -150,11 +184,11 @@ function getStatusConfig(status: PrescriptionStatus): StatusDisplayConfig {
       };
     case "expired":
       return {
-        label: "RECETA VENCIDA",
+        label: "❌ Receta Vencida",
         sublabel: "La fecha de vigencia de esta receta ha expirado",
         icon: (
-          <div className="w-20 h-20 rounded-full bg-orange-900/30 border-4 border-orange-600 flex items-center justify-center">
-            <ClockIcon className="w-10 h-10 text-orange-400" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-orange-900/30 border-4 border-orange-600 flex items-center justify-center">
+            <ClockIcon className="w-8 h-8 sm:w-10 sm:h-10 text-orange-400" />
           </div>
         ),
         bgClass: "bg-orange-900/10",
@@ -278,10 +312,10 @@ export default function VerifyPage() {
               const cfg = getStatusConfig(prescription.status);
               return (
                 <div
-                  className={`rounded-2xl border-2 p-8 text-center ${cfg.bgClass} ${cfg.borderClass}`}
+                  className={`rounded-2xl border-2 p-6 sm:p-8 text-center ${cfg.bgClass} ${cfg.borderClass}`}
                 >
                   <div className="flex justify-center mb-4">{cfg.icon}</div>
-                  <h1 className={`text-2xl font-bold mb-1 ${cfg.textClass}`}>
+                  <h1 className={`text-xl sm:text-2xl font-bold mb-1 ${cfg.textClass}`}>
                     {cfg.label}
                   </h1>
                   <p className="text-gray-400 text-sm">{cfg.sublabel}</p>
@@ -296,10 +330,31 @@ export default function VerifyPage() {
                   Detalles de la Receta
                 </h2>
                 <p className="text-gray-500 text-xs mt-0.5">
-                  Sin información personal del paciente (Zero PHI)
+                  {prescription.patientName
+                    ? "Verificado en Stellar Blockchain"
+                    : "Sin información personal del paciente (Zero PHI)"}
                 </p>
               </div>
               <div className="divide-y divide-[#334155]">
+                {prescription.patientName && (
+                  <div className="flex items-center gap-3 px-5 py-4">
+                    <UserIcon className="w-5 h-5 text-gray-500 shrink-0" />
+                    <div>
+                      <p className="text-gray-500 text-xs">Paciente</p>
+                      <p className="text-white font-semibold">{prescription.patientName}</p>
+                    </div>
+                  </div>
+                )}
+                {prescription.doctorName && (
+                  <div className="flex items-center gap-3 px-5 py-4">
+                    <ShieldCheckIcon className="w-5 h-5 text-gray-500 shrink-0" />
+                    <div>
+                      <p className="text-gray-500 text-xs">Médico prescriptor</p>
+                      <p className="text-white font-semibold">{prescription.doctorName}</p>
+                      <p className="text-gray-500 text-xs font-mono mt-0.5">Licencia: {prescription.doctorLicense}</p>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-3 px-5 py-4">
                   <PillIcon className="w-5 h-5 text-gray-500 shrink-0" />
                   <div>
@@ -307,6 +362,9 @@ export default function VerifyPage() {
                     <p className="text-white font-semibold">
                       {prescription.medication}
                     </p>
+                    {prescription.instructions && (
+                      <p className="text-gray-400 text-xs mt-0.5">{prescription.instructions}</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3 px-5 py-4">
@@ -340,15 +398,17 @@ export default function VerifyPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 px-5 py-4">
-                  <UserIcon className="w-5 h-5 text-gray-500 shrink-0" />
-                  <div>
-                    <p className="text-gray-500 text-xs">Licencia médico</p>
-                    <p className="text-white font-mono">
-                      {prescription.doctorLicense}
-                    </p>
+                {!prescription.doctorName && (
+                  <div className="flex items-center gap-3 px-5 py-4">
+                    <UserIcon className="w-5 h-5 text-gray-500 shrink-0" />
+                    <div>
+                      <p className="text-gray-500 text-xs">Licencia médico</p>
+                      <p className="text-white font-mono">
+                        {prescription.doctorLicense}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="flex items-center gap-3 px-5 py-4">
                   <CalendarIcon className="w-5 h-5 text-gray-500 shrink-0" />
                   <div>
@@ -359,12 +419,29 @@ export default function VerifyPage() {
                 <div className="flex items-center gap-3 px-5 py-4">
                   <ClockIcon className="w-5 h-5 text-gray-500 shrink-0" />
                   <div>
-                    <p className="text-gray-500 text-xs">Fecha de vencimiento</p>
+                    <p className="text-gray-500 text-xs">Válida hasta</p>
                     <p className="text-white">
                       {formatDate(prescription.expiryDate)}
                     </p>
                   </div>
                 </div>
+                {prescription.stellarTxId && (
+                  <div className="flex items-start gap-3 px-5 py-4">
+                    <ShieldCheckIcon className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-green-500 text-xs font-semibold">✅ Verificado en Stellar Blockchain</p>
+                      <p className="text-gray-500 font-mono text-xs mt-0.5 break-all">{prescription.stellarTxId}</p>
+                      <a
+                        href={`https://stellar.expert/explorer/testnet/tx/${prescription.stellarTxId.replace(/^STELLAR:/, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 mt-1.5 text-teal-400 hover:text-teal-300 text-xs font-medium transition-colors"
+                      >
+                        Ver en Stellar Explorer ↗
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -388,7 +465,7 @@ export default function VerifyPage() {
               no existe en Stellar.
             </p>
             <p className="text-gray-500 text-xs">
-              Prueba: RX-A1B2C3D4 · RX-E5F6G7H8 · RX-I9J0K1L2
+              Prueba: RX-7A3F2E1B · RX-A1B2C3D4 · RX-E5F6G7H8
             </p>
           </div>
         )}
@@ -398,7 +475,7 @@ export default function VerifyPage() {
           <h3 className="text-white font-semibold mb-3">
             Verificar otra receta
           </h3>
-          <form onSubmit={handleVerifyAnother} className="flex gap-2">
+          <form onSubmit={handleVerifyAnother} className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
               <input
@@ -406,12 +483,12 @@ export default function VerifyPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="RX-XXXXXXXX"
-                className="w-full bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl pl-9 pr-4 py-2.5 outline-none placeholder-gray-600 transition-colors font-mono"
+                className="w-full bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-base rounded-xl pl-9 pr-4 py-2.5 outline-none placeholder-gray-600 transition-colors font-mono"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
+              className="w-full sm:w-auto px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors min-h-[48px]"
             >
               Verificar
             </button>

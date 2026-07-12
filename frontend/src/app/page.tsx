@@ -214,11 +214,11 @@ function HeroSection() {
 
           {/* ── Left: text content ── */}
           <div className="flex-1 text-center lg:text-left">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
               Las recetas médicas<br />
               <span className="text-[#10B981]">en blockchain.</span>
             </h1>
-            <p className="text-xl sm:text-2xl font-light text-[#94A3B8] mb-4">
+            <p className="text-base sm:text-xl font-light text-[#94A3B8] mb-4">
               Seguras.{" "}
               <span className="text-white font-medium">Verificables.</span>{" "}
               Sin papel.
@@ -262,7 +262,7 @@ function HeroSection() {
           </div>
 
           {/* ── Right: 3D Ficha Onchain card ── */}
-          <div id="ficha-3d" className="flex-shrink-0 flex items-center justify-center">
+          <div id="ficha-3d" className="flex-shrink-0 flex items-center justify-center w-full max-w-[320px] mx-auto lg:mx-0 overflow-hidden">
             <FichaOnchain3D />
           </div>
         </div>
@@ -359,7 +359,7 @@ function BenefitsSection() {
     <section className="py-20 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+          <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">
             Un sistema. Tres portales.
           </h2>
           <p className="text-[#64748B] text-base max-w-lg mx-auto">
@@ -456,7 +456,7 @@ function SecuritySection() {
             <span className="text-[#3B82F6] text-xs font-semibold uppercase tracking-widest">
               Seguridad
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mt-2 mb-4">
+            <h2 className="text-2xl md:text-4xl font-bold text-white mt-2 mb-4">
               Privacidad por diseño.
               <br />
               <span className="text-[#10B981]">No por promesa.</span>
@@ -571,7 +571,7 @@ function CTASection() {
           <ZapIcon className="w-3.5 h-3.5" />
           Acceso anticipado limitado
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
           Sé de los primeros en usar
           <br />
           <span className="text-[#10B981]">TrustLeaf</span>
@@ -591,7 +591,7 @@ function CTASection() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <div className="flex-1">
                 <input
                   type="email"
@@ -601,7 +601,7 @@ function CTASection() {
                     setEmailError("");
                   }}
                   placeholder="tu@clinica.cl"
-                  className={`w-full px-4 py-3.5 bg-[#0F172A] border rounded-xl text-white text-sm placeholder-[#475569] outline-none transition-colors ${
+                  className={`w-full px-4 py-3.5 bg-[#0F172A] border rounded-xl text-white text-base placeholder-[#475569] outline-none transition-colors ${
                     emailError
                       ? "border-red-500 focus:border-red-400"
                       : "border-[#334155] focus:border-[#10B981]"
@@ -613,7 +613,7 @@ function CTASection() {
               </div>
               <button
                 type="submit"
-                className="px-6 py-3.5 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 shrink-0"
+                className="w-full sm:w-auto px-6 py-3.5 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 min-h-[48px]"
               >
                 Unirme
               </button>

@@ -646,17 +646,17 @@ function TabAccesos() {
           </div>
         ) : (
           <>
-            <div className="flex gap-2 mb-3">
+            <div className="flex flex-col sm:flex-row gap-2 mb-3">
               <input
                 type="text"
                 value={newCode}
                 onChange={(e) => setNewCode(e.target.value)}
                 placeholder="Nombre del médico, RUT o código TrustLeaf"
-                className="flex-1 bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
+                className="flex-1 bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-base rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
               />
               <button
                 onClick={addAccess}
-                className="px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
+                className="w-full sm:w-auto px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors min-h-[48px]"
               >
                 Agregar
               </button>
@@ -1304,13 +1304,13 @@ export default function PatientDashboard() {
       </main>
 
       {/* ── Mobile bottom nav ─────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-[#1E293B]/95 backdrop-blur-sm border-t border-[#334155] z-40">
-        <div className="flex">
+      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-[#1E293B]/95 backdrop-blur-sm border-t border-[#334155] z-40 min-h-[56px]">
+        <div className="flex h-full">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors ${
+              className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 min-h-[56px] text-xs font-medium transition-colors ${
                 tab.id === "emergencia"
                   ? activeTab === tab.id
                     ? "text-red-400"

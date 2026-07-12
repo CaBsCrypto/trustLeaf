@@ -593,13 +593,13 @@ export default function DoctorDashboard() {
       </main>
 
       {/* ── Mobile bottom nav ─────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-[#1E293B]/95 backdrop-blur-sm border-t border-[#334155] z-40">
-        <div className="flex">
+      <nav className="fixed bottom-0 inset-x-0 md:hidden bg-[#1E293B]/95 backdrop-blur-sm border-t border-[#334155] z-40 min-h-[56px]">
+        <div className="flex h-full">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors ${
+              className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 min-h-[56px] text-xs font-medium transition-colors ${
                 activeTab === tab.id
                   ? "text-green-400"
                   : "text-gray-500 hover:text-gray-300"

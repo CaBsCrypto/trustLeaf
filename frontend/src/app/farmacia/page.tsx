@@ -87,7 +87,7 @@ export default function FarmaciaPage() {
   return (
     <div className="min-h-screen bg-[#0F172A] text-white flex flex-col">
       {/* Header */}
-      <header className="border-b border-[#334155] px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-[#334155] px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[#10B981] flex items-center justify-center text-[#0F172A] font-bold text-sm">
             TL
@@ -128,7 +128,7 @@ export default function FarmaciaPage() {
             Ingresa el código de receta o escanea el QR del paciente
           </p>
 
-          <form onSubmit={handleVerify} className="flex gap-3">
+          <form onSubmit={handleVerify} className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               value={code}
@@ -137,12 +137,12 @@ export default function FarmaciaPage() {
                 if (stage !== "idle") setStage("idle");
               }}
               placeholder="RX-T8R4M4D0L"
-              className="flex-1 bg-[#0F172A] border border-[#334155] focus:border-[#10B981] text-white text-sm rounded-xl px-4 py-3 outline-none placeholder-[#475569] transition-colors font-mono"
+              className="w-full bg-[#0F172A] border border-[#334155] focus:border-[#10B981] text-white text-base rounded-xl px-4 py-3 outline-none placeholder-[#475569] transition-colors font-mono"
             />
             <button
               type="submit"
               disabled={stage === "loading" || !code.trim()}
-              className="px-5 py-3 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#1E293B] disabled:text-[#475569] text-[#0F172A] font-bold rounded-xl transition-colors text-sm shrink-0"
+              className="w-full sm:w-auto px-5 py-3 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#1E293B] disabled:text-[#475569] text-[#0F172A] font-bold rounded-xl transition-colors text-sm min-h-[48px]"
             >
               {stage === "loading" ? "…" : "Verificar"}
             </button>
