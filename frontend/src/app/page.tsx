@@ -10,6 +10,7 @@ import HowItWorks from "../components/landing/HowItWorks";
 import UseCases from "../components/landing/UseCases";
 import FounderSection from "../components/landing/FounderSection";
 import FAQ from "../components/landing/FAQ";
+import Pricing from "../components/landing/Pricing";
 import { getTranslations } from "../lib/i18n";
 import DemoTour, { TourTrigger, type TourStep } from "../components/DemoTour";
 
@@ -759,6 +760,7 @@ export default function LandingPage() {
         <BenefitsSection />
         <SecuritySection />
         <FAQ />
+        <Pricing />
         <CTASection />
       </main>
       <Footer />
