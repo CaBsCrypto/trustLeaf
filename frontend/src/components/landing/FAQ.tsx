@@ -76,15 +76,32 @@ export default function FAQ({ locale = "es" }: FAQProps) {
         </div>
 
         <div className="bg-[#111827] border border-[#1E293B] rounded-2xl px-6 sm:px-8">
-          {t.faq.items.map((item, i) => (
-            <FAQRow
-              key={i}
-              question={item.q}
-              answer={item.a}
-              isOpen={openIndex === i}
-              onToggle={() => toggle(i)}
-            />
-          ))}
+          {(() => {
+            let flatIndex = 0;
+            return t.faq.groups.map((group) => {
+              const groupStart = flatIndex;
+              flatIndex += group.questions.length;
+              return (
+                <div key={group.categoryLabel}>
+                  <p className="text-xs uppercase tracking-widest text-slate-500 pt-6 pb-1">
+                    {group.categoryLabel}
+                  </p>
+                  {group.questions.map((item, qi) => {
+                    const idx = groupStart + qi;
+                    return (
+                      <FAQRow
+                        key={idx}
+                        question={item.q}
+                        answer={item.a}
+                        isOpen={openIndex === idx}
+                        onToggle={() => toggle(idx)}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            });
+          })()}
         </div>
       </div>
     </section>
