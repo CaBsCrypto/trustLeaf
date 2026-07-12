@@ -572,9 +572,9 @@ export default function DemoPage() {
 
           <div className="flex items-center justify-center gap-6 mt-8">
             {[
-              { label: "Hospitales", value: "12+" },
-              { label: "Clínicas piloto", value: "3" },
-              { label: "Recetas demo", value: "500+" },
+              { label: "costo por tx Stellar", value: "$0.00001" },
+              { label: "datos médicos en servidor", value: "Cero" },
+              { label: "verificación QR", value: "< 2s" },
             ].map((s, i) => (
               <div key={i} className="text-center">
                 <div className="text-xl font-extrabold" style={{ color: "#10B981" }}>
