@@ -7,6 +7,7 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import FichaOnchain3D from "../components/FichaOnchain3D";
 import HowItWorks from "../components/landing/HowItWorks";
+import FeaturesGrid from "../components/landing/FeaturesGrid";
 import UseCases from "../components/landing/UseCases";
 import FounderSection from "../components/landing/FounderSection";
 import FAQ from "../components/landing/FAQ";
@@ -755,6 +756,7 @@ export default function LandingPage() {
         <div id="how-it-works">
           <HowItWorks t={t} />
         </div>
+        <FeaturesGrid />
         <UseCases />
         <FounderSection />
         <BenefitsSection />

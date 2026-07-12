@@ -22,6 +22,11 @@ const translations = {
         title: "El paciente controla",
         desc: "Un QR. Comparte con quien quiera, cuando quiera.",
       },
+      step4: {
+        icon: "📓",
+        title: "Registra tu progreso diario",
+        desc: "El Diario de Dolor convierte tu experiencia cotidiana en datos médicos verificados. Tu médico ve patrones que de otra forma nunca detectaría.",
+      },
     },
     faq: {
       label: "Preguntas frecuentes",
@@ -99,6 +104,11 @@ const translations = {
         icon: "📱",
         title: "Patient controls it",
         desc: "One QR code. Share with anyone, anytime.",
+      },
+      step4: {
+        icon: "📓",
+        title: "Track your daily progress",
+        desc: "The Pain Diary turns your daily experience into verified medical data. Your doctor sees patterns they would never otherwise detect.",
       },
     },
     faq: {
