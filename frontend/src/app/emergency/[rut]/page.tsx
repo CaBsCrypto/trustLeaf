@@ -4,7 +4,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // ─── Mock patient data ────────────────────────────────────────────────────────
 
@@ -180,6 +180,10 @@ export default function EmergencyPage() {
   const params = useParams();
   const [lang, setLang] = useState<Lang>("es");
   const t = LABELS[lang];
+
+  useEffect(() => {
+    fetch("/api/events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: "emergency_view" }) }).catch(() => {});
+  }, []);
 
   const rutRaw = typeof params.rut === "string" ? params.rut : Array.isArray(params.rut) ? params.rut[0] : "";
   // Normalize: support both "123456789" and "12345678-9" and "12.345.678-9"
