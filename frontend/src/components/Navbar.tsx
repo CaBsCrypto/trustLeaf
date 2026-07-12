@@ -265,29 +265,40 @@ export default function Navbar({ variant = "landing", activeRole }: NavbarProps)
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-[#334155] bg-[#0F172A] px-4 py-3 space-y-1 animate-fade-in">
-          {NAV_LINKS.map((link) => {
-            const active = isActive(link);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-[#10B981]/10 text-[#10B981]"
-                    : "text-[#94A3B8] hover:text-white hover:bg-white/5"
-                }`}
-              >
-                {active && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
-                )}
-                {link.label}
-              </Link>
-            );
-          })}
-          <MobileAuthSection onClose={() => setMenuOpen(false)} />
-        </div>
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 top-16 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Dropdown panel */}
+          <div
+            className="md:hidden relative z-50 border-t border-[#334155] bg-[#0F172A] px-4 py-3 space-y-1 animate-slide-down shadow-2xl"
+          >
+            {NAV_LINKS.map((link) => {
+              const active = isActive(link);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                    active
+                      ? "bg-[#10B981]/10 text-[#10B981]"
+                      : "text-[#94A3B8] hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {active && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
+                  )}
+                  {link.label}
+                </Link>
+              );
+            })}
+            <MobileAuthSection onClose={() => setMenuOpen(false)} />
+          </div>
+        </>
       )}
     </header>
   );

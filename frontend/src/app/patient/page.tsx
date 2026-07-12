@@ -1,10 +1,11 @@
 // Copyright © 2026 Browns Studio
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { usePasskey } from "../../hooks/usePasskey";
+import { SkeletonCard } from "../../components/ui/SkeletonCard";
 import {
   PillIcon,
   FichaIcon,
@@ -26,7 +27,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type PrescriptionStatus = "active" | "partial" | "used" | "revoked";
+type PrescriptionStatus = "active" | "partial" | "used" | "revoked" | "expired";
 type LicenseStatus = "active" | "completed" | "pending";
 
 interface Prescription {
@@ -67,6 +68,28 @@ interface MedicalLeave {
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
 const MOCK_PRESCRIPTIONS: Prescription[] = [
+  {
+    id: "RX-7A3F2E1B",
+    medication: "Tramadol 50mg — control del dolor crónico",
+    status: "active",
+    dispensed: 0,
+    totalDoses: 3,
+    expiryDate: "2026-08-10",
+    hash: "0x4f8e2a1b3c9d7e6f5a2b8c1d4e3f7a9b0c5d2e1f",
+    doctorName: "Dra. María González",
+    license: "MG-47823",
+  },
+  {
+    id: "RX-C8D9E1F2",
+    medication: "Pregabalina 75mg — neuropatía",
+    status: "expired",
+    dispensed: 2,
+    totalDoses: 2,
+    expiryDate: "2026-07-08",
+    hash: "0xb2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+    doctorName: "Dr. Carlos Soto",
+    license: "CS-29341",
+  },
   {
     id: "RX-A1B2C3D4",
     medication: "Amoxicilina 500mg",
@@ -187,6 +210,10 @@ const STATUS_CONFIG: Record<
     label: "Revocada",
     className: "bg-red-900/50 text-red-400 border border-red-700",
   },
+  expired: {
+    label: "Vencida",
+    className: "bg-orange-900/50 text-orange-400 border border-orange-700",
+  },
 };
 
 const LICENSE_STATUS_CONFIG: Record<
@@ -250,8 +277,11 @@ function PrescriptionCard({
           <h3 className="text-white font-semibold text-base leading-tight">
             {rx.medication}
           </h3>
-          <p className="text-[#94A3B8] text-xs mt-0.5">
-            {rx.doctorName} · Lic. {rx.license}
+          <p className="text-[#94A3B8] text-xs mt-0.5 flex items-center gap-1.5 flex-wrap">
+            <span>{rx.doctorName} · Lic. {rx.license}</span>
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-900/40 border border-green-700 text-green-400 text-[10px] font-semibold rounded-full shrink-0">
+              ✓ Firma verificada
+            </span>
           </p>
         </div>
         <span
@@ -311,7 +341,7 @@ function PrescriptionCard({
         </button>
         <button
           onClick={() => onShowQR(rx.id)}
-          disabled={rx.status === "revoked" || rx.status === "used"}
+          disabled={rx.status === "revoked" || rx.status === "used" || rx.status === "expired"}
           className="flex items-center justify-center gap-2 w-full min-h-[44px] px-4 py-3 bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors"
         >
           <QrIcon className="w-5 h-5" />
@@ -368,11 +398,20 @@ function QRModal({
           {rxId}
         </p>
         <p className="text-center mt-2 text-[#64748B] text-xs">
-          Muestra este código en la farmacia para dispensar tu medicamento
+          Muestra este código a tu médico o farmacia para verificar la receta
         </p>
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent(`Aquí está mi receta verificada en blockchain:\nhttps://trustleaf-demo.vercel.app/verify/${rxId}\n\nEscaneame el QR o abre el link para verificar.`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full mt-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+        >
+          <span>📱</span>
+          <span>Compartir por WhatsApp</span>
+        </a>
         <button
           onClick={onClose}
-          className="w-full mt-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-xl transition-colors"
+          className="w-full mt-3 py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-xl transition-colors"
         >
           Cerrar
         </button>
@@ -386,13 +425,45 @@ function QRModal({
 function TabRecetas() {
   const [qrRxId, setQrRxId] = useState<string | null>(null);
 
+  const firstActive = MOCK_PRESCRIPTIONS.find((rx) => rx.status === "active");
+
   return (
     <>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {MOCK_PRESCRIPTIONS.map((rx) => (
-          <PrescriptionCard key={rx.id} rx={rx} onShowQR={setQrRxId} />
-        ))}
+      {/* Primary CTA — Compartir con médico */}
+      <button
+        onClick={() => {
+          if (firstActive) setQrRxId(firstActive.id);
+        }}
+        className="w-full flex items-center justify-center gap-2.5 min-h-[56px] px-6 py-4 bg-green-600 hover:bg-green-500 active:bg-green-700 text-white text-base font-bold rounded-2xl transition-colors shadow-lg shadow-green-900/30 mb-6"
+      >
+        <QrIcon className="w-5 h-5 shrink-0" />
+        Compartir historial con médico →
+      </button>
+
+      {/* Section heading — visible above the fold on both mobile and desktop */}
+      <div className="mb-5">
+        <h2 className="text-xl font-bold text-white">Mi Historial</h2>
+        <p className="text-[#94A3B8] text-sm mt-0.5">
+          Tus recetas emitidas a través de TrustLeaf
+        </p>
       </div>
+
+      {MOCK_PRESCRIPTIONS.length === 0 ? (
+        <div className="bg-[#1E293B] rounded-2xl p-10 border border-[#334155] text-center">
+          <PillIcon />
+          <p className="text-white font-semibold mt-4 mb-1">Sin recetas aún</p>
+          <p className="text-[#94A3B8] text-sm">
+            Aún no tienes recetas. Tu médico puede emitirte una desde TrustLeaf.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {MOCK_PRESCRIPTIONS.map((rx) => (
+            <PrescriptionCard key={rx.id} rx={rx} onShowQR={setQrRxId} />
+          ))}
+        </div>
+      )}
+
       {qrRxId && (
         <QRModal rxId={qrRxId} onClose={() => setQrRxId(null)} />
       )}
@@ -497,7 +568,8 @@ function TabFicha() {
 
 function TabAccesos() {
   const [accesses, setAccesses] = useState<DoctorAccess[]>(MOCK_ACCESSES);
-  const [newAddress, setNewAddress] = useState("");
+  const [newCode, setNewCode] = useState("");
+  const [grantSuccess, setGrantSuccess] = useState(false);
 
   function revokeAccess(id: string) {
     setAccesses((prev) => prev.filter((a) => a.id !== id));
@@ -505,12 +577,14 @@ function TabAccesos() {
   }
 
   function addAccess() {
-    if (!newAddress.trim()) {
-      toast.error("Ingresa una dirección de wallet");
+    if (!newCode.trim()) {
+      toast.error("Ingresa el nombre, RUT o código TrustLeaf de tu médico");
       return;
     }
-    toast.success("Solicitud de acceso enviada");
-    setNewAddress("");
+    setGrantSuccess(true);
+    toast.success("Solicitud enviada. Tu médico recibirá una notificación.");
+    setNewCode("");
+    setTimeout(() => setGrantSuccess(false), 4000);
   }
 
   return (
@@ -543,9 +617,6 @@ function TabAccesos() {
                     {doctor.specialty} · Acceso desde{" "}
                     {formatDate(doctor.accessDate)}
                   </p>
-                  <p className="text-gray-600 text-xs font-mono truncate">
-                    {doctor.walletAddress.slice(0, 16)}…
-                  </p>
                 </div>
                 <button
                   onClick={() => revokeAccess(doctor.id)}
@@ -561,22 +632,50 @@ function TabAccesos() {
 
       {/* Add new access */}
       <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
-        <h3 className="text-white font-semibold mb-3">Conceder nuevo acceso</h3>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={newAddress}
-            onChange={(e) => setNewAddress(e.target.value)}
-            placeholder="Wallet address del médico (G...)"
-            className="flex-1 bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
-          />
-          <button
-            onClick={addAccess}
-            className="px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
-          >
-            Agregar
-          </button>
-        </div>
+        <h3 className="text-white font-semibold mb-1">Conceder acceso a un médico</h3>
+        <p className="text-[#94A3B8] text-xs mb-4">
+          Ingresa el nombre, RUT o código TrustLeaf que tu médico te proporcionó.
+        </p>
+
+        {grantSuccess ? (
+          <div className="flex items-center gap-3 p-4 bg-green-900/30 border border-green-700 rounded-xl">
+            <CheckIcon className="w-5 h-5 text-green-400 shrink-0" />
+            <p className="text-green-300 text-sm">
+              Solicitud enviada. Tu médico recibirá una notificación para confirmar el acceso.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="flex gap-2 mb-3">
+              <input
+                type="text"
+                value={newCode}
+                onChange={(e) => setNewCode(e.target.value)}
+                placeholder="Nombre del médico, RUT o código TrustLeaf"
+                className="flex-1 bg-gray-900 border border-[#334155] focus:border-green-500 text-white text-sm rounded-xl px-4 py-2.5 outline-none placeholder-gray-600 transition-colors"
+              />
+              <button
+                onClick={addAccess}
+                className="px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
+              >
+                Agregar
+              </button>
+            </div>
+            <p className="text-[#64748B] text-xs flex items-start gap-1.5">
+              <ShieldCheckIcon className="w-3.5 h-3.5 text-green-600 shrink-0 mt-0.5" />
+              Tu médico debe darte su código TrustLeaf. Sin él, nadie puede acceder a tu ficha.
+            </p>
+          </>
+        )}
+      </div>
+
+      {/* Face ID / security note */}
+      <div className="flex items-start gap-3 p-4 bg-[#1E293B]/60 border border-[#334155] rounded-xl">
+        <ShieldCheckIcon className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+        <p className="text-[#94A3B8] text-xs leading-relaxed">
+          <span className="text-white font-medium">Firma segura con Face ID.</span>{" "}
+          Usamos Face ID para autorizar cambios de acceso de forma segura. No necesitas contraseña ni billetera crypto.
+        </p>
       </div>
     </div>
   );
@@ -695,9 +794,328 @@ function TabDolor() {
   );
 }
 
+// ─── Timeline Data & Component ───────────────────────────────────────────────
+
+type TimelineEventType = "prescription" | "consultation" | "test" | "diagnosis";
+
+interface TimelineEvent {
+  date: string;
+  type: TimelineEventType;
+  description: string;
+  detail: string;
+  statusLabel?: string;
+  statusActive?: boolean;
+}
+
+const TIMELINE_EVENTS: TimelineEvent[] = [
+  {
+    date: "2026-07-11",
+    type: "prescription",
+    description: "Tramadol 50mg emitido",
+    detail: "Dra. María González",
+    statusLabel: "Activo",
+    statusActive: true,
+  },
+  {
+    date: "2026-06-15",
+    type: "prescription",
+    description: "Pregabalina 75mg emitido",
+    detail: "Dr. Carlos Soto",
+    statusLabel: "Vencido",
+    statusActive: false,
+  },
+  {
+    date: "2026-05-03",
+    type: "consultation",
+    description: "Consulta de dolor crónico",
+    detail: "Hospital Clínico U. de Chile",
+  },
+  {
+    date: "2026-03-12",
+    type: "test",
+    description: "Examen de sangre",
+    detail: "Clínica Las Condes",
+  },
+  {
+    date: "2026-01-20",
+    type: "diagnosis",
+    description: "Diagnóstico: Fibromialgia",
+    detail: "Dr. Roberto Vega",
+  },
+];
+
+const TIMELINE_TYPE_CONFIG: Record<
+  TimelineEventType,
+  { dotClass: string; iconColor: string; label: string; iconPath: React.ReactNode }
+> = {
+  prescription: {
+    dotClass: "bg-teal-500 border-teal-400",
+    iconColor: "text-teal-400",
+    label: "Receta",
+    iconPath: (
+      <>
+        <path d="M10.5 3.5a5 5 0 0 1 7 7l-8 8a5 5 0 0 1-7-7l8-8z" />
+        <line x1="8.5" y1="8.5" x2="15.5" y2="15.5" />
+      </>
+    ),
+  },
+  consultation: {
+    dotClass: "bg-blue-500 border-blue-400",
+    iconColor: "text-blue-400",
+    label: "Consulta",
+    iconPath: (
+      <>
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </>
+    ),
+  },
+  test: {
+    dotClass: "bg-purple-500 border-purple-400",
+    iconColor: "text-purple-400",
+    label: "Examen",
+    iconPath: (
+      <>
+        <path d="M9 3H5a2 2 0 0 0-2 2v4" />
+        <path d="M15 3h4a2 2 0 0 1 2 2v4" />
+        <path d="M3 15v4a2 2 0 0 0 2 2h4" />
+        <path d="M15 21h4a2 2 0 0 0 2-2v-4" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ),
+  },
+  diagnosis: {
+    dotClass: "bg-orange-500 border-orange-400",
+    iconColor: "text-orange-400",
+    label: "Diagnóstico",
+    iconPath: <path d="M22 12h-4l-3 9L9 3l-3 9H2" />,
+  },
+};
+
+function TabTimeline() {
+  return (
+    <div className="space-y-2">
+      <div className="mb-5">
+        <h2 className="text-xl font-bold text-white">Historial Clínico</h2>
+        <p className="text-[#94A3B8] text-sm mt-0.5">
+          Todos tus eventos médicos en orden cronológico
+        </p>
+      </div>
+
+      <div className="relative">
+        {/* Vertical connecting line */}
+        <div className="absolute left-[5.25rem] top-4 bottom-4 w-px bg-[#334155]" />
+
+        <div className="space-y-0">
+          {TIMELINE_EVENTS.map((event, idx) => {
+            const cfg = TIMELINE_TYPE_CONFIG[event.type];
+            return (
+              <div key={idx} className="flex gap-4 items-start py-4">
+                {/* Date column */}
+                <div className="w-20 shrink-0 text-right">
+                  <p className="text-[#64748B] text-xs font-mono leading-tight">
+                    {formatDate(event.date)}
+                  </p>
+                </div>
+
+                {/* Dot */}
+                <div className="relative z-10 shrink-0 mt-0.5">
+                  <div className={`w-4 h-4 rounded-full border-2 ${cfg.dotClass} shadow-lg`} />
+                </div>
+
+                {/* Content card */}
+                <div className="flex-1 bg-[#1E293B] rounded-xl p-3.5 border border-[#334155] hover:border-gray-500 transition-colors">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className={`w-3.5 h-3.5 shrink-0 ${cfg.iconColor}`}
+                        >
+                          {cfg.iconPath}
+                        </svg>
+                        <span className={`text-xs font-medium ${cfg.iconColor}`}>
+                          {cfg.label}
+                        </span>
+                      </div>
+                      <p className="text-white text-sm font-semibold leading-snug">
+                        {event.description}
+                      </p>
+                      <p className="text-[#94A3B8] text-xs mt-0.5">{event.detail}</p>
+                    </div>
+                    {event.statusLabel && (
+                      <span
+                        className={`text-xs font-semibold px-2 py-0.5 rounded-full shrink-0 ${
+                          event.statusActive
+                            ? "bg-green-900/50 text-green-400 border border-green-700"
+                            : "bg-orange-900/50 text-orange-400 border border-orange-700"
+                        }`}
+                      >
+                        {event.statusActive ? "✅" : "⏰"} {event.statusLabel}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Emergency QR Component ───────────────────────────────────────────────────
+
+function TabEmergencia() {
+  const [showQR, setShowQR] = useState(false);
+
+  return (
+    <div className="space-y-6">
+      {/* Warning banner */}
+      <div className="flex items-start gap-3 p-4 bg-red-900/20 border border-red-800 rounded-xl">
+        <AlertTriangleIcon className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+        <p className="text-red-300 text-sm leading-relaxed">
+          <span className="font-semibold text-red-200">Solo para emergencias.</span>{" "}
+          Este QR permite acceso de solo lectura a tu información médica vital. Compártelo únicamente con equipos de emergencia.
+        </p>
+      </div>
+
+      {/* Big pulsing CTA button */}
+      <div className="flex justify-center py-4">
+        <button
+          onClick={() => setShowQR(true)}
+          className="relative flex flex-col items-center gap-3 px-10 py-8 bg-red-600 hover:bg-red-500 active:bg-red-700 text-white rounded-3xl shadow-2xl shadow-red-900/50 transition-colors"
+          style={{ minWidth: 220 }}
+        >
+          <span className="absolute inset-0 rounded-3xl animate-ping bg-red-500 opacity-20 pointer-events-none" />
+          <span className="absolute inset-0 rounded-3xl ring-2 ring-red-400 opacity-40 pointer-events-none" />
+          <span className="text-4xl">🚨</span>
+          <span className="text-xl font-bold tracking-wide">QR de Emergencia</span>
+          <span className="text-red-200 text-sm font-medium">Toca para mostrar</span>
+        </button>
+      </div>
+
+      {/* Emergency info cards */}
+      <div className="bg-[#1E293B] rounded-2xl p-5 border border-[#334155]">
+        <h3 className="text-white font-semibold mb-4">Información visible en emergencia</h3>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-red-900/40 border border-red-700 flex items-center justify-center shrink-0">
+              <HeartPulseIcon className="w-4 h-4 text-red-400" />
+            </div>
+            <div>
+              <p className="text-[#94A3B8] text-xs">Grupo sanguíneo</p>
+              <p className="text-white text-sm font-semibold">O+</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-yellow-900/40 border border-yellow-700 flex items-center justify-center shrink-0">
+              <AlertTriangleIcon className="w-4 h-4 text-yellow-400" />
+            </div>
+            <div>
+              <p className="text-[#94A3B8] text-xs">Alergias</p>
+              <p className="text-white text-sm font-semibold">Penicilina, AINEs</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-teal-900/40 border border-teal-700 flex items-center justify-center shrink-0">
+              <PillIcon className="w-4 h-4 text-teal-400" />
+            </div>
+            <div>
+              <p className="text-[#94A3B8] text-xs">Medicamentos actuales</p>
+              <p className="text-white text-sm font-semibold">Tramadol 50mg, Pregabalina 75mg</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-900/40 border border-blue-700 flex items-center justify-center shrink-0">
+              <UserIcon className="w-4 h-4 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-[#94A3B8] text-xs">Contacto de emergencia</p>
+              <p className="text-white text-sm font-semibold">+56 9 1234 5678</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* QR Modal */}
+      {showQR && (
+        <div
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4"
+          onClick={() => setShowQR(false)}
+        >
+          <div
+            className="bg-gray-900 border border-red-800 rounded-t-3xl sm:rounded-2xl p-6 w-full sm:max-w-sm flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🚨</span>
+                <h3 className="text-white font-bold text-lg">QR de Emergencia</h3>
+              </div>
+              <button onClick={() => setShowQR(false)} className="text-gray-400 hover:text-white transition-colors">
+                <CloseIcon className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-red-300 text-xs mb-4">
+              Acceso de solo lectura · Juan Pérez · O+ · Penicilina, AINEs
+            </p>
+
+            {/* QR placeholder grid */}
+            <div className="bg-white p-5 rounded-2xl mx-auto w-56 h-56 grid grid-cols-10 grid-rows-10 gap-0.5">
+              {[
+                1,1,1,1,1,0,0,1,0,1,
+                1,0,0,0,1,0,1,0,1,1,
+                1,0,1,0,1,1,0,1,0,0,
+                1,0,0,0,1,0,1,1,1,0,
+                1,1,1,1,1,0,0,0,1,1,
+                0,1,0,1,0,1,1,0,0,1,
+                1,0,1,1,0,0,1,1,1,0,
+                0,1,0,0,1,0,0,1,0,1,
+                0,0,1,1,0,1,0,0,1,1,
+                1,1,0,0,1,0,1,1,0,1,
+              ].map((bit, i) => (
+                <div key={i} className={`${bit ? "bg-gray-900" : "bg-white"} rounded-[1px]`} />
+              ))}
+            </div>
+
+            <p className="text-center mt-4 text-[#94A3B8] text-xs font-mono">
+              /verify/emergency/juan-perez
+            </p>
+            <p className="text-center mt-1 text-[#64748B] text-xs">
+              Solo lectura · Información vital de emergencia
+            </p>
+            <a
+              href="https://trustleaf-demo.vercel.app/verify/emergency/juan-perez"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full mt-4 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+            >
+              <span>🔗</span>
+              <span>Abrir enlace de emergencia</span>
+            </a>
+            <button
+              onClick={() => setShowQR(false)}
+              className="w-full mt-3 py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-xl transition-colors"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-type TabId = "recetas" | "ficha" | "accesos" | "licencias" | "dolor";
+type TabId = "recetas" | "ficha" | "accesos" | "licencias" | "dolor" | "timeline" | "emergencia";
 
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: "recetas", label: "Mis Recetas", icon: <PillIcon /> },
@@ -716,12 +1134,44 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
       </svg>
     ),
   },
+  {
+    id: "timeline",
+    label: "Historial",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <line x1="12" y1="2" x2="12" y2="22" />
+        <circle cx="12" cy="6" r="2" fill="currentColor" stroke="none" />
+        <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+        <circle cx="12" cy="18" r="2" fill="currentColor" stroke="none" />
+        <line x1="12" y1="6" x2="18" y2="6" />
+        <line x1="12" y1="12" x2="18" y2="12" />
+        <line x1="12" y1="18" x2="18" y2="18" />
+      </svg>
+    ),
+  },
+  {
+    id: "emergencia",
+    label: "🚨 Emergencia",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
+  },
 ];
 
 export default function PatientDashboard() {
   const { walletAddress } = usePasskey();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("recetas");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0F172A] text-white">
@@ -757,14 +1207,18 @@ export default function PatientDashboard() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                activeTab === tab.id
+                tab.id === "emergencia"
+                  ? activeTab === tab.id
+                    ? "bg-red-600 text-white font-semibold"
+                    : "text-red-400 hover:text-white hover:bg-red-900/40 border border-red-900"
+                  : activeTab === tab.id
                   ? "bg-[#10B981] text-[#0F172A] font-semibold"
                   : "text-gray-400 hover:text-white hover:bg-[#253046]"
               }`}
             >
               <span
                 className={`w-4 h-4 ${
-                  activeTab === tab.id ? "text-white" : "text-gray-500"
+                  activeTab === tab.id ? "text-white" : tab.id === "emergencia" ? "text-red-400" : "text-gray-500"
                 }`}
               >
                 {tab.icon}
@@ -829,11 +1283,23 @@ export default function PatientDashboard() {
 
         {/* Tab content */}
         <div className="px-4 md:px-8 py-6">
-          {activeTab === "recetas" && <TabRecetas />}
-          {activeTab === "ficha" && <TabFicha />}
-          {activeTab === "accesos" && <TabAccesos />}
-          {activeTab === "licencias" && <TabLicencias />}
-          {activeTab === "dolor" && <TabDolor />}
+          {loading ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <SkeletonCard lines={4} />
+              <SkeletonCard lines={4} />
+              <SkeletonCard lines={4} />
+            </div>
+          ) : (
+            <>
+              {activeTab === "recetas" && <TabRecetas />}
+              {activeTab === "ficha" && <TabFicha />}
+              {activeTab === "accesos" && <TabAccesos />}
+              {activeTab === "licencias" && <TabLicencias />}
+              {activeTab === "dolor" && <TabDolor />}
+              {activeTab === "timeline" && <TabTimeline />}
+              {activeTab === "emergencia" && <TabEmergencia />}
+            </>
+          )}
         </div>
       </main>
 
@@ -845,7 +1311,11 @@ export default function PatientDashboard() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors ${
-                activeTab === tab.id
+                tab.id === "emergencia"
+                  ? activeTab === tab.id
+                    ? "text-red-400"
+                    : "text-red-600 hover:text-red-400"
+                  : activeTab === tab.id
                   ? "text-green-400"
                   : "text-gray-500 hover:text-gray-300"
               }`}
