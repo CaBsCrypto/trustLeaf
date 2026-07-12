@@ -709,6 +709,18 @@ function Footer() {
           </div>
         </div>
 
+        {/* YC badge */}
+        <div className="flex justify-center mb-4">
+          <a
+            href="https://apply.ycombinator.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981] text-xs font-semibold hover:bg-[#10B981]/20 transition-colors"
+          >
+            🚀 Aplicando a Y Combinator Fall 2026
+          </a>
+        </div>
+
         {/* Bottom bar */}
         <div className="pt-6 border-t border-[#1E293B] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[#475569] text-xs">
