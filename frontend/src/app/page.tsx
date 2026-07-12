@@ -163,33 +163,11 @@ function ChainIcon({ className = "w-6 h-6" }: { className?: string }) {
 // ─── Section: Hero ─────────────────────────────────────────────────────────────
 
 function SocialProofCounter() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const target = 120;
-    const duration = 2000; // ms
-    const steps = 60;
-    const interval = duration / steps;
-    let current = 0;
-
-    const timer = setInterval(() => {
-      current += target / steps;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, interval);
-
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <div className="flex items-center justify-center gap-2 mt-6">
-      <span className="text-base">📋</span>
+      <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
       <span className="text-[#94A3B8] text-sm">
-        <span className="text-white font-bold">+{count}</span> profesionales de la salud en lista de espera
+        <span className="text-white font-semibold">Beta cerrada</span> — lista de espera abierta
       </span>
     </div>
   );
@@ -241,7 +219,7 @@ function HeroSection() {
                 Únete a la lista de espera →
               </a>
               <Link
-                href="/demo/medico"
+                href="/doctor"
                 className="w-full sm:w-auto px-7 py-3.5 border border-[#10B981]/50 hover:border-[#10B981] text-[#10B981] hover:text-white hover:bg-[#10B981]/10 text-sm font-semibold rounded-xl transition-colors text-center"
               >
                 Ver demo médico →
@@ -551,7 +529,7 @@ function CTASection() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setEmailError("");
 
@@ -562,6 +540,17 @@ function CTASection() {
     if (!validateEmail(email)) {
       setEmailError("Ingresa un email válido.");
       return;
+    }
+
+    // Call the waitlist API (sends email via Resend; falls back gracefully if no key)
+    try {
+      await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    } catch {
+      // Network error — still mark as submitted (don't block UX)
     }
 
     localStorage.setItem("tl_waitlist_email", email);
