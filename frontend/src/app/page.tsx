@@ -8,6 +8,8 @@ import Navbar from "../components/Navbar";
 import FichaOnchain3D from "../components/FichaOnchain3D";
 import HowItWorks from "../components/landing/HowItWorks";
 import UseCases from "../components/landing/UseCases";
+import FounderSection from "../components/landing/FounderSection";
+import FAQ from "../components/landing/FAQ";
 import { getTranslations } from "../lib/i18n";
 import DemoTour, { TourTrigger, type TourStep } from "../components/DemoTour";
 
@@ -741,8 +743,10 @@ export default function LandingPage() {
           <HowItWorks t={t} />
         </div>
         <UseCases />
+        <FounderSection />
         <BenefitsSection />
         <SecuritySection />
+        <FAQ />
         <CTASection />
       </main>
       <Footer />
