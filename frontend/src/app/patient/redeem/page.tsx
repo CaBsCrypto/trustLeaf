@@ -6,6 +6,9 @@ import { useContractCall } from "../../../hooks/useContractCall";
 import { BACKEND_URL } from "../../../lib/stellar";
 import { toast } from "sonner";
 
+// Always true in demo/YC build — no backend required
+const DEMO_MODE = true;
+
 type Step = "form" | "generating" | "signing" | "done";
 
 export default function RedeemPage() {
@@ -25,6 +28,15 @@ export default function RedeemPage() {
     e.preventDefault();
     if (!walletAddress) {
       toast.error("Debes estar conectado");
+      return;
+    }
+
+    if (DEMO_MODE) {
+      setStep("generating");
+      await new Promise((r) => setTimeout(r, 2500));
+      setStep("signing");
+      await new Promise((r) => setTimeout(r, 1800));
+      setStep("done");
       return;
     }
 
