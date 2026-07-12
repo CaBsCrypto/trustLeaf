@@ -6,12 +6,9 @@ const nextConfig: NextConfig = {
     config.experiments = { ...config.experiments, asyncWebAssembly: true };
     return config;
   },
-  // Allow external image sources
+  // Allow Stellar horizon/RPC images (for future use)
   images: {
-    domains: [
-      "firebasestorage.googleapis.com",
-      "api.qrserver.com",  // QR code generation service
-    ],
+    domains: ["firebasestorage.googleapis.com"],
   },
 };
 
