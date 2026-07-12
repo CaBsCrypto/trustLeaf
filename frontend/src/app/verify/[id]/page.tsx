@@ -3,6 +3,7 @@
 "use client";
 
 import Navbar from "../../../components/Navbar";
+import QRCode from "../../../components/QRCode";
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -47,9 +48,9 @@ const MOCK_DB: Record<string, PublicPrescription> = {
     status: "active",
     dosesRemaining: 1,
     totalDoses: 3,
-    expiryDate: "2026-07-14",
+    expiryDate: "2026-09-15",
     doctorLicense: "CM-12345",
-    issuedDate: "2026-07-08",
+    issuedDate: "2026-07-12",
   },
   "RX-E5F6G7H8": {
     rxId: "RX-E5F6G7H8",
@@ -57,9 +58,9 @@ const MOCK_DB: Record<string, PublicPrescription> = {
     status: "partial",
     dosesRemaining: 5,
     totalDoses: 6,
-    expiryDate: "2026-08-20",
+    expiryDate: "2026-10-20",
     doctorLicense: "AR-67890",
-    issuedDate: "2026-07-07",
+    issuedDate: "2026-07-10",
   },
   "RX-I9J0K1L2": {
     rxId: "RX-I9J0K1L2",
@@ -67,9 +68,9 @@ const MOCK_DB: Record<string, PublicPrescription> = {
     status: "used",
     dosesRemaining: 0,
     totalDoses: 3,
-    expiryDate: "2026-06-30",
+    expiryDate: "2026-09-30",
     doctorLicense: "RS-54321",
-    issuedDate: "2026-06-15",
+    issuedDate: "2026-07-01",
   },
   "RX-M3N4O5P6": {
     rxId: "RX-M3N4O5P6",
@@ -77,7 +78,7 @@ const MOCK_DB: Record<string, PublicPrescription> = {
     status: "revoked",
     dosesRemaining: 0,
     totalDoses: 2,
-    expiryDate: "2026-07-10",
+    expiryDate: "2026-09-10",
     doctorLicense: "CL-99876",
     issuedDate: "2026-07-01",
   },
@@ -207,50 +208,26 @@ function formatDate(dateStr: string): string {
   });
 }
 
-// ─── QR Placeholder ───────────────────────────────────────────────────────────
-
-const QR_PATTERN = [
-  1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1,
-  1,0,0,0,0,0,1,0,0,1,0,0,1,0,1,0,0,0,0,0,1,
-  1,0,1,1,1,0,1,0,1,0,1,1,0,0,1,0,1,1,1,0,1,
-  1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,0,1,1,1,0,1,
-  1,0,1,1,1,0,1,0,1,1,0,1,0,0,1,0,1,1,1,0,1,
-  1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,
-  1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,
-  0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,
-  1,1,0,1,1,0,1,1,0,0,1,1,0,0,1,0,1,0,1,1,0,
-  0,0,1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,
-  1,0,1,1,0,0,1,0,1,0,1,0,1,1,0,0,1,1,0,1,0,
-  0,1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,
-  1,1,1,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,1,
-  0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,
-  1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,0,1,0,1,0,1,
-  1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,
-  1,0,1,1,1,0,1,0,1,0,0,1,1,0,1,1,0,0,1,0,1,
-  1,0,1,1,1,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,0,
-  1,0,1,1,1,0,1,0,1,1,0,1,0,0,0,1,0,1,0,0,1,
-  1,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,0,
-  1,1,1,1,1,1,1,0,1,0,0,1,0,1,0,1,0,1,0,1,0,
-];
+// ─── QR Real (escaneable) ─────────────────────────────────────────────────────
 
 function QRDisplay({ rxId }: { rxId: string }) {
+  const verifyUrl = `https://trustleaf-demo.vercel.app/verify/${rxId}`;
+
   return (
     <div className="bg-[#1E293B] rounded-2xl p-6 border border-[#334155]">
       <h3 className="text-white font-semibold text-center mb-4">
         Código QR de Verificación
       </h3>
-      <div className="bg-white p-4 rounded-xl w-52 h-52 mx-auto grid gap-px"
-           style={{ gridTemplateColumns: "repeat(21, 1fr)" }}>
-        {QR_PATTERN.map((bit, i) => (
-          <div
-            key={i}
-            className={bit ? "bg-gray-900" : "bg-white"}
-          />
-        ))}
+      <div className="flex justify-center">
+        <QRCode
+          value={verifyUrl}
+          size={200}
+          label={rxId}
+          showCopy={true}
+        />
       </div>
-      <p className="text-center mt-3 text-gray-400 text-xs font-mono">{rxId}</p>
-      <p className="text-center mt-1 text-gray-600 text-xs">
-        Escanea con la app TrustLeaf para verificar
+      <p className="text-center mt-3 text-gray-500 text-xs">
+        Escanea para verificar esta receta en tiempo real
       </p>
     </div>
   );
