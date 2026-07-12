@@ -76,6 +76,28 @@ const MOCK_STATS = {
   patientsAttended: 28,
 };
 
+// Pain diary data per patient (P1 = chronic pain patient)
+const PATIENT_PAIN_DATA: Record<string, { day: string; level: number }[]> = {
+  P1: [
+    { day: "Lun", level: 7 },
+    { day: "Mar", level: 6 },
+    { day: "Mié", level: 8 },
+    { day: "Jue", level: 5 },
+    { day: "Vie", level: 6 },
+    { day: "Sáb", level: 4 },
+    { day: "Dom", level: 7 },
+  ],
+  P2: [
+    { day: "Lun", level: 3 },
+    { day: "Mar", level: 4 },
+    { day: "Mié", level: 3 },
+    { day: "Jue", level: 5 },
+    { day: "Vie", level: 2 },
+    { day: "Sáb", level: 2 },
+    { day: "Dom", level: 3 },
+  ],
+};
+
 const MOCK_PATIENTS: PatientRow[] = [
   {
     id: "P1",
@@ -297,6 +319,96 @@ function TabInicio() {
   );
 }
 
+function PainMiniChart({ data }: { data: { day: string; level: number }[] }) {
+  const avg = Math.round(data.reduce((s, d) => s + d.level, 0) / data.length * 10) / 10;
+  const getColor = (l: number) => l <= 3 ? "#22C55E" : l <= 6 ? "#EAB308" : "#EF4444";
+  return (
+    <div className="mt-3 p-3 bg-gray-900/60 rounded-xl border border-[#334155]">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[#94A3B8] text-xs font-medium">📓 Diario de Dolor — 7 días</span>
+        <span className="text-xs font-bold" style={{ color: getColor(avg) }}>
+          Promedio: {avg}/10
+        </span>
+      </div>
+      <div className="flex items-end gap-1" style={{ height: "40px" }}>
+        {data.map(({ day, level }) => (
+          <div key={day} className="flex-1 flex flex-col items-center gap-0.5">
+            <div
+              className="w-full rounded-t"
+              style={{
+                height: `${(level / 10) * 36}px`,
+                backgroundColor: getColor(level),
+                minHeight: "3px",
+              }}
+            />
+            <span className="text-[9px] text-[#64748B]">{day[0]}</span>
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#64748B] mt-2">
+        Pico: miércoles · Tramadol correlaciona con reducción de 2 pts
+      </p>
+    </div>
+  );
+}
+
+function PatientListWithPain() {
+  const [expanded, setExpanded] = useState<string | null>(null);
+  return (
+    <ul className="divide-y divide-[#334155]">
+      {MOCK_PATIENTS.map((patient) => {
+        const painData = PATIENT_PAIN_DATA[patient.id];
+        const isOpen = expanded === patient.id;
+        return (
+          <li key={patient.id} className="px-5 py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center shrink-0">
+                <UserIcon className="w-4 h-4 text-gray-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="text-white text-sm font-medium font-mono">
+                    {patient.maskedName}
+                  </p>
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                    patient.status === "active"
+                      ? "bg-green-900/40 text-green-400"
+                      : "bg-gray-700 text-gray-500"
+                  }`}>
+                    {patient.status === "active" ? "Activo" : "Inactivo"}
+                  </span>
+                  {painData && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-900/40 text-purple-400">
+                      📓 Diario
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-500 text-xs">
+                  {patient.prescriptionCount} receta{patient.prescriptionCount !== 1 ? "s" : ""} · Últ. visita {formatDate(patient.lastVisit)}
+                </p>
+              </div>
+              <button
+                onClick={() => setExpanded(isOpen ? null : patient.id)}
+                className={`transition-colors ${isOpen ? "text-green-400" : "text-gray-500 hover:text-green-400"}`}
+              >
+                <ChevronRightIcon className={`w-4 h-4 transition-transform ${isOpen ? "rotate-90" : ""}`} />
+              </button>
+            </div>
+            {isOpen && painData && (
+              <PainMiniChart data={painData} />
+            )}
+            {isOpen && !painData && (
+              <div className="mt-3 p-3 bg-gray-900/60 rounded-xl border border-[#334155] text-[#64748B] text-xs">
+                Este paciente aún no tiene entradas en el Diario de Dolor.
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function TabPacientes() {
   return (
     <div className="space-y-4">
@@ -324,49 +436,7 @@ function TabPacientes() {
             </Link>
           </div>
         ) : (
-          <ul className="divide-y divide-[#334155]">
-            {MOCK_PATIENTS.map((patient) => (
-              <li
-                key={patient.id}
-                className="flex items-center gap-3 px-5 py-4 hover:bg-[#253046]/60 transition-colors"
-              >
-                <div className="w-9 h-9 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center shrink-0">
-                  <UserIcon className="w-4 h-4 text-gray-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-white text-sm font-medium font-mono">
-                      {patient.maskedName}
-                    </p>
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                        patient.status === "active"
-                          ? "bg-green-900/40 text-green-400"
-                          : "bg-gray-700 text-gray-500"
-                      }`}
-                    >
-                      {patient.status === "active" ? "Activo" : "Inactivo"}
-                    </span>
-                  </div>
-                  <p className="text-gray-500 text-xs">
-                    {patient.prescriptionCount} receta
-                    {patient.prescriptionCount !== 1 ? "s" : ""} · Últ. visita{" "}
-                    {formatDate(patient.lastVisit)}
-                  </p>
-                </div>
-                <button
-                  onClick={() =>
-                    toast.info(
-                      "Historial completo disponible próximamente"
-                    )
-                  }
-                  className="text-gray-500 hover:text-green-400 transition-colors"
-                >
-                  <ChevronRightIcon className="w-4 h-4" />
-                </button>
-              </li>
-            ))}
-          </ul>
+          <PatientListWithPain />
         )}
       </div>
     </div>
