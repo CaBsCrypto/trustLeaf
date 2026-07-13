@@ -3,14 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --background: #0F172A;
-  --surface: #1E293B;
-  --border: #334155;
-  --foreground: #F1F5F9;
-  --muted: #94A3B8;
-  --accent-green: #10B981;
-  --accent-green-dark: #059669;
-  --accent-blue: #3B82F6;
+  --background: #F8FAFC;
+  --surface: #FFFFFF;
+  --border: #E2E8F0;
+  --foreground: #0F172A;
+  --muted: #64748B;
+  --accent: #0EA5E9;
+  --accent-dark: #0284C7;
+  --accent-blue: #0EA5E9;
+  /* Portal pages keep dark variables via .portal class */
+  --portal-bg: #0F172A;
+  --portal-surface: #1E293B;
+  --portal-border: #334155;
+  --portal-fg: #F1F5F9;
+  --portal-muted: #94A3B8;
+  --portal-green: #10B981;
 }
 
 * {
@@ -26,8 +33,14 @@ body {
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevent horizontal scroll on mobile */
   overflow-x: hidden;
+}
+
+/* Portal pages (patient, doctor, caregiver, farmacia) use dark theme */
+.portal-page {
+  background-color: var(--portal-bg);
+  color: var(--portal-fg);
+  min-height: 100vh;
 }
 
 /* Custom scrollbar */
@@ -36,24 +49,24 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #1E293B;
+  background: #E2E8F0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #CBD5E1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94A3B8;
 }
 
 /* Focus ring */
 :focus-visible {
-  outline: 2px solid var(--accent-green);
+  outline: 2px solid #0EA5E9;
   outline-offset: 2px;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(16, 185, 129, 0.3);
-  color: #F1F5F9;
+  background: rgba(14, 165, 233, 0.2);
+  color: #0F172A;
 }

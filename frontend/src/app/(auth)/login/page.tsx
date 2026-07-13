@@ -1,8 +1,8 @@
 // Copyright © 2026 Browns Studio
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { saveUserRole, getUserRole, type UserRole } from "../../../lib/user-role";
 
@@ -82,11 +82,37 @@ const ROLE_OPTIONS: RoleOption[] = [
 ];
 
 // ─── Main page ────────────────────────────────────────────────────────────────
-export default function LoginPage() {
+function LoginPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, authenticated, ready } = usePrivy();
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [pendingRole, setPendingRole] = useState<UserRole | null>(null);
+
+  // Auto-trigger demo if ?demo= query param is present
+  useEffect(() => {
+    const demoParam = searchParams.get("demo");
+    if (demoParam) {
+      const roleMap: Record<string, UserRole> = {
+        paciente: "patient",
+        patient: "patient",
+        medico: "doctor",
+        doctor: "doctor",
+        farmacia: "dispensary",
+        dispensary: "dispensary",
+        cuidador: "patient",
+      };
+      const role = roleMap[demoParam.toLowerCase()];
+      if (role) {
+        saveUserRole(role);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("trustleaf_demo_user", "true");
+        }
+        const option = ROLE_OPTIONS.find((o) => o.role === role);
+        router.push(option?.portal ?? "/patient");
+      }
+    }
+  }, [searchParams, router]);
 
   // If already authenticated, redirect to saved portal
   useEffect(() => {
@@ -295,5 +321,17 @@ export default function LoginPage() {
         © 2026 Browns Studio · TrustLeaf
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0F172A" }}>
+        <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "#10B981 transparent #10B981 #10B981" }} />
+      </div>
+    }>
+      <LoginPageInner />
+    </Suspense>
   );
 }

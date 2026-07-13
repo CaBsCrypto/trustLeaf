@@ -40,7 +40,7 @@ const LANDING_TOUR_STEPS: TourStep[] = [
   {
     title: "¡Listo para el demo!",
     description:
-      "Haz clic en 'Ver demo médico' para ver cómo un médico emite una receta con Face ID.",
+      "Haz clic en 'Demo Médico' para ver cómo un médico emite una receta con Face ID.",
     highlight: "cta",
   },
 ];
@@ -166,9 +166,9 @@ function ChainIcon({ className = "w-6 h-6" }: { className?: string }) {
 function SocialProofCounter() {
   return (
     <div className="flex items-center justify-center gap-2 mt-6">
-      <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-      <span className="text-[#94A3B8] text-sm">
-        <span className="text-white font-semibold">Beta cerrada</span> — lista de espera abierta
+      <span className="w-2 h-2 rounded-full bg-[#0EA5E9] animate-pulse" />
+      <span className="text-slate-500 text-sm">
+        <span className="text-slate-700 font-semibold">Beta cerrada</span> — lista de espera abierta
       </span>
     </div>
   );
@@ -176,73 +176,73 @@ function SocialProofCounter() {
 
 function HeroSection() {
   return (
-    <section id="hero" className="relative overflow-hidden pt-20 pb-24 md:pt-28 md:pb-32">
-      {/* Background glow */}
+    <section id="hero" className="relative overflow-hidden pt-20 pb-24 md:pt-28 md:pb-32 bg-white">
+      {/* Gradient background */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-[#10B981] opacity-[0.04] rounded-full blur-3xl" />
-        <div className="absolute top-20 left-1/4 w-[400px] h-[300px] bg-[#3B82F6] opacity-[0.04] rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-blue-50" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#0EA5E9] opacity-[0.06] rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-400 opacity-[0.04] rounded-full blur-3xl" />
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage: "linear-gradient(#0EA5E9 1px, transparent 1px), linear-gradient(90deg, #0EA5E9 1px, transparent 1px)", backgroundSize: "60px 60px"}} />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Badge — centered above the two-col layout */}
+        {/* Badge */}
         <div className="flex justify-center mb-8">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981] text-xs font-semibold tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-            Construido sobre Stellar · Soroban Smart Contracts
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sky-200 bg-sky-50 text-sky-600 text-xs font-semibold tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0EA5E9] animate-pulse" />
+            Tu historial de salud, en Stellar
           </span>
         </div>
 
-        {/* Two-column hero: text left, 3D card right */}
+        {/* Two-column hero */}
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 mb-14">
 
-          {/* ── Left: text content ── */}
+          {/* Left: text */}
           <div className="flex-1 text-center lg:text-left">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
-              Las recetas médicas<br />
-              <span className="text-[#10B981]">en blockchain.</span>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.08] mb-6">
+              Tu Historial<br />
+              Médico.<br />
+              <span className="text-slate-800">Siempre Tuyo.</span><br />
+              <span className="text-[#0EA5E9]">Siempre Verificado.</span>
             </h1>
-            <p className="text-base sm:text-xl font-light text-[#94A3B8] mb-4">
-              Seguras.{" "}
-              <span className="text-white font-medium">Verificables.</span>{" "}
-              Sin papel.
-            </p>
-            <p className="text-base text-[#64748B] max-w-xl mx-auto lg:mx-0 mb-10">
-              TrustLeaf digitaliza la prescripción médica con pruebas de conocimiento cero.
-              El médico emite, el paciente controla, la farmacia verifica — sin exponer datos personales.
+            <p className="text-base sm:text-lg text-slate-500 max-w-xl mx-auto lg:mx-0 mb-10">
+              Tu ficha clínica completa, tuya y verificada on-chain. Te sigue a cualquier médico,
+              ciudad o país — sin papeles perdidos, sin llamadas, sin fronteras.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3">
+            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 mb-4">
               <a
                 href="#cta"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 text-center shadow-lg shadow-[#10B981]/20"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#0EA5E9] hover:bg-[#0284C7] text-white text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 text-center shadow-lg shadow-sky-200"
               >
-                Únete a la lista de espera →
+                Unirse a la Lista →
               </a>
               <Link
-                href="/doctor"
-                className="w-full sm:w-auto px-7 py-3.5 border border-[#10B981]/50 hover:border-[#10B981] text-[#10B981] hover:text-white hover:bg-[#10B981]/10 text-sm font-semibold rounded-xl transition-colors text-center"
+                href="/login?demo=paciente"
+                className="w-full sm:w-auto px-7 py-3.5 border border-slate-200 hover:border-sky-300 bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 text-sm font-semibold rounded-xl transition-colors text-center shadow-sm"
               >
-                Ver demo médico →
+                Demo Paciente →
               </Link>
               <Link
-                href="/patient"
-                className="w-full sm:w-auto px-7 py-3.5 border border-[#334155] hover:border-[#475569] text-[#94A3B8] hover:text-white text-sm font-medium rounded-xl transition-colors text-center"
+                href="/login?demo=medico"
+                className="w-full sm:w-auto px-7 py-3.5 border border-slate-200 hover:border-sky-300 bg-white hover:bg-sky-50 text-slate-600 hover:text-sky-700 text-sm font-medium rounded-xl transition-colors text-center shadow-sm"
               >
-                Ver demo paciente →
+                Demo Médico →
               </Link>
             </div>
 
             {/* Trust micro-copy */}
-            <p className="text-[#475569] text-xs mt-4 text-center lg:text-left">
-              ✓ Gratis durante beta &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Datos seguros en blockchain
+            <p className="text-slate-400 text-xs text-center lg:text-left">
+              ✓ Pacientes siempre gratis &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Datos seguros en blockchain
             </p>
 
             {/* Caregiver nudge */}
             <div className="mt-3 flex justify-center lg:justify-start">
               <Link
                 href="/caregiver/types"
-                className="inline-flex items-center gap-2 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                className="inline-flex items-center gap-2 text-xs text-purple-500 hover:text-purple-700 transition-colors"
               >
                 <span>🧠</span>
                 <span>¿Cuidas a un familiar con Alzheimer u otra condición?</span>
@@ -250,31 +250,31 @@ function HeroSection() {
               </Link>
             </div>
 
-            {/* Social proof counter */}
+            {/* Social proof */}
             <div className="lg:flex lg:justify-start">
               <SocialProofCounter />
             </div>
           </div>
 
-          {/* ── Right: 3D Ficha Onchain card ── */}
+          {/* Right: 3D Ficha */}
           <div id="ficha-3d" className="flex-shrink-0 flex items-center justify-center w-full max-w-[320px] mx-auto lg:mx-0 overflow-hidden">
             <FichaOnchain3D />
           </div>
         </div>
 
         {/* Trust stats */}
-        <div className="grid grid-cols-3 divide-x divide-[#334155] max-w-lg mx-auto border border-[#334155] rounded-2xl overflow-hidden bg-[#1E293B]/50">
+        <div className="grid grid-cols-3 divide-x divide-slate-200 max-w-lg mx-auto border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
           <div className="px-4 py-4 text-center">
-            <p className="text-[#10B981] text-xl font-bold font-mono">0</p>
-            <p className="text-[#64748B] text-xs mt-0.5">PHI on-chain</p>
+            <p className="text-[#0EA5E9] text-xl font-bold font-mono">0</p>
+            <p className="text-slate-400 text-xs mt-0.5">PHI on-chain</p>
           </div>
           <div className="px-4 py-4 text-center">
-            <p className="text-[#3B82F6] text-xl font-bold font-mono">ZK</p>
-            <p className="text-[#64748B] text-xs mt-0.5">Proofs</p>
+            <p className="text-purple-500 text-xl font-bold font-mono">ZK</p>
+            <p className="text-slate-400 text-xs mt-0.5">Proofs</p>
           </div>
           <div className="px-4 py-4 text-center">
-            <p className="text-white text-xl font-bold font-mono">XLM</p>
-            <p className="text-[#64748B] text-xs mt-0.5">Stellar Network</p>
+            <p className="text-slate-700 text-xl font-bold font-mono">XLM</p>
+            <p className="text-slate-400 text-xs mt-0.5">Stellar Network</p>
           </div>
         </div>
       </div>
@@ -290,7 +290,7 @@ interface BenefitItem {
 
 interface RoleCardProps {
   icon: React.ReactNode;
-  color: "green" | "blue" | "purple";
+  color: "sky" | "blue" | "purple";
   role: string;
   headline: string;
   benefits: BenefitItem[];
@@ -299,40 +299,40 @@ interface RoleCardProps {
 
 function RoleCard({ icon, color, role, headline, benefits, cta }: RoleCardProps) {
   const colorMap = {
-    green: {
-      icon: "bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20",
-      badge: "text-[#10B981] bg-[#10B981]/10",
-      dot: "bg-[#10B981]",
-      cta: "bg-[#10B981] hover:bg-[#059669] text-[#0F172A]",
+    sky: {
+      icon: "bg-sky-50 text-sky-600 border-sky-200",
+      badge: "text-sky-600 bg-sky-50 border-sky-200",
+      dot: "bg-sky-400",
+      cta: "bg-[#0EA5E9] hover:bg-[#0284C7] text-white",
     },
     blue: {
-      icon: "bg-[#3B82F6]/10 text-[#3B82F6] border-[#3B82F6]/20",
-      badge: "text-[#3B82F6] bg-[#3B82F6]/10",
-      dot: "bg-[#3B82F6]",
-      cta: "bg-[#3B82F6] hover:bg-[#2563EB] text-white",
+      icon: "bg-blue-50 text-blue-600 border-blue-200",
+      badge: "text-blue-600 bg-blue-50 border-blue-200",
+      dot: "bg-blue-400",
+      cta: "bg-blue-600 hover:bg-blue-700 text-white",
     },
     purple: {
-      icon: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-      badge: "text-purple-400 bg-purple-500/10",
+      icon: "bg-purple-50 text-purple-600 border-purple-200",
+      badge: "text-purple-600 bg-purple-50 border-purple-200",
       dot: "bg-purple-400",
-      cta: "bg-purple-600 hover:bg-purple-500 text-white",
+      cta: "bg-purple-600 hover:bg-purple-700 text-white",
     },
   };
 
   const c = colorMap[color];
 
   return (
-    <div className="flex flex-col bg-[#1E293B] border border-[#334155] rounded-2xl p-6 hover:border-[#475569] transition-colors">
+    <div className="flex flex-col bg-white border border-slate-200 rounded-2xl p-6 hover:border-sky-200 hover:shadow-md transition-all">
       <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-4 ${c.icon}`}>
         {icon}
       </div>
-      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full inline-block mb-2 w-fit ${c.badge}`}>
+      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full inline-block mb-2 w-fit border ${c.badge}`}>
         {role}
       </span>
-      <h3 className="text-white font-bold text-lg mb-4 leading-snug">{headline}</h3>
+      <h3 className="text-slate-900 font-bold text-lg mb-4 leading-snug">{headline}</h3>
       <ul className="space-y-3 flex-1 mb-6">
         {benefits.map((b, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-sm text-[#94A3B8]">
+          <li key={i} className="flex items-start gap-2.5 text-sm text-slate-500">
             <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${c.dot}`} />
             {b.text}
           </li>
@@ -351,13 +351,13 @@ function RoleCard({ icon, color, role, headline, benefits, cta }: RoleCardProps)
 
 function BenefitsSection() {
   return (
-    <section className="py-20 md:py-24">
+    <section className="py-20 md:py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">
+          <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-3">
             Un sistema. Tres portales.
           </h2>
-          <p className="text-[#64748B] text-base max-w-lg mx-auto">
+          <p className="text-slate-500 text-base max-w-lg mx-auto">
             Cada actor del ecosistema médico tiene su espacio diseñado específicamente.
           </p>
         </div>
@@ -365,7 +365,7 @@ function BenefitsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <RoleCard
             icon={<StethoscopeIcon />}
-            color="green"
+            color="sky"
             role="Para Médicos"
             headline="Emite recetas con firma criptográfica"
             benefits={[
@@ -383,27 +383,27 @@ function BenefitsSection() {
             role="Para Pacientes"
             headline="Tu ficha médica bajo tu control"
             benefits={[
-              { text: "Accede a tus recetas activas desde el móvil" },
-              { text: "Código QR para presentar en farmacia" },
+              { text: "Ficha clínica completa: diagnósticos, vacunas, alergias" },
+              { text: "Código QR para emergencias, sin app ni login" },
+              { text: "Diario de dolor con mapa corporal 3D" },
+              { text: "Historial óptico y dental portátil" },
               { text: "Elige qué médicos pueden ver tu ficha" },
-              { text: "Registro de vacunas y licencias médicas" },
-              { text: "Notificaciones de vencimiento de recetas" },
             ]}
             cta={{ label: "Portal Paciente", href: "/patient" }}
           />
           <RoleCard
             icon={<BuildingIcon />}
             color="purple"
-            role="Para Farmacias"
-            headline="Verifica en segundos, sin riesgo"
+            role="Para Cuidadores"
+            headline="Cuida con información completa"
             benefits={[
-              { text: "Escanea el QR del paciente para validación instantánea" },
-              { text: "Semáforo visual de estado: verde / amarillo / rojo" },
-              { text: "Alerta automática para medicamentos controlados" },
-              { text: "Historial de dispensaciones del día" },
-              { text: "Registro inmutable en Stellar para auditorías" },
+              { text: "Dashboard Alzheimer: episodios cognitivos y adherencia" },
+              { text: "QR de emergencia bilingüe (ES/EN) para urgencias" },
+              { text: "Reporte semanal para el neurólogo por WhatsApp" },
+              { text: "Acceso delegado en blockchain — el paciente siempre es dueño" },
+              { text: "Hub de 8 tipos de cuidado especializado" },
             ]}
-            cta={{ label: "Portal Farmacia", href: "/dispensary" }}
+            cta={{ label: "Portal Cuidadores", href: "/caregiver/types" }}
           />
         </div>
       </div>
@@ -423,19 +423,19 @@ interface SecurityFeatureProps {
 function SecurityFeature({ icon, title, description, badge }: SecurityFeatureProps) {
   return (
     <div className="flex gap-4">
-      <div className="w-10 h-10 rounded-xl bg-[#1E293B] border border-[#334155] flex items-center justify-center text-[#10B981] shrink-0 mt-0.5">
+      <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 shrink-0 mt-0.5">
         {icon}
       </div>
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <h4 className="text-white font-semibold text-sm">{title}</h4>
+          <h4 className="text-slate-900 font-semibold text-sm">{title}</h4>
           {badge && (
-            <span className="px-2 py-0.5 bg-[#10B981]/10 text-[#10B981] text-[10px] font-semibold rounded-full border border-[#10B981]/20">
+            <span className="px-2 py-0.5 bg-sky-50 text-sky-600 text-[10px] font-semibold rounded-full border border-sky-200">
               {badge}
             </span>
           )}
         </div>
-        <p className="text-[#64748B] text-sm leading-relaxed">{description}</p>
+        <p className="text-slate-500 text-sm leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -443,20 +443,20 @@ function SecurityFeature({ icon, title, description, badge }: SecurityFeaturePro
 
 function SecuritySection() {
   return (
-    <section className="py-20 md:py-24">
+    <section className="py-20 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left: text */}
           <div>
-            <span className="text-[#3B82F6] text-xs font-semibold uppercase tracking-widest">
-              Seguridad
+            <span className="text-sky-600 text-xs font-semibold uppercase tracking-widest">
+              Seguridad y privacidad
             </span>
-            <h2 className="text-2xl md:text-4xl font-bold text-white mt-2 mb-4">
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mt-2 mb-4">
               Privacidad por diseño.
               <br />
-              <span className="text-[#10B981]">No por promesa.</span>
+              <span className="text-[#0EA5E9]">No por promesa.</span>
             </h2>
-            <p className="text-[#64748B] text-base mb-8 leading-relaxed">
+            <p className="text-slate-500 text-base mb-8 leading-relaxed">
               TrustLeaf fue construido desde cero para que ningún dato de salud protegido
               (PHI) pueda ser registrado en blockchain — ni accidentalmente.
             </p>
@@ -483,40 +483,40 @@ function SecuritySection() {
                 icon={<ShieldIcon className="w-5 h-5" />}
                 title="Cumplimiento regulatorio"
                 badge="Reglamento"
-                description="Diseñado para cumplir con el reglamento Minsal de receta electrónica. En proceso de certificación."
+                description="Diseñado para cumplir con el reglamento Minsal de receta electrónica y la Ley 21.719 de datos personales."
               />
             </div>
           </div>
 
-          {/* Right: visual card */}
+          {/* Right: visual */}
           <div className="relative">
-            <div className="absolute inset-0 bg-[#10B981]/5 rounded-3xl blur-xl" />
-            <div className="relative bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden">
+            <div className="absolute inset-0 bg-sky-100 rounded-3xl blur-2xl opacity-40" />
+            <div className="relative bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               {/* Header */}
-              <div className="px-5 py-4 border-b border-[#334155] flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500/60" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-                <div className="w-3 h-3 rounded-full bg-green-500/60" />
-                <span className="ml-3 text-[#64748B] text-xs font-mono">stellar-transaction.json</span>
+              <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50">
+                <div className="w-3 h-3 rounded-full bg-red-400/70" />
+                <div className="w-3 h-3 rounded-full bg-yellow-400/70" />
+                <div className="w-3 h-3 rounded-full bg-green-400/70" />
+                <span className="ml-3 text-slate-400 text-xs font-mono">stellar-transaction.json</span>
               </div>
               {/* Content */}
               <div className="p-5 font-mono text-xs space-y-1">
-                <p className="text-[#64748B]">{"{"}</p>
-                <p className="pl-4"><span className="text-[#3B82F6]">&quot;operation&quot;</span><span className="text-[#64748B]">: </span><span className="text-[#10B981]">&quot;submit_commitment&quot;</span><span className="text-[#64748B]">,</span></p>
-                <p className="pl-4"><span className="text-[#3B82F6]">&quot;commitment&quot;</span><span className="text-[#64748B]">: </span><span className="text-yellow-400">&quot;0x7f3a...c9e1&quot;</span><span className="text-[#64748B]">,</span></p>
-                <p className="pl-4"><span className="text-[#3B82F6]">&quot;dispensary&quot;</span><span className="text-[#64748B]">: </span><span className="text-yellow-400">&quot;GCXYZ...123&quot;</span><span className="text-[#64748B]">,</span></p>
-                <p className="pl-4"><span className="text-[#3B82F6]">&quot;valid_days&quot;</span><span className="text-[#64748B]">: </span><span className="text-purple-400">30</span><span className="text-[#64748B]">,</span></p>
-                <div className="pl-4 mt-2 pt-2 border-t border-[#334155]">
-                  <p className="text-[#64748B] italic">{"// ← Sin nombre del paciente"}</p>
-                  <p className="text-[#64748B] italic">{"// ← Sin RUT, sin diagnóstico"}</p>
-                  <p className="text-[#64748B] italic">{"// ← Solo el hash anónimo"}</p>
+                <p className="text-slate-400">{"{"}</p>
+                <p className="pl-4"><span className="text-blue-600">&quot;operation&quot;</span><span className="text-slate-400">: </span><span className="text-sky-600">&quot;submit_commitment&quot;</span><span className="text-slate-400">,</span></p>
+                <p className="pl-4"><span className="text-blue-600">&quot;commitment&quot;</span><span className="text-slate-400">: </span><span className="text-amber-600">&quot;0x7f3a...c9e1&quot;</span><span className="text-slate-400">,</span></p>
+                <p className="pl-4"><span className="text-blue-600">&quot;dispensary&quot;</span><span className="text-slate-400">: </span><span className="text-amber-600">&quot;GCXYZ...123&quot;</span><span className="text-slate-400">,</span></p>
+                <p className="pl-4"><span className="text-blue-600">&quot;valid_days&quot;</span><span className="text-slate-400">: </span><span className="text-purple-600">30</span><span className="text-slate-400">,</span></p>
+                <div className="pl-4 mt-2 pt-2 border-t border-slate-100">
+                  <p className="text-slate-400 italic">{"// ← Sin nombre del paciente"}</p>
+                  <p className="text-slate-400 italic">{"// ← Sin RUT, sin diagnóstico"}</p>
+                  <p className="text-slate-400 italic">{"// ← Solo el hash anónimo"}</p>
                 </div>
-                <p className="text-[#64748B] mt-1">{"}"}</p>
+                <p className="text-slate-400 mt-1">{"}"}</p>
               </div>
               {/* Footer */}
-              <div className="px-5 py-3 border-t border-[#334155] bg-[#10B981]/5 flex items-center gap-2">
-                <ShieldIcon className="w-4 h-4 text-[#10B981]" />
-                <span className="text-[#10B981] text-xs font-semibold">Verificado en Stellar Network</span>
+              <div className="px-5 py-3 border-t border-slate-100 bg-sky-50 flex items-center gap-2">
+                <ShieldIcon className="w-4 h-4 text-sky-600" />
+                <span className="text-sky-600 text-xs font-semibold">Verificado en Stellar Network</span>
               </div>
             </div>
           </div>
@@ -555,7 +555,6 @@ function CTASection() {
       return;
     }
 
-    // Call the waitlist API (sends email via Resend; falls back gracefully if no key)
     try {
       await fetch("/api/waitlist", {
         method: "POST",
@@ -563,7 +562,7 @@ function CTASection() {
         body: JSON.stringify({ email }),
       });
     } catch {
-      // Network error — still mark as submitted (don't block UX)
+      // Network error — still mark as submitted
     }
 
     localStorage.setItem("tl_waitlist_email", email);
@@ -571,27 +570,27 @@ function CTASection() {
   }
 
   return (
-    <section id="cta" className="py-20 md:py-28 bg-[#1E293B]/30">
+    <section id="cta" className="py-20 md:py-28 bg-gradient-to-br from-sky-600 to-blue-700">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#3B82F6]/30 bg-[#3B82F6]/10 text-[#3B82F6] text-xs font-semibold mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/30 bg-white/10 text-white text-xs font-semibold mb-6">
           <ZapIcon className="w-3.5 h-3.5" />
           Acceso anticipado limitado
         </div>
         <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
           Sé de los primeros en usar
           <br />
-          <span className="text-[#10B981]">TrustLeaf</span>
+          TrustLeaf
         </h2>
-        <p className="text-[#64748B] text-base mb-10 max-w-lg mx-auto">
-          Únete a la lista de espera para clínicas, consultorios y cadenas de farmacias
-          que quieren digitalizar su proceso de prescripción.
+        <p className="text-sky-100 text-base mb-10 max-w-lg mx-auto">
+          Únete a la lista de espera para pacientes, médicos y clínicas que quieren
+          tener su historial clínico bajo su propio control.
         </p>
 
         {submitted ? (
           <div className="flex flex-col items-center gap-3 py-6">
             <div className="text-4xl">🎉</div>
             <p className="text-lg font-semibold text-white">¡Estás en la lista!</p>
-            <p className="text-sm text-slate-400 text-center">
+            <p className="text-sm text-sky-200 text-center">
               Te avisaremos cuando TrustLeaf esté disponible en tu región.
             </p>
           </div>
@@ -606,25 +605,25 @@ function CTASection() {
                     setEmail(e.target.value);
                     setEmailError("");
                   }}
-                  placeholder="tu@clinica.cl"
-                  className={`w-full px-4 py-3.5 bg-[#0F172A] border rounded-xl text-white text-base placeholder-[#475569] outline-none transition-colors ${
+                  placeholder="tu@email.cl"
+                  className={`w-full px-4 py-3.5 bg-white border rounded-xl text-slate-900 text-base placeholder-slate-400 outline-none transition-colors ${
                     emailError
-                      ? "border-red-500 focus:border-red-400"
-                      : "border-[#334155] focus:border-[#10B981]"
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-transparent focus:border-sky-300"
                   }`}
                 />
                 {emailError && (
-                  <p className="text-red-400 text-xs mt-1.5 text-left">{emailError}</p>
+                  <p className="text-red-200 text-xs mt-1.5 text-left">{emailError}</p>
                 )}
               </div>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-6 py-3.5 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 min-h-[48px]"
+                className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-sky-50 text-sky-700 text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 min-h-[48px]"
               >
                 Unirme
               </button>
             </div>
-            <p className="text-[#64748B] text-xs mt-3">
+            <p className="text-sky-200 text-xs mt-3">
               Sin spam. Solo actualizaciones de lanzamiento. Cancela cuando quieras.
             </p>
           </form>
@@ -638,11 +637,11 @@ function CTASection() {
             "ZK Proofs",
             "Cumplimiento Minsal",
             "Sin papel",
-            "Verificación instantánea",
+            "Siempre gratis para pacientes",
           ].map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 border border-[#334155] text-[#64748B] text-xs rounded-full"
+              className="px-3 py-1 border border-white/30 text-sky-100 text-xs rounded-full bg-white/10"
             >
               {tag}
             </span>
@@ -657,40 +656,39 @@ function CTASection() {
 
 function Footer() {
   return (
-    <footer className="border-t border-[#334155] bg-[#0F172A]">
+    <footer className="border-t border-slate-200 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-[#10B981] flex items-center justify-center text-[#0F172A] font-bold text-sm">
-                TL
+              <div className="w-8 h-8 rounded-lg bg-[#0EA5E9] flex items-center justify-center text-white font-bold text-sm">
+                T
               </div>
-              <span className="text-white font-bold text-base">
-                Trust<span className="text-[#10B981]">Leaf</span>
+              <span className="text-slate-900 font-bold text-base">
+                Trust<span className="text-[#0EA5E9]">Leaf</span>
               </span>
             </div>
-            <p className="text-[#64748B] text-sm leading-relaxed max-w-xs">
-              El estándar de confianza para la prescripción médica digital en América Latina.
-              Privacidad por diseño. Construido sobre Stellar.
+            <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
+              El historial clínico del paciente, tuyo para siempre. Construido sobre Stellar. Privacidad por diseño.
             </p>
           </div>
 
           {/* Portales */}
           <div>
-            <h4 className="text-white text-xs font-semibold uppercase tracking-wider mb-3">Portales</h4>
+            <h4 className="text-slate-700 text-xs font-semibold uppercase tracking-wider mb-3">Portales</h4>
             <ul className="space-y-2">
               {[
                 { label: "Para Médicos", href: "/for-doctors" },
                 { label: "Para Pacientes", href: "/patient" },
-                { label: "Para Farmacias", href: "/dispensary" },
+                { label: "Para Farmacias", href: "/farmacia" },
                 { label: "Para Cuidadores", href: "/caregiver/types" },
                 { label: "Demo Médico", href: "/doctor" },
                 { label: "Verificar Receta", href: "/verify/demo" },
                 { label: "Precios", href: "/pricing" },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-[#64748B] hover:text-white text-sm transition-colors">
+                  <Link href={link.href} className="text-slate-500 hover:text-slate-900 text-sm transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -700,14 +698,14 @@ function Footer() {
 
           {/* Acceso */}
           <div>
-            <h4 className="text-white text-xs font-semibold uppercase tracking-wider mb-3">Cuenta</h4>
+            <h4 className="text-slate-700 text-xs font-semibold uppercase tracking-wider mb-3">Cuenta</h4>
             <ul className="space-y-2">
               {[
                 { label: "Iniciar sesión", href: "/login" },
                 { label: "Crear cuenta", href: "/register" },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-[#64748B] hover:text-white text-sm transition-colors">
+                  <Link href={link.href} className="text-slate-500 hover:text-slate-900 text-sm transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -722,21 +720,21 @@ function Footer() {
             href="https://apply.ycombinator.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981] text-xs font-semibold hover:bg-[#10B981]/20 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-sky-200 bg-sky-50 text-sky-700 text-xs font-semibold hover:bg-sky-100 transition-colors"
           >
             🚀 Aplicando a Y Combinator Fall 2026
           </a>
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-6 border-t border-[#1E293B] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[#475569] text-xs">
+        <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-slate-400 text-xs">
             © 2026 Browns Studio. Todos los derechos reservados. ·{" "}
-            <Link href="/admin" className="hover:text-[#334155] transition-colors">⚙</Link>
+            <Link href="/admin" className="hover:text-slate-600 transition-colors">⚙</Link>
           </p>
-          <div className="flex items-center gap-4 text-xs text-[#475569]">
+          <div className="flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1.5">
-              <ShieldIcon className="w-3.5 h-3.5 text-[#10B981]" />
+              <ShieldIcon className="w-3.5 h-3.5 text-sky-500" />
               Powered by Stellar Network
             </span>
             <span>·</span>
@@ -755,7 +753,7 @@ export default function LandingPage() {
   const [tourActive, setTourActive] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white">
+    <div className="min-h-screen bg-white text-slate-900">
       <Navbar variant="landing" />
       <main>
         <HeroSection />
