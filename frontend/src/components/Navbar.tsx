@@ -19,7 +19,9 @@ const NAV_LINKS: NavLink[] = [
   { href: "/dispensary", label: "Farmacia", roleKey: "dispensary" },
   { href: "/verify/demo", label: "Verificar" },
   { href: "/demo", label: "Demo" },
+  { href: "/caregiver", label: "Cuidadores" },
   { href: "/for-doctors", label: "Para Médicos" },
+  { href: "/pricing", label: "Precios" },
 ];
 
 function MenuIcon({ open }: { open: boolean }) {

@@ -1,7 +1,7 @@
 // Copyright © 2026 Browns Studio
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "../../components/Navbar";
 import {
   StethoscopeIcon,
@@ -347,6 +347,14 @@ export default function DemoPage() {
   const [email, setEmail] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clean up toast timer on unmount to avoid state updates on unmounted component
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -364,7 +372,8 @@ export default function DemoPage() {
     setEmail("");
     setSubmitting(false);
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 3500);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setShowToast(false), 3500);
   }
 
   return (
@@ -416,7 +425,7 @@ export default function DemoPage() {
 
       {/* 3-column flow */}
       <section className="max-w-6xl mx-auto px-4 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Doctor column */}
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -491,15 +500,88 @@ export default function DemoPage() {
             </div>
             <DispensaryScreens />
           </div>
+
+          {/* Caregiver column */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.3)" }}
+              >
+                <span className="text-lg">🧠</span>
+              </div>
+              <div>
+                <h2 className="font-bold text-base" style={{ color: "#fff" }}>
+                  Cuidador
+                </h2>
+                <p className="text-xs" style={{ color: "#64748B" }}>
+                  Alzheimer · dependientes
+                </p>
+              </div>
+              <div
+                className="ml-auto w-2.5 h-2.5 rounded-full"
+                style={{ background: "#8B5CF6", boxShadow: "0 0 6px #8B5CF6" }}
+              />
+            </div>
+            {/* Caregiver mock screens */}
+            <div className="space-y-3">
+              <a
+                href="/caregiver"
+                className="block rounded-xl overflow-hidden"
+                style={{ border: "1px solid rgba(139,92,246,0.25)", background: "#0F172A" }}
+              >
+                <div className="flex items-center gap-1.5 px-3 py-2" style={{ background: "#1E293B", borderBottom: "1px solid rgba(139,92,246,0.15)" }}>
+                  <div className="w-2 h-2 rounded-full bg-red-400" />
+                  <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                  <div className="w-2 h-2 rounded-full bg-green-400" />
+                  <div className="flex-1 mx-2 px-2 py-0.5 rounded text-[10px]" style={{ background: "#0F172A", color: "#475569" }}>
+                    trustleaf.app/caregiver
+                  </div>
+                </div>
+                <div className="p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-xs font-bold text-white">RP</div>
+                    <div>
+                      <p className="text-white text-xs font-semibold">Roberto Pérez, 78</p>
+                      <p className="text-purple-300 text-[10px]">Alzheimer · etapa moderada</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <div className="bg-[#1E293B] rounded-lg p-2 text-center">
+                      <p className="text-yellow-400 text-sm font-bold">2/5</p>
+                      <p className="text-[#64748B] text-[9px]">meds hoy</p>
+                    </div>
+                    <div className="bg-[#1E293B] rounded-lg p-2 text-center">
+                      <p className="text-orange-400 text-sm font-bold">3</p>
+                      <p className="text-[#64748B] text-[9px]">episodios</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              <a
+                href="/caregiver/emergency/5432198-7"
+                className="block rounded-xl overflow-hidden"
+                style={{ border: "1px solid rgba(239,68,68,0.4)", background: "#0F172A" }}
+              >
+                <div className="p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-red-400 text-sm font-black">🆘 QR Emergencia</span>
+                  </div>
+                  <p className="text-[10px]" style={{ color: "#94A3B8" }}>Bilingüe · sin login · fondo rojo</p>
+                  <p className="text-[10px] text-red-300 mt-1">⚠️ Alergias: Penicilina, Ibuprofeno</p>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Flow arrow */}
         <div className="hidden md:flex items-center justify-center gap-4 my-6">
-          {["Médico emite", "→", "Paciente recibe QR", "→", "Farmacia verifica"].map(
+          {["Médico emite", "→", "Paciente recibe QR", "→", "Farmacia verifica", "→", "Cuidador registra episodio"].map(
             (t, i) => (
               <span
                 key={i}
-                className="text-sm font-medium"
+                className="text-xs font-medium"
                 style={{ color: i % 2 === 1 ? "#334155" : "#94A3B8" }}
               >
                 {t}

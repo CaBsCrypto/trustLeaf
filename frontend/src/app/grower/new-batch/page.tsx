@@ -6,7 +6,6 @@ import { usePasskey } from "../../../hooks/usePasskey";
 import { useContractCall } from "../../../hooks/useContractCall";
 import { BACKEND_URL } from "../../../lib/stellar";
 import { toast } from "sonner";
-import crypto from "crypto";
 
 export default function NewBatchPage() {
   const router = useRouter();

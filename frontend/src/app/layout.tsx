@@ -6,6 +6,7 @@ import { WalletProvider } from "../providers/WalletProvider";
 import { QueryProvider } from "../providers/QueryProvider";
 import { PrivyClientProvider } from "../providers/PrivyClientProvider";
 import { Toaster } from "sonner";
+import DemoSwitcher from "../components/DemoSwitcher";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -42,6 +43,7 @@ export default function RootLayout({
           <QueryProvider>
             <WalletProvider>
               {children}
+              <DemoSwitcher />
               <Toaster richColors position="top-right" />
             </WalletProvider>
           </QueryProvider>

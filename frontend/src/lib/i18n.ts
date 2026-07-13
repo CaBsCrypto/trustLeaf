@@ -38,32 +38,40 @@ const translations = {
           questions: [
             {
               q: "¿Cómo sé que una receta no puede ser falsificada?",
-              a: "Cada receta es firmada digitalmente con tu Face ID y registrada en Stellar Blockchain. Para falsificarla, alguien necesitaría acceso físico a tu teléfono desbloqueado y a tu cara. Es más seguro que cualquier receta en papel o PDF.",
+              a: "Cada receta se firma con tu Face ID y queda anclada en Stellar Blockchain. El hash criptográfico en la cadena es verificable por cualquier farmacia escaneando el QR — si alguien modifica un solo carácter, la verificación falla. Es más seguro que cualquier receta en papel o PDF, donde basta un escáner y Photoshop.",
+            },
+            {
+              q: "¿Qué datos del paciente veo como médico?",
+              a: "Ves todo lo que el paciente te autorizó: historial de consultas previas, medicamentos activos, el Diario de Dolor (patrones de síntomas día a día), notas del cuidador si aplica, y alertas de alergias. La vista del médico está diseñada para la consulta: la información crítica aparece primero, sin scroll innecesario.",
             },
             {
               q: "¿Qué pasa si un paciente revoca mi acceso?",
-              a: "Solo dejas de ver sus registros futuros. Los datos que ya firmaste quedan en blockchain permanentemente — son parte del historial verificable del paciente. La revocación no borra tu trabajo clínico.",
+              a: "Dejas de ver sus registros futuros. Los documentos que ya firmaste quedan en blockchain permanentemente como parte del historial del paciente — la revocación no borra tu trabajo clínico pasado. Tú también puedes ver en tu panel qué pacientes tienes activos y cuáles revocaron.",
             },
             {
               q: "¿Cómo me registro como médico verificado?",
-              a: "Ingresas tu RUT y número de registro MINSAL. TrustLeaf verifica tu credencial contra el registro público de profesionales de salud de Chile. El proceso toma minutos, no días.",
+              a: "Ingresas tu RUT y número de registro MINSAL. TrustLeaf lo verifica automáticamente contra el registro público de profesionales de salud. En minutos tienes tu perfil verificado y puedes empezar a firmar documentos. Sin formularios en papel ni esperar aprobación manual.",
             },
           ],
         },
         {
-          categoryLabel: "Para pacientes",
+          categoryLabel: "Para pacientes y cuidadores",
           questions: [
             {
+              q: "¿Cómo funciona el Diario de Dolor o el Diario de Episodios?",
+              a: "Es un registro diario estructurado — zona de dolor, intensidad del 1 al 10, qué lo desencadenó, qué ayudó. Para cuidadores hay 8 tipos de síntoma cognitivo (confusión, agitación, caídas, etc.). Cada entrada queda verificada en blockchain con timestamp. El médico lo ve antes de la consulta y llega sabiendo qué pasó en casa — sin que tengas que explicar todo de cero.",
+            },
+            {
+              q: "¿Para qué sirve el QR de emergencia?",
+              a: "Es un código QR que cualquier médico de urgencias puede escanear sin app ni login. Muestra alergias, medicamentos activos, diagnóstico y contactos de emergencia. Para pacientes con Alzheimer u otras condiciones, está disponible en español e inglés. Si el paciente no puede comunicarse, el QR habla por él.",
+            },
+            {
               q: "¿Mi seguro o empleador puede ver mis datos?",
-              a: "No. TrustLeaf nunca comparte tu información con terceros sin tu autorización explícita. Tú eliges quién tiene acceso — y puedes revocar ese acceso en cualquier momento desde tu celular.",
+              a: "No. Tú decides quién tiene acceso — y puedes revocar ese acceso desde tu celular en cualquier momento. TrustLeaf nunca comparte datos con terceros sin tu autorización explícita, incluidos aseguradoras, empleadores o farmacias que no elegiste tú.",
             },
             {
-              q: "¿Qué pasa si cambio de teléfono o lo pierdo?",
-              a: "Tu historial está en blockchain, no en el dispositivo. Al instalar TrustLeaf en un nuevo teléfono, recuperas acceso completo con tu identidad verificada (Face ID + passkey). Nada se pierde.",
-            },
-            {
-              q: "¿TrustLeaf tiene costo para los pacientes?",
-              a: "Gratis durante toda la beta. El modelo de negocio es B2B — las clínicas y farmacias pagan por acceso API. Para los pacientes, siempre será gratuito.",
+              q: "¿TrustLeaf tiene costo para pacientes y cuidadores?",
+              a: "Gratis — siempre. El portal de pacientes, el Diario de Dolor, el QR de emergencia y el portal de cuidadores son gratuitos. TrustLeaf cobra a médicos y clínicas, no a quienes más lo necesitan.",
             },
           ],
         },
@@ -72,15 +80,23 @@ const translations = {
           questions: [
             {
               q: "¿Por qué blockchain en vez de una base de datos tradicional?",
-              a: "Una base de datos la controla quien la opera — puede ser hackeada, modificada, o cerrada. Un registro en Stellar Blockchain es inmutable y no requiere confiar en TrustLeaf como empresa. Si TrustLeaf desaparece mañana, los registros del paciente siguen existiendo y son verificables.",
+              a: "Una base de datos la controla quien la opera — puede ser hackeada, modificada o cerrada. Un hash en Stellar Blockchain es inmutable y verificable por cualquier parte sin pasar por TrustLeaf. Si TrustLeaf desaparece mañana, los registros del paciente siguen existiendo y son verificables. La confianza no depende de nosotros.",
             },
             {
               q: "¿Cómo hace dinero TrustLeaf?",
-              a: "SaaS B2B: clínicas y redes de farmacias pagan una suscripción mensual por acceso a la API de verificación. También licenciamos el SDK a sistemas HIS (Hospital Information Systems). El paciente siempre gratis.",
+              a: "Modelo mixto: médicos independientes pagan un porcentaje por consulta gestionada a través de TrustLeaf (sin fee fijo — solo pagan cuando ganan). Clínicas y redes de farmacias pagan suscripción mensual por acceso API. Las familias y pacientes siempre gratis. El modelo por consulta alinea incentivos: TrustLeaf crece cuando el médico crece.",
             },
             {
               q: "¿Por qué Chile primero?",
-              a: "Chile tiene la infraestructura digital más avanzada de Latinoamérica (RUT universal, ClaveÚnica), una nueva ley de protección de datos (Ley 21.719) que crea urgencia regulatoria, y una red de clínicas privadas donde el dolor crónico es el diagnóstico más frecuente. Es el mercado ideal para demostrar el modelo antes de expandir a México, Colombia y Brasil.",
+              a: "Chile tiene la infraestructura digital más avanzada de Latinoamérica (RUT universal, ClaveÚnica), una nueva ley de protección de datos (Ley 21.719) que crea urgencia regulatoria, y una red de clínicas privadas donde el dolor crónico es el diagnóstico más frecuente. Es el mercado ideal para validar el modelo antes de expandir a México, Colombia y Brasil.",
+            },
+            {
+              q: "¿Qué pasa con el mandato de receta electrónica del Minsal?",
+              a: "El Reglamento Minsal está eliminando la receta en papel para medicamentos de mayor control. TrustLeaf no compite con eso — lo implementa con una capa de verificación blockchain encima. Las farmacias que ya deben aceptar recetas digitales integran TrustLeaf escaneando el QR, sin cambiar su sistema POS.",
+            },
+            {
+              q: "¿Por qué el portal de cuidadores no es scope creep?",
+              a: "El cuidador de un adulto mayor con Alzheimer visita al neurólogo 6–8 veces por año. Cada consulta necesita exactamente lo que TrustLeaf provee: historial de episodios, medicamentos activos, y un resumen clínico verificado. Es el mismo producto, aplicado al mismo problema, para un segmento de 53 millones de cuidadores globales que no tiene ninguna herramienta para esto. No es un feature extra — es el segundo mercado principal.",
             },
           ],
         },
@@ -170,10 +186,10 @@ const translations = {
       ],
     },
   },
-} as const;
+};
 
 export type Translations = typeof translations.es;
 
 export function getTranslations(locale: Locale = "es"): Translations {
-  return translations[locale] ?? translations.es;
+  return (translations[locale] ?? translations.es) as Translations;
 }

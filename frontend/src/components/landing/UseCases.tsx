@@ -36,6 +36,30 @@ export default function UseCases() {
       description:
         "Con varios especialistas y medicamentos, TrustLeaf previene interacciones peligrosas al centralizar el historial completo.",
     },
+    {
+      emoji: "🧠",
+      title: "Cuidadores de adultos con Alzheimer",
+      description:
+        "El cuidador registra episodios, gestiona medicamentos y lleva un QR de emergencia bilingüe. El neurólogo recibe el diario completo antes de cada consulta.",
+    },
+    {
+      emoji: "🫀",
+      title: "Recuperación post-ACV",
+      description:
+        "Seguimiento de rehabilitación motora y del habla. El familiar registra el progreso diario y el médico ve métricas reales, no solo lo que el paciente recuerda.",
+    },
+    {
+      emoji: "👓",
+      title: "Receta óptica sin papel",
+      description:
+        "El oftalmólogo firma tu receta digitalmente. Tú la muestras con un QR en cualquier óptica. Sin buscar el papel, sin foto borrosa, sin repetir el examen.",
+    },
+    {
+      emoji: "🦷",
+      title: "Historial dental portátil",
+      description:
+        "Cambias de dentista y llevas tu historial completo: procedimientos, radiografías, ortodoncia. El nuevo dentista lo ve con un QR — sin repetir exámenes ni explicar todo de cero.",
+    },
   ];
 
   return (
@@ -53,7 +77,7 @@ export default function UseCases() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {cases.map((c) => (
             <UseCaseCard key={c.title} {...c} />
           ))}

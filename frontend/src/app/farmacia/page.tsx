@@ -13,7 +13,7 @@ const DEMO_RX = {
   doctorLicense: "JG-11111",
   patient: "Juan Pérez (Demo)",
   doses: "1 comprimido cada 8 horas",
-  expiryDate: "20 jul 2026",
+  expiryDate: "20 sep 2026",
   isControlled: true,
   status: "Válida · Verificada en blockchain",
 };

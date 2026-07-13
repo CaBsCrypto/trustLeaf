@@ -6,12 +6,12 @@ export default function FounderSection() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <span className="text-[#64748B] text-xs font-semibold uppercase tracking-widest">
-            El equipo
+            Por qué existe TrustLeaf
           </span>
           <h2 className="text-2xl md:text-4xl font-bold text-white mt-2">
-            Construido por un founder
+            El founder es el paciente.
             <br />
-            <span className="text-[#10B981]">que vivió el problema</span>
+            <span className="text-[#10B981]">7 años. Múltiples especialistas. Cero continuidad.</span>
           </h2>
         </div>
 
@@ -26,35 +26,53 @@ export default function FounderSection() {
 
           {/* Avatar */}
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#10B981] to-[#3B82F6] flex items-center justify-center text-[#0F172A] text-2xl font-extrabold select-none">
-            {/* Founder initials — replace when photo is available */}
             TL
           </div>
 
           {/* Name & title */}
           <div className="text-center">
             <p className="text-white font-bold text-lg">
-              {/* TODO: Replace with founder's name */}
               Fundador de TrustLeaf
             </p>
-            <p className="text-[#64748B] text-sm mt-1">Chile-based builder</p>
+            <p className="text-[#64748B] text-sm mt-1">Santiago, Chile · Builder con dolor crónico</p>
           </div>
 
-          {/* Bio */}
-          <p className="text-[#94A3B8] text-base leading-relaxed text-center max-w-xl">
-            {/* TODO: Add 2–3 sentences about your background and what drove you to build TrustLeaf */}
-            Passionate about fixing broken systems at the intersection of healthcare and technology.
-            Experienced the fragmented medical record problem firsthand — and decided to solve it.
-          </p>
+          {/* Bio — the real story */}
+          <div className="space-y-4 text-center max-w-xl">
+            <p className="text-[#94A3B8] text-base leading-relaxed">
+              Llevo 7 años con dolor crónico. En ese tiempo vi múltiples especialistas —
+              traumatólogos, neurólogos, reumatólogos, médicos del dolor. Cada uno empezaba desde cero.
+              Ninguno sabía qué había probado el anterior.
+            </p>
+            <p className="text-[#CBD5E1] text-base leading-relaxed font-medium">
+              Un día dejé de esperar que el sistema cambiara y empecé a llevar un cuaderno estructurado:
+              cada consulta, cada medicamento, cada patrón de síntomas — organizado para que un médico
+              nuevo pudiera leer mi historial completo en 2 minutos.
+            </p>
+            <p className="text-[#94A3B8] text-base leading-relaxed">
+              Los médicos empezaron a pedirme copias. Un especialista me dijo que era
+              el historial más útil que había visto entregar un paciente.
+              Ese cuaderno es lo que TrustLeaf automatiza.
+            </p>
+          </div>
+
+          {/* Quote highlight */}
+          <div className="w-full border border-[#10B981]/20 rounded-xl p-4 bg-[#10B981]/5">
+            <p className="text-[#10B981] text-sm font-medium text-center leading-relaxed">
+              "No soy un fundador que encontró un mercado. Soy el mercado."
+            </p>
+          </div>
 
           {/* Divider */}
           <div className="w-full border-t border-[#334155]" />
 
-          {/* Credential tags — fill in before YC interview */}
+          {/* Credential tags */}
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              "Healthcare tech",
-              "Blockchain / Stellar",
-              "Chile 🇨🇱",
+              "7 años · dolor crónico",
+              "Usuario #1 del producto",
+              "Stellar / Soroban",
+              "Chile 🇨🇱 → LATAM",
               "YC Fall 2026 applicant",
             ].map((tag) => (
               <span

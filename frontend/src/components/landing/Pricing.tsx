@@ -182,6 +182,10 @@ export default function Pricing() {
           >
             Escríbenos a hola@trustleaf.app
           </a>
+          {" · "}
+          <a href="/pricing" className="text-[#10B981] hover:underline">
+            Ver página de precios →
+          </a>
         </p>
       </div>
     </section>

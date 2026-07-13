@@ -3,6 +3,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from "recharts";
 import BodyMap, { type PainEntry, ZONE_NAMES, type BodyZone } from "../../../../components/pain/BodyMap";
 
 function getPastDates(n: number): string[] {
@@ -33,10 +36,33 @@ interface DayData {
   entries: PainEntry[];
 }
 
+// ─── Demo fallback data (shown when no localStorage data exists) ─────────────
+function generateDemoHistory(dates: string[]): DayData[] {
+  const DEMO_LEVELS: Record<number, { zones: [string, number][] }> = {
+    0: { zones: [["back_lower", 7], ["hip_l", 6]] },
+    1: { zones: [["back_lower", 8], ["knee_l", 5], ["neck", 4]] },
+    2: { zones: [["back_lower", 6]] },
+    3: { zones: [["back_lower", 9], ["hip_l", 8], ["hip_r", 7], ["shoulder_l", 4]] },
+    4: { zones: [["back_lower", 7], ["back_upper", 5]] },
+    5: { zones: [["back_lower", 5], ["knee_l", 3]] },
+    6: { zones: [["back_lower", 8], ["hip_l", 7], ["neck", 6]] },
+  };
+  return dates.map((date, i) => ({
+    date,
+    entries: (DEMO_LEVELS[i]?.zones ?? []).map(([zone, level]) => ({
+      zone: zone as BodyZone,
+      level,
+      note: "",
+      timestamp: `${date}T12:00:00`,
+    })),
+  }));
+}
+
 export default function PainHistoryPage() {
   const [history, setHistory] = useState<DayData[]>([]);
   const [expandedDate, setExpandedDate] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [usingDemo, setUsingDemo] = useState(false);
 
   useEffect(() => {
     const dates = getPastDates(7);
@@ -48,7 +74,14 @@ export default function PainHistoryPage() {
         return { date, entries: [] };
       }
     });
-    setHistory(loaded);
+    // If no real data exists, use demo data so the page isn't empty
+    const hasRealData = loaded.some((d) => d.entries.length > 0);
+    if (!hasRealData) {
+      setHistory(generateDemoHistory(dates));
+      setUsingDemo(true);
+    } else {
+      setHistory(loaded);
+    }
     setHydrated(true);
   }, []);
 
@@ -75,12 +108,67 @@ export default function PainHistoryPage() {
           </Link>
           <div>
             <h1 className="text-white font-bold text-base">Historial de Dolor</h1>
-            <p className="text-[#64748B] text-xs">Últimos 7 días</p>
+            <p className="text-[#64748B] text-xs">
+              Últimos 7 días
+              {usingDemo && <span className="ml-2 text-[#10B981] font-medium">(datos demo)</span>}
+            </p>
           </div>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 pt-6 space-y-3">
+
+        {/* ─── Trend Chart ─── */}
+        {history.length > 0 && (() => {
+          const chartData = [...history].reverse().map(({ date, entries }) => {
+            const avg = entries.length
+              ? Math.round((entries.reduce((s, e) => s + e.level, 0) / entries.length) * 10) / 10
+              : 0;
+            const label = new Date(date + "T12:00:00").toLocaleDateString("es-CL", { weekday: "short", day: "numeric" });
+            return { label, avg, count: entries.length };
+          });
+          const overallAvg = (chartData.reduce((s, d) => s + d.avg, 0) / chartData.filter(d => d.avg > 0).length || 0).toFixed(1);
+          const trend = chartData[chartData.length - 1].avg - chartData[0].avg;
+          return (
+            <div className="bg-[#1E293B] rounded-2xl border border-[#334155] p-5 mb-2">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <p className="text-white font-bold text-base">Tendencia — 7 días</p>
+                  <p className="text-[#64748B] text-xs">Promedio de dolor por día</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-white font-bold text-xl leading-none">{overallAvg}<span className="text-[#64748B] text-sm font-normal">/10</span></p>
+                  <p className={`text-xs mt-0.5 ${trend < 0 ? "text-[#10B981]" : trend > 0 ? "text-red-400" : "text-[#64748B]"}`}>
+                    {trend < 0 ? `↓ mejorando` : trend > 0 ? `↑ empeorando` : "→ estable"}
+                  </p>
+                </div>
+              </div>
+              <div style={{ height: 120 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="painGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" vertical={false} />
+                    <XAxis dataKey="label" tick={{ fill: "#64748B", fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[0, 10]} tick={{ fill: "#64748B", fontSize: 10 }} axisLine={false} tickLine={false} ticks={[0, 5, 10]} />
+                    <Tooltip
+                      contentStyle={{ background: "#0F172A", border: "1px solid #334155", borderRadius: 8, fontSize: 12 }}
+                      labelStyle={{ color: "#94A3B8" }}
+                      itemStyle={{ color: "#10B981" }}
+                      formatter={(v: number) => [`${v}/10`, "Dolor promedio"]}
+                    />
+                    <Area type="monotone" dataKey="avg" stroke="#10B981" strokeWidth={2} fill="url(#painGrad)" dot={{ fill: "#10B981", r: 3, strokeWidth: 0 }} activeDot={{ r: 5 }} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          );
+        })()}
+
         {history.map(({ date, entries }) => {
           const isExpanded = expandedDate === date;
           const avg = entries.length

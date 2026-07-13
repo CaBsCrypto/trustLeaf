@@ -12,6 +12,7 @@ import UseCases from "../components/landing/UseCases";
 import FounderSection from "../components/landing/FounderSection";
 import FAQ from "../components/landing/FAQ";
 import Pricing from "../components/landing/Pricing";
+import CaregiverTeaser from "../components/landing/CaregiverTeaser";
 import { getTranslations } from "../lib/i18n";
 import DemoTour, { TourTrigger, type TourStep } from "../components/DemoTour";
 
@@ -236,6 +237,18 @@ function HeroSection() {
             <p className="text-[#475569] text-xs mt-4 text-center lg:text-left">
               ✓ Gratis durante beta &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Datos seguros en blockchain
             </p>
+
+            {/* Caregiver nudge */}
+            <div className="mt-3 flex justify-center lg:justify-start">
+              <Link
+                href="/caregiver/types"
+                className="inline-flex items-center gap-2 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+              >
+                <span>🧠</span>
+                <span>¿Cuidas a un familiar con Alzheimer u otra condición?</span>
+                <span className="underline">Portal de Cuidadores →</span>
+              </Link>
+            </div>
 
             {/* Social proof counter */}
             <div className="lg:flex lg:justify-start">
@@ -671,8 +684,10 @@ function Footer() {
                 { label: "Para Médicos", href: "/for-doctors" },
                 { label: "Para Pacientes", href: "/patient" },
                 { label: "Para Farmacias", href: "/dispensary" },
+                { label: "Para Cuidadores", href: "/caregiver/types" },
                 { label: "Demo Médico", href: "/doctor" },
                 { label: "Verificar Receta", href: "/verify/demo" },
+                { label: "Precios", href: "/pricing" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-[#64748B] hover:text-white text-sm transition-colors">
@@ -752,6 +767,7 @@ export default function LandingPage() {
         <FounderSection />
         <BenefitsSection />
         <SecuritySection />
+        <CaregiverTeaser />
         <FAQ />
         <Pricing />
         <CTASection />

@@ -13,14 +13,11 @@
 export async function getPasskeyServer() {
   // TODO: passkey-kit no disponible en npm, pendiente integración
   // const { PasskeyServer } = await import("@passkey-kit/sdk");
+  // return new PasskeyServer({
+  //   rpcUrl: process.env.NEXT_PUBLIC_STELLAR_RPC_URL ?? "https://soroban-testnet.stellar.org",
+  //   launchtubeUrl: process.env.LAUNCHTUBE_URL ?? "https://testnet.launchtube.xyz",
+  //   launchtubeJwt: process.env.LAUNCHTUBE_JWT ?? "",
+  //   networkPassphrase: "Test SDF Network ; September 2015",
+  // });
   throw new Error("PasskeyServer no disponible: @passkey-kit/sdk pendiente de integración");
-
-  return new PasskeyServer({
-    rpcUrl: process.env.NEXT_PUBLIC_STELLAR_RPC_URL ?? "https://soroban-testnet.stellar.org",
-    // Launchtube: SDF's hosted fee relay for Testnet
-    // For production: replace with self-hosted fee-bumper URL
-    launchtubeUrl: process.env.LAUNCHTUBE_URL ?? "https://testnet.launchtube.xyz",
-    launchtubeJwt: process.env.LAUNCHTUBE_JWT ?? "",
-    networkPassphrase: "Test SDF Network ; September 2015",
-  });
 }

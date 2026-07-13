@@ -75,12 +75,35 @@ export default function PatientPainPage({
       </header>
 
       <main className="max-w-2xl mx-auto px-4 pt-6 space-y-6">
-        {/* Demo notice */}
-        <div className="flex items-center gap-3 p-3 bg-yellow-900/20 border border-yellow-800 rounded-xl">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="1.5" className="w-4 h-4 shrink-0">
-            <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          </svg>
-          <p className="text-yellow-300 text-xs">Datos de demostración — integración con base de datos en desarrollo</p>
+        {/* AI Summary card */}
+        <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🧠</span>
+            <h3 className="text-white font-semibold text-sm">Resumen clínico · IA</h3>
+            <span className="ml-auto text-[10px] text-[#64748B] bg-[#0F172A] px-2 py-0.5 rounded-full">Demo</span>
+          </div>
+          <p className="text-[#CBD5E1] text-sm leading-relaxed mb-4">
+            El paciente reportó dolor en <strong className="text-white">8 de los últimos 10 días</strong>.
+            La zona lumbar baja es la más afectada con un promedio de <strong className="text-orange-400">7.2/10</strong>.
+            Se observa un patrón de escalada los días miércoles y jueves — posiblemente relacionado con actividad laboral.
+          </p>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-[#0F172A] rounded-xl p-3 text-center">
+              <p className="text-orange-400 font-bold text-lg">6.8</p>
+              <p className="text-[#64748B] text-[11px] mt-0.5">Promedio 30d</p>
+            </div>
+            <div className="bg-[#0F172A] rounded-xl p-3 text-center">
+              <p className="text-red-400 font-bold text-lg">9.1</p>
+              <p className="text-[#64748B] text-[11px] mt-0.5">Pico máximo</p>
+            </div>
+            <div className="bg-[#0F172A] rounded-xl p-3 text-center">
+              <p className="text-yellow-400 font-bold text-lg">↗ +0.4</p>
+              <p className="text-[#64748B] text-[11px] mt-0.5">Tendencia</p>
+            </div>
+          </div>
+          <p className="text-[#475569] text-[11px] mt-3">
+            Sugerencia: evaluar ajuste de pauta analgésica. Próxima cita recomendada en 7 días.
+          </p>
         </div>
 
         {/* Heatmap */}
@@ -125,6 +148,42 @@ export default function PatientPainPage({
             })}
           </div>
         </div>
+
+        {/* Caregiver notes — visible only if patient has a caregiver registered */}
+        <div className="bg-[#1E293B] border border-purple-800 rounded-2xl overflow-hidden">
+          <div className="flex items-center gap-2 px-5 py-4 border-b border-purple-800/50">
+            <span className="text-lg">🧠</span>
+            <h3 className="text-white font-semibold text-sm">Notas del cuidador</h3>
+            <span className="ml-auto text-[10px] text-purple-400 bg-purple-900/30 px-2 py-0.5 rounded-full">Alzheimer</span>
+          </div>
+          <div className="divide-y divide-[#334155]">
+            {[
+              { date: "12 jul 09:30", icon: "🌀", type: "Confusión", sev: "Moderada", sevColor: "text-orange-400", note: "No reconoció a su hija por ~20 min. Se calmó con música familiar." },
+              { date: "11 jul 22:00", icon: "🌙", type: "Sueño alterado", sev: "Severa", sevColor: "text-red-400", note: "Despertó 4 veces. Muy confundido al levantarse. Requirió Lorazepam 0.5mg a las 3:30am." },
+              { date: "11 jul 14:00", icon: "⚡", type: "Agitación", sev: "Leve", sevColor: "text-yellow-400", note: "Inquieto post-almuerzo. Paseo corto en pasillo ayudó." },
+              { date: "10 jul 11:00", icon: "⚠️", type: "Riesgo de caída", sev: "Leve", sevColor: "text-yellow-400", note: "Tropezó en umbral del baño. Sin caída. Pendiente instalar barras de apoyo." },
+            ].map((ep, i) => (
+              <div key={i} className="px-5 py-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs flex items-center gap-1.5">
+                    <span>{ep.icon}</span>
+                    <span className="text-white font-medium">{ep.type}</span>
+                    <span className={`text-xs ${ep.sevColor}`}>· {ep.sev}</span>
+                  </span>
+                  <span className="text-[#475569] text-xs">{ep.date}</span>
+                </div>
+                <p className="text-[#94A3B8] text-xs leading-relaxed">{ep.note}</p>
+              </div>
+            ))}
+          </div>
+          <div className="px-5 py-3 bg-purple-900/10 border-t border-purple-800/30">
+            <p className="text-purple-300 text-xs">
+              Cuidador principal: Ana Pérez (hija) · +56 9 8765 4321 ·{" "}
+              <span className="text-[#64748B]">Registrado en TrustLeaf</span>
+            </p>
+          </div>
+        </div>
+
       </main>
     </div>
   );

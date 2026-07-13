@@ -3,7 +3,8 @@
 import React, { createContext, useEffect, useState } from "react";
 
 interface WalletContextValue {
-  passkeyKit: unknown | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  passkeyKit: any | null;
   walletAddress: string | null;
   setWalletAddress: (addr: string | null) => void;
   role: string | null;
@@ -19,7 +20,8 @@ export const WalletContext = createContext<WalletContextValue>({
 });
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
-  const [passkeyKit, setPasskeyKit] = useState<unknown | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [passkeyKit, setPasskeyKit] = useState<any | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
 

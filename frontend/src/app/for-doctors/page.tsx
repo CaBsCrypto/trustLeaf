@@ -3,7 +3,7 @@
 // URL: trustleaf-demo.vercel.app/for-doctors
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "../../components/Navbar";
 
@@ -181,6 +181,9 @@ function TestimonialCard({
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
 export default function ForDoctorsPage() {
+  const [form, setForm] = useState({ name: "", email: "", specialty: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+
   useEffect(() => {
     fetch("/api/events", {
       method: "POST",
@@ -188,6 +191,21 @@ export default function ForDoctorsPage() {
       body: JSON.stringify({ event: "for_doctors_view" }),
     }).catch(() => {});
   }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, name: form.name, type: "médico", specialty: form.specialty }),
+      });
+      setStatus(res.ok ? "done" : "error");
+    } catch {
+      setStatus("error");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0F172A] text-white">
@@ -218,12 +236,12 @@ export default function ForDoctorsPage() {
             >
               Ver demo médico →
             </Link>
-            <a
-              href="mailto:hola@trustleaf.app?subject=Quiero ser médico piloto de TrustLeaf"
+            <button
+              onClick={() => document.getElementById("pilot-form")?.scrollIntoView({ behavior: "smooth" })}
               className="px-8 py-4 border border-[#334155] hover:border-[#10B981] text-[#94A3B8] hover:text-[#10B981] font-semibold rounded-xl transition-colors text-sm"
             >
               Ser médico piloto
-            </a>
+            </button>
           </div>
 
           <p className="text-[#475569] text-xs mt-4">
@@ -361,13 +379,81 @@ export default function ForDoctorsPage() {
               </li>
             ))}
           </ul>
-          <a
-            href="mailto:hola@trustleaf.app?subject=Quiero ser médico piloto de TrustLeaf"
+          <button
+            onClick={() => document.getElementById("pilot-form")?.scrollIntoView({ behavior: "smooth" })}
             className="flex items-center justify-center gap-2 w-full py-4 bg-[#10B981] hover:bg-[#059669] text-[#0F172A] font-bold rounded-xl transition-all hover:scale-[1.02] text-sm"
           >
             Ser médico piloto
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </button>
+        </div>
+      </section>
+
+      {/* Pilot signup form */}
+      <section id="pilot-form" className="max-w-lg mx-auto px-4 mb-20">
+        <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-8">
+          <h3 className="text-white font-bold text-lg mb-1">Únete al piloto</h3>
+          <p className="text-[#64748B] text-sm mb-6">Sin costo · Sin cambiar tu sistema actual · Respondo en 24h</p>
+
+          {status === "done" ? (
+            <div className="text-center py-6">
+              <div className="text-4xl mb-3">✅</div>
+              <p className="text-[#10B981] font-semibold">¡Listo! Te escribo en las próximas 24 horas.</p>
+              <p className="text-[#64748B] text-xs mt-1">{form.email}</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm text-[#94A3B8] mb-1">Nombre</label>
+                <input
+                  type="text"
+                  required
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="Dr. Juan Pérez"
+                  className="w-full px-4 py-3 bg-[#0F172A] border border-[#334155] rounded-xl text-white text-sm focus:border-[#10B981] outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-[#94A3B8] mb-1">Email</label>
+                <input
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  placeholder="dr.perez@clinica.cl"
+                  className="w-full px-4 py-3 bg-[#0F172A] border border-[#334155] rounded-xl text-white text-sm focus:border-[#10B981] outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-[#94A3B8] mb-1">Especialidad</label>
+                <select
+                  value={form.specialty}
+                  onChange={e => setForm(f => ({ ...f, specialty: e.target.value }))}
+                  className="w-full px-4 py-3 bg-[#0F172A] border border-[#334155] rounded-xl text-white text-sm focus:border-[#10B981] outline-none transition-colors"
+                >
+                  <option value="">Selecciona</option>
+                  <option>Medicina General</option>
+                  <option>Neurología</option>
+                  <option>Traumatología</option>
+                  <option>Reumatología</option>
+                  <option>Anestesiología / Dolor</option>
+                  <option>Medicina Interna</option>
+                  <option>Otra</option>
+                </select>
+              </div>
+              {status === "error" && (
+                <p className="text-red-400 text-xs">Hubo un error. Escríbeme a hola@trustleaf.app</p>
+              )}
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="w-full py-4 bg-[#10B981] hover:bg-[#059669] disabled:opacity-60 text-[#0F172A] font-bold rounded-xl transition-all text-sm"
+              >
+                {status === "loading" ? "Enviando..." : "Quiero ser médico piloto →"}
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
